@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: trio-app-prod
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    name: 'aperture-prod'
+    namespace: default
+  source:
+    path: manifests/trio-app/aperture-prod
+    repoURL: 'https://github.com/aperture-sci/DevOps'
+    targetRevision: HEAD
+    # plugin: 
+    #   name: kustomize-build-with-helm
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
