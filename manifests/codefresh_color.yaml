@@ -20,16 +20,17 @@ steps:
          codefresh create annotation build ${{CF_BUILD_ID}} color=$COLOR
 
   clone_qa:
-    title: "Cloning repository"
+    title: "Cloning repository for QA"
     type: "git-clone"
     repo: aperture-sci/DevOps
     revision: "main"
+    depth: 1
     stage: qa
 
   update_qa_manifest:
     description: update the image version for qa
     image: mikefarah/yq:3.3.4
-    working_directory: '${{clone}}'
+    working_directory: '${{clone_qa}}'
     stage: qa
     commands:
       - yq w -i manifests/color/aperture-qa/rollout.yaml 'spec.template.spec.containers[0].image' "argoproj/rollouts-demo:${{COLOR}}"
@@ -65,12 +66,13 @@ steps:
     type: "git-clone"
     repo: aperture-sci/DevOps
     revision: "main"
+    depth: 1
     stage: staging
 
   update_staging_manifest:
     description: update the image version for staging
     image: mikefarah/yq:3.3.4
-    working_directory: '${{clone}}'
+    working_directory: '${{clone_staging}}'
     stage: staging
     commands:
       - yq w -i manifests/color/aperture-staging/rollout.yaml 'spec.template.spec.containers[0].image' "argoproj/rollouts-demo:${{COLOR}}"
@@ -105,12 +107,13 @@ steps:
     type: "git-clone"
     repo: aperture-sci/DevOps
     revision: "main"
+    depth: 1
     stage: prod
 
   update_prod_manifest:
     description: update the image version for prod
     image: mikefarah/yq:3.3.4
-    working_directory: '${{clone}}'
+    working_directory: '${{clone_prod}}'
     stage: prod
     commands:
       - yq w -i manifests/color/aperture-prod/rollout.yaml 'spec.template.spec.containers[0].image' "argoproj/rollouts-demo:${{COLOR}}"
@@ -131,4 +134,3 @@ steps:
       add:
         - manifests/color/aperture-prod/rollout.yaml
         - manifests/color/aperture-prod/deployment.yaml
-  
