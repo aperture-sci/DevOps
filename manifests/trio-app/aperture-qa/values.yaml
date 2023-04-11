@@ -1,0 +1,12 @@
+buslog:
+  image:
+    tag: analysiscloud-native-migration-refactoring
+    repository: docker.io/aperturesci/buslog
+ctrlr:
+  image:
+    tag: taskcontainerization-best-practices
+    repository: docker.io/aperturesci/ctrlr
+flask-ui:
+  image:
+    tag: supportimmutable-infrastructure-implementation
+    repository: docker.io/aperturesci/flask-ui
