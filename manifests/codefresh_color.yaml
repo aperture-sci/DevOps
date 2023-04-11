@@ -30,7 +30,7 @@ steps:
   update_qa_manifest:
     description: update the image version for qa
     image: mikefarah/yq:3.3.4
-    working_directory: '${{clone_qa}}'
+    working_directory: '/codefresh/volume/DevOps'
     stage: qa
     commands:
       - yq w -i manifests/color/aperture-qa/rollout.yaml 'spec.template.spec.containers[0].image' "argoproj/rollouts-demo:${{COLOR}}"
@@ -72,7 +72,7 @@ steps:
   update_staging_manifest:
     description: update the image version for staging
     image: mikefarah/yq:3.3.4
-    working_directory: '${{clone_staging}}'
+    working_directory: '/codefresh/volume/DevOps'
     stage: staging
     commands:
       - yq w -i manifests/color/aperture-staging/rollout.yaml 'spec.template.spec.containers[0].image' "argoproj/rollouts-demo:${{COLOR}}"
@@ -113,7 +113,7 @@ steps:
   update_prod_manifest:
     description: update the image version for prod
     image: mikefarah/yq:3.3.4
-    working_directory: '${{clone_prod}}'
+    working_directory: '/codefresh/volume/DevOps'
     stage: prod
     commands:
       - yq w -i manifests/color/aperture-prod/rollout.yaml 'spec.template.spec.containers[0].image' "argoproj/rollouts-demo:${{COLOR}}"
