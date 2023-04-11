@@ -36,7 +36,7 @@ steps:
       - yq w -i manifests/color/aperture-qa/rollout.yaml 'spec.template.spec.containers[0].image' "argoproj/rollouts-demo:${{COLOR}}"
       - yq w -i manifests/color/aperture-qa/deployment.yaml 'spec.template.spec.containers[0].image' "argoproj/rollouts-demo:${{COLOR}}"
 
-  commit_and_push:
+  commit_and_push_qa:
     title: Commit changes and push
     type: git-commit
     stage: qa
@@ -78,7 +78,7 @@ steps:
       - yq w -i manifests/color/aperture-staging/rollout.yaml 'spec.template.spec.containers[0].image' "argoproj/rollouts-demo:${{COLOR}}"
       - yq w -i manifests/color/aperture-staging/deployment.yaml 'spec.template.spec.containers[0].image' "argoproj/rollouts-demo:${{COLOR}}"
 
-  commit_and_push:
+  commit_and_push_staging:
     title: Commit changes and push
     type: git-commit
     stage: staging
@@ -119,7 +119,7 @@ steps:
       - yq w -i manifests/color/aperture-prod/rollout.yaml 'spec.template.spec.containers[0].image' "argoproj/rollouts-demo:${{COLOR}}"
       - yq w -i manifests/color/aperture-prod/deployment.yaml 'spec.template.spec.containers[0].image' "argoproj/rollouts-demo:${{COLOR}}"
 
-  commit_and_push:
+  commit_and_push_prod:
     title: Commit changes and push
     type: git-commit
     stage: prod
