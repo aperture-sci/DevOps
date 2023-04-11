@@ -13,6 +13,8 @@ steps:
     stage: pre
     commands:
       - |
+         # magenta tag does not exist
+         # should rollback (if enable)
          colors=(blue green yellow purple red orange magenta)
          index=$(( 1 + $RANDOM % 7))
          export COLOR=${colors[$index]}
