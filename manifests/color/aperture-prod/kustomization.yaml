@@ -4,6 +4,7 @@ resources:
 - ../base
 # - ingress.yaml
 # - ingress-preview.yaml
+# - service-preview.yaml
 # - rollout.yaml
 - deployment.yaml
-namespace: staging
+namespace: prod
