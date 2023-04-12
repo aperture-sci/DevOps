@@ -6,7 +6,7 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   destination:
-    name: 'aperture-staging'
+    name: 'kc-v-staging'
     namespace: default
   source:
     path: manifests/color/aperture-staging
