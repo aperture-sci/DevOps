@@ -9,10 +9,10 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   rules:
-    - host: lr3.support.cf-cd.com
+    - host: kubecon.sales-dev.codefresh.io
       http:
         paths:
-          - path: /color(/|$)(.*)
+          - path: /color-staging(/|$)(.*)
             backend:
               service:
                 name: color
