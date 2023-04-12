@@ -12,7 +12,7 @@ spec:
     - host: color.staging.kubecon.sales-dev.codefresh.io
       http:
         paths:
-          - path: /color(/|$)(.*)
+          - path: / #color(/|$)(.*)
             backend:
               service:
                 name: color
