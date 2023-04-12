@@ -18,7 +18,7 @@ steps:
          colors=(blue green yellow purple red orange magenta)
          index=$(( 1 + $RANDOM % 7))
          if [ $index -lt 1 ] ||  [ $index -gt 7 ] ; then
-           echo "WTF- $index"
+           echo "WTF index- $index is wrong "
            exit 1
          fi
          export COLOR=${colors[$index]}
@@ -53,7 +53,7 @@ steps:
       commit_message: "Update image to deploy to ${{COLOR}}"
       git_user_name: lrochette
       git_user_email: laurent.rochette@codefresh.io
-      allow_empty: false
+      allow_empty: true
       add:
         - manifests/color/aperture-qa/rollout.yaml
         - manifests/color/aperture-qa/deployment.yaml
@@ -95,7 +95,7 @@ steps:
       commit_message: "Update image to deploy to ${{COLOR}}"
       git_user_name: lrochette
       git_user_email: laurent.rochette@codefresh.io
-      allow_empty: false
+      allow_empty: true
       add:
         - manifests/color/aperture-staging/rollout.yaml
         - manifests/color/aperture-staging/deployment.yaml
@@ -136,7 +136,7 @@ steps:
       commit_message: "Update image to deploy to ${{COLOR}}"
       git_user_name: lrochette
       git_user_email: laurent.rochette@codefresh.io
-      allow_empty: false
+      allow_empty: true
       add:
         - manifests/color/aperture-prod/rollout.yaml
         - manifests/color/aperture-prod/deployment.yaml
