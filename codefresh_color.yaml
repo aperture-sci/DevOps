@@ -17,6 +17,10 @@ steps:
          # should rollback (if enable)
          colors=(blue green yellow purple red orange magenta)
          index=$(( 1 + $RANDOM % 7))
+         if [ $index -lt 1 ] ||  [ $index -gt 7 ] ; then
+           echo "WTF- $index"
+           exit 1
+         fi
          export COLOR=${colors[$index]}
          cf_export COLOR=$COLOR
          codefresh create annotation build ${{CF_BUILD_ID}} color=$COLOR
