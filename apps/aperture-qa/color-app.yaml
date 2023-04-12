@@ -6,8 +6,8 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   destination:
-    name: 'aperture-qa'
-    namespace: default
+    name: 'kc-v-qa'
+    namespace: qa
   source:
     path: manifests/color/aperture-qa
     repoURL: 'https://github.com/aperture-sci/DevOps'
