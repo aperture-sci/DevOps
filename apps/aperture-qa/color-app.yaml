@@ -6,7 +6,7 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   destination:
-    name: 'kc-v-qa'
+    server: 'https://qa.kubecon.sales-dev.codefresh.io'
     namespace: qa
   source:
     path: manifests/color/aperture-qa
