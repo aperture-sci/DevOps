@@ -8,5 +8,5 @@ ctrlr:
     repository: docker.io/aperturesci/ctrlr
 flask-ui:
   image:
-    tag:experimentalrbac-permission-3705a5f
+    tag: experimentalrbac-permission-3705a5f
     repository: docker.io/aperturesci/flask-ui
