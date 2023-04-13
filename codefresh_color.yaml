@@ -1,11 +1,14 @@
 version: "1.0"
 stages:
  - pre
+ - build
  - qa
  - staging
  - prod
 
 steps:
+
+
   PickColor:
     title: "Switching color"
     image: codefresh/cli:latest
@@ -24,6 +27,22 @@ steps:
          export COLOR=${colors[$index]}
          cf_export COLOR=$COLOR
          codefresh create annotation build ${{CF_BUILD_ID}} color=$COLOR
+  clone:
+    title: "Cloning repository"
+    stage: build
+    type: "git-clone"
+    repo: "aperture-sci/rollouts-demo"
+    revision: "${{CF_BRANCH}}"
+      git: "github"
+  build:
+    title: "Building Docker image"
+    type: "build"
+    image_name: "aperturesci/rollouts-demo"
+    working_directory: "${{clone}}"
+    tag: "${{CF_SHORT_REVISION}}"
+    dockerfile: "Dockerfile"
+    registry: dockerhub
+    stage: "build"
 
   clone_qa:
     title: "Cloning repository for QA"
