@@ -54,9 +54,12 @@ steps:
     stage: "build"
     build_arguments:
     - COLOR=${{COLOR}}
+    - LATENCY=0
+    - ERROR_RATE=0
     metadata:
       set:
         - color: ${{COLOR}}
+
 
   jira-issue-extractor:
     title: Enrich image with annotations
