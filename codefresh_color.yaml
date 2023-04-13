@@ -8,7 +8,6 @@ stages:
 
 steps:
 
-
   PickColor:
     title: "Switching color"
     image: codefresh/cli:latest
@@ -34,6 +33,7 @@ steps:
     repo: "aperture-sci/rollouts-demo"
     revision: "${{CF_BRANCH}}"
     git: "github"
+
   build:
     title: "Building Docker image"
     type: "build"
@@ -47,6 +47,7 @@ steps:
   clone_qa:
     title: "Cloning repository for QA"
     type: "git-clone"
+    git: "github"
     repo: aperture-sci/DevOps
     revision: "main"
     depth: 1
@@ -89,6 +90,7 @@ steps:
   clone_staging:
     title: "Cloning repository"
     type: "git-clone"
+    git: "github"
     repo: aperture-sci/DevOps
     revision: "main"
     depth: 1
@@ -130,6 +132,7 @@ steps:
   clone_prod:
     title: "Cloning repository"
     type: "git-clone"
+    git: "github"
     repo: aperture-sci/DevOps
     revision: "main"
     depth: 1
