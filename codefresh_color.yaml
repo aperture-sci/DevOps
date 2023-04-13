@@ -8,24 +8,24 @@ stages:
 
 steps:
 
-  PickColor:
-    title: "Switching color"
-    image: codefresh/cli:latest
-    shell: bash
-    stage: pre
-    commands:
-      - |
-         # magenta tag does not exist
-         # should rollback (if enable)
-         colors=(blue green yellow purple red orange magenta)
-         index=$(( 1 + $RANDOM % 7))
-         if [ $index -lt 1 ] ||  [ $index -gt 7 ] ; then
-           echo "WTF index- $index is wrong "
-           exit 1
-         fi
-         export COLOR=${colors[$index]}
-         cf_export COLOR=$COLOR
-         codefresh create annotation build ${{CF_BUILD_ID}} color=$COLOR
+  # PickColor:
+  #   title: "Switching color"
+  #   image: codefresh/cli:latest
+  #   shell: bash
+  #   stage: pre
+  #   commands:
+  #     - |
+  #        # magenta tag does not exist
+  #        # should rollback (if enable)
+  #        colors=(blue green yellow purple red orange magenta)
+  #        index=$(( 1 + $RANDOM % 7))
+  #        if [ $index -lt 1 ] ||  [ $index -gt 7 ] ; then
+  #          echo "WTF index- $index is wrong "
+  #          exit 1
+  #        fi
+  #        export COLOR=${colors[$index]}
+  #        cf_export COLOR=$COLOR
+  #        codefresh create annotation build ${{CF_BUILD_ID}} color=$COLOR
   clone:
     title: "Cloning repository"
     stage: build
@@ -33,6 +33,13 @@ steps:
     repo: "${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}"
     revision: "${{CF_BRANCH}}"
     git: "github"
+
+  pickupColor:
+    image: ubuntu
+    commands:
+      - |
+        COLOR=$(echo "${{CF_NESSAGE}}" | | awk -F":" '{print $1}')
+        cf_export COLOR
 
   build:
     title: "Building Docker image"
