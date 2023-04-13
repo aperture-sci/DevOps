@@ -9,7 +9,7 @@ spec:
     name: 'kc-v-prod'
     namespace: prod
   source:
-    path: manifests/color/aperture-qa
+    path: manifests/color/aperture-prod
     repoURL: 'https://github.com/aperture-sci/DevOps'
     targetRevision: HEAD
   project: default
