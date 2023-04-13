@@ -35,10 +35,12 @@ steps:
     git: "github"
 
   pickupColor:
+    title: "extract color from commit message"
+    stage: build
     image: ubuntu
     commands:
       - |
-        COLOR=$(echo "${{CF_NESSAGE}}" | | awk -F":" '{print $1}')
+        COLOR=$(echo "${{CF_MESSAGE}}" | | awk -F":" '{print $1}')
         cf_export COLOR
 
   build:
