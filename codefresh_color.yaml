@@ -40,7 +40,7 @@ steps:
     image: ubuntu
     commands:
       - |
-        COLOR=$(echo "${{CF_COMMIT_MESSAGE}}" | awk -F":" '{print $1}')
+        COLOR=$(echo "${CF_COMMIT_MESSAGE}" | awk -F":" '{print $1}')
         cf_export COLOR
 
   build:
