@@ -33,7 +33,7 @@ steps:
     type: "git-clone"
     repo: "aperture-sci/rollouts-demo"
     revision: "${{CF_BRANCH}}"
-      git: "github"
+    git: "github"
   build:
     title: "Building Docker image"
     type: "build"
