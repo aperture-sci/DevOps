@@ -30,7 +30,7 @@ steps:
     title: "Cloning repository"
     stage: build
     type: "git-clone"
-    repo: "aperture-sci/rollouts-demo"
+    repo: "${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}"
     revision: "${{CF_BRANCH}}"
     git: "github"
 
