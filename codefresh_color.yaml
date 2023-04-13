@@ -41,7 +41,7 @@ steps:
     commands:
       - |
         COLOR=$(echo "${CF_COMMIT_MESSAGE}" | awk -F":" '{print $1}')
-        cf_export COLOR
+        cf_export COLOR=$COLOR
 
   build:
     title: "Building Docker image"
