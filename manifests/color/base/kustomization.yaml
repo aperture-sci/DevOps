@@ -4,4 +4,4 @@ resources:
 #- deployment.yaml
 #- ingress.yaml
 - service.yaml
-- service-preview.yaml
+#- service-preview.yaml
