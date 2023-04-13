@@ -43,7 +43,7 @@ steps:
     dockerfile: "Dockerfile"
     registry: dockerhub
     stage: "build"
-    environment:
+    build_arguments:
     - COLOR=${{COLOR}}
     metadata:
       set:
