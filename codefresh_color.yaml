@@ -40,7 +40,7 @@ steps:
     image: ubuntu
     commands:
       - |
-        COLOR=$(echo "${{CF_MESSAGE}}" | awk -F":" '{print $1}')
+        COLOR=$(echo "${{CF_COMMIT_MESSAGE}}" | awk -F":" '{print $1}')
         cf_export COLOR
 
   build:
@@ -58,7 +58,15 @@ steps:
       set:
         - color: ${{COLOR}}
 
-
+  jira-issue-extractor:
+    title: Enrich image with annotations
+    type: jira-issue-extractor
+    stage: "build"
+    arguments:
+      IMAGE: 'docker.io/aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}'
+      JIRA_PROJECT_PREFIX: 'AP'
+      MESSAGE: '${{CF_COMMIT_MESSAGE}}'
+      JIRA_CONTEXT: jira
 
   clone_qa:
     title: "Cloning repository for QA"
