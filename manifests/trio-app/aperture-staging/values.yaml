@@ -1,6 +1,6 @@
 buslog:
   image:
-    tag: supportcontainerization-f82371a
+    tag: main-36d6bbc
     repository: docker.io/aperturesci/buslog
 ctrlr:
   image:
