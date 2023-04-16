@@ -1,6 +1,6 @@
 buslog:
   image:
-    tag: designgitops-adoption_041402298-d18c6f5
+    tag: designgitops-adoption_041402298-6165ff9
     repository: docker.io/aperturesci/buslog
 ctrlr:
   image:
@@ -8,5 +8,5 @@ ctrlr:
     repository: docker.io/aperturesci/ctrlr
 flask-ui:
   image:
-    tag: styleadmission-ctrl-error_041407009-78c9e2c
+    tag: styleadmission-ctrl-error_041407009-3694a15
     repository: docker.io/aperturesci/flask-ui
