@@ -1,12 +1,12 @@
 buslog:
   image:
-    tag: analysiscloud-native-migration-refactoring
+    tag: supportcontainerization-f82371a
     repository: docker.io/aperturesci/buslog
 ctrlr:
   image:
-    tag: taskcontainerization-best-practices
+    tag: main-0ba9d06
     repository: docker.io/aperturesci/ctrlr
 flask-ui:
   image:
-    tag: supportimmutable-infrastructure-implementation
+    tag: experimentalrbac-permission-3705a5f
     repository: docker.io/aperturesci/flask-ui

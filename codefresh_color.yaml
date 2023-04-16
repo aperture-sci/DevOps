@@ -1,0 +1,191 @@
+version: "1.0"
+stages:
+ - pre
+ - build
+ - qa
+ - staging
+ - prod
+
+steps:
+
+  # PickColor:
+  #   title: "Switching color"
+  #   image: codefresh/cli:latest
+  #   shell: bash
+  #   stage: pre
+  #   commands:
+  #     - |
+  #        # magenta tag does not exist
+  #        # should rollback (if enable)
+  #        colors=(blue green yellow purple red orange magenta)
+  #        index=$(( 1 + $RANDOM % 7))
+  #        if [ $index -lt 1 ] ||  [ $index -gt 7 ] ; then
+  #          echo "WTF index- $index is wrong "
+  #          exit 1
+  #        fi
+  #        export COLOR=${colors[$index]}
+  #        cf_export COLOR=$COLOR
+  #        codefresh create annotation build ${{CF_BUILD_ID}} color=$COLOR
+  clone:
+    title: "Cloning repository"
+    stage: build
+    type: "git-clone"
+    repo: "${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}"
+    revision: "${{CF_BRANCH}}"
+    git: "github"
+
+  pickupColor:
+    title: "extract color from commit message"
+    stage: build
+    image: ubuntu
+    commands:
+      - |
+        COLOR=$(echo "${CF_COMMIT_MESSAGE}" | awk -F":" '{print $1}')
+        cf_export COLOR=$COLOR
+
+  build:
+    title: "Building Docker image"
+    type: "build"
+    image_name: "aperturesci/rollouts-demo"
+    working_directory: "${{clone}}"
+    tag: "${{CF_SHORT_REVISION}}"
+    dockerfile: "Dockerfile"
+    registry: dockerhub
+    stage: "build"
+    build_arguments:
+    - COLOR=${{COLOR}}
+    - LATENCY=0
+    - ERROR_RATE=0
+    metadata:
+      set:
+        - color: ${{COLOR}}
+
+
+  jira-issue-extractor:
+    title: Enrich image with annotations
+    type: jira-issue-extractor
+    stage: "build"
+    arguments:
+      IMAGE: 'docker.io/aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}'
+      JIRA_PROJECT_PREFIX: 'AP'
+      MESSAGE: '${{CF_COMMIT_MESSAGE}}'
+      JIRA_CONTEXT: jira
+
+  clone_qa:
+    title: "Cloning repository for QA"
+    type: "git-clone"
+    git: "github"
+    repo: aperture-sci/DevOps
+    revision: "main"
+    depth: 1
+    stage: qa
+
+  update_qa_manifest:
+    description: update the image version for qa
+    image: mikefarah/yq:3.3.4
+    working_directory: '/codefresh/volume/DevOps'
+    stage: qa
+    commands:
+      - yq w -i manifests/color/aperture-qa/rollout.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
+      - yq w -i manifests/color/aperture-qa/deployment.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
+
+  commit_and_push_qa:
+    title: Commit changes and push
+    type: git-commit
+    stage: qa
+    arguments:
+      repo: aperture-sci/DevOps
+      git: github-lr
+      working_directory: /codefresh/volume/DevOps
+      commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
+      git_user_name: lrochette
+      git_user_email: laurent.rochette@codefresh.io
+      allow_empty: true
+      add:
+        - manifests/color/aperture-qa/rollout.yaml
+        - manifests/color/aperture-qa/deployment.yaml
+
+  approve_staging:
+    stage: staging
+    type: pending-approval
+    timeout:
+      timeUnit: minutes
+      duration: 10
+      finalState: approved
+
+
+  clone_staging:
+    title: "Cloning repository"
+    type: "git-clone"
+    git: "github"
+    repo: aperture-sci/DevOps
+    revision: "main"
+    depth: 1
+    stage: staging
+
+  update_staging_manifest:
+    description: update the image version for staging
+    image: mikefarah/yq:3.3.4
+    working_directory: '/codefresh/volume/DevOps'
+    stage: staging
+    commands:
+      - yq w -i manifests/color/aperture-staging/rollout.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
+      - yq w -i manifests/color/aperture-staging/deployment.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
+
+  commit_and_push_staging:
+    title: Commit changes and push
+    type: git-commit
+    stage: staging
+    arguments:
+      repo: aperture-sci/DevOps
+      git: github-lr
+      working_directory: /codefresh/volume/DevOps
+      commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
+      git_user_name: lrochette
+      git_user_email: laurent.rochette@codefresh.io
+      allow_empty: true
+      add:
+        - manifests/color/aperture-staging/rollout.yaml
+        - manifests/color/aperture-staging/deployment.yaml
+
+  approve_prod:
+    stage: prod
+    type: pending-approval
+    timeout:
+      timeUnit: minutes
+      duration: 10
+      finalState: approved
+
+  clone_prod:
+    title: "Cloning repository"
+    type: "git-clone"
+    git: "github"
+    repo: aperture-sci/DevOps
+    revision: "main"
+    depth: 1
+    stage: prod
+
+  update_prod_manifest:
+    description: update the image version for prod
+    image: mikefarah/yq:3.3.4
+    working_directory: '/codefresh/volume/DevOps'
+    stage: prod
+    commands:
+      - yq w -i manifests/color/aperture-prod/rollout.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
+      - yq w -i manifests/color/aperture-prod/deployment.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
+
+  commit_and_push_prod:
+    title: Commit changes and push
+    type: git-commit
+    stage: prod
+    arguments:
+      repo: aperture-sci/DevOps
+      git: github-lr
+      working_directory: /codefresh/volume/DevOps
+      commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
+      git_user_name: lrochette
+      git_user_email: laurent.rochette@codefresh.io
+      allow_empty: true
+      add:
+        - manifests/color/aperture-prod/rollout.yaml
+        - manifests/color/aperture-prod/deployment.yaml
