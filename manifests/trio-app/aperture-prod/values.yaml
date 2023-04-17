@@ -8,5 +8,5 @@ ctrlr:
     repository: docker.io/aperturesci/ctrlr
 flask-ui:
   image:
-    tag: styleadmission-ctrl-error_041407009-ce14ca5
+    tag: main-548a67d
     repository: docker.io/aperturesci/flask-ui
