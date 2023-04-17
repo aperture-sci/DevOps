@@ -8,5 +8,5 @@ ctrlr:
     repository: docker.io/aperturesci/ctrlr
 flask-ui:
   image:
-    tag: main-a0ddfa3
+    tag: main-6eb66cc 
     repository: docker.io/aperturesci/flask-ui
