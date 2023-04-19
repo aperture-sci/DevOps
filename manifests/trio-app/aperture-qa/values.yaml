@@ -4,9 +4,9 @@ buslog:
     repository: docker.io/aperturesci/buslog
 ctrlr:
   image:
-    tag: main-748e542
+    tag: main-523e8ee
     repository: docker.io/aperturesci/ctrlr
 flask-ui:
   image:
-    tag: main-e456428
+    tag: broken
     repository: docker.io/aperturesci/flask-ui
