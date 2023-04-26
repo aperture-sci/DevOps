@@ -1,6 +1,6 @@
 buslog:
   image:
-    tag: main-a88cb04
+    tag: main-7a03552
     repository: docker.io/aperturesci/buslog
 ctrlr:
   image:
