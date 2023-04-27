@@ -1,10 +1,10 @@
 buslog:
   image:
-    tag: main-f0bac54
+    tag: main-751e716
     repository: docker.io/aperturesci/buslog
 ctrlr:
   image:
-    tag: main-a079f05
+    tag: main-2e270cb
     repository: docker.io/aperturesci/ctrlr
 flask-ui:
   image:
