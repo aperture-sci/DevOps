@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kc-v-qa-rollouts
+  labels:
+    codefresh.io/entity: component
+    codefresh.io/internal: "false"
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: csdp
+  source:
+    repoURL: https://github.com/codefresh-io/csdp-official.git
+    path: csdp/base_components/apps/argo-rollouts/_components/codefresh-base
+    targetRevision: stable
+  destination:
+    namespace: default
+    server: https://qa.kubecon.sales-dev.codefresh.io
+  syncPolicy:
+    automated:
+      allowEmpty: true
+      prune: true
+      selfHeal: true

@@ -1,6 +1,6 @@
 version: "1.0"
 stages:
- - pre
+ - clone
  - build
  - qa
  - staging
@@ -8,27 +8,9 @@ stages:
 
 steps:
 
-  # PickColor:
-  #   title: "Switching color"
-  #   image: codefresh/cli:latest
-  #   shell: bash
-  #   stage: pre
-  #   commands:
-  #     - |
-  #        # magenta tag does not exist
-  #        # should rollback (if enable)
-  #        colors=(blue green yellow purple red orange magenta)
-  #        index=$(( 1 + $RANDOM % 7))
-  #        if [ $index -lt 1 ] ||  [ $index -gt 7 ] ; then
-  #          echo "WTF index- $index is wrong "
-  #          exit 1
-  #        fi
-  #        export COLOR=${colors[$index]}
-  #        cf_export COLOR=$COLOR
-  #        codefresh create annotation build ${{CF_BUILD_ID}} color=$COLOR
   clone:
     title: "Cloning repository"
-    stage: build
+    stage: clone
     type: "git-clone"
     repo: "${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}"
     revision: "${{CF_BRANCH}}"
@@ -36,11 +18,11 @@ steps:
 
   pickupColor:
     title: "extract color from commit message"
-    stage: build
+    stage: clone
     image: ubuntu
     commands:
       - |
-        COLOR=$(echo "${CF_COMMIT_MESSAGE}" | awk -F":" '{print $1}')
+        export COLOR=$(echo "${CF_COMMIT_MESSAGE}" | awk -F":" '{print $1}')
         cf_export COLOR=$COLOR
 
   build:
@@ -59,17 +41,49 @@ steps:
     metadata:
       set:
         - color: ${{COLOR}}
+    on_success:
+      annotations:
+        set:
+          - annotations:
+            - sha: ${{CF_SHORT_REVISION}}
+            - color: ${{COLOR}}
+            display: color
 
+  jira:
+    type: parallel
+    stage: build
+    steps:
+      jira-issue-extractor:
+        title: Enrich image with annotations
+        type: jira-issue-extractor
+        stage: "build"
+        arguments:
+          IMAGE: 'docker.io/aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}'
+          JIRA_PROJECT_PREFIX: 'AP'
+          MESSAGE: '${{CF_COMMIT_MESSAGE}}'
+          JIRA_CONTEXT: jira
 
-  jira-issue-extractor:
-    title: Enrich image with annotations
-    type: jira-issue-extractor
-    stage: "build"
-    arguments:
-      IMAGE: 'docker.io/aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}'
-      JIRA_PROJECT_PREFIX: 'AP'
-      MESSAGE: '${{CF_COMMIT_MESSAGE}}'
-      JIRA_CONTEXT: jira
+      JiraCommentCreate:
+        title: "Add Jira Comment"
+        type: "jira-issue-manager"
+        fail_fast: false
+        arguments:
+          JIRA_API_KEY: ${{JIRA_API_KEY}}
+          JIRA_BASE_URL: ${{JIRA_URL}}
+          JIRA_USERNAME: ${{JIRA_USER}}
+          JIRA_ISSUE_SOURCE_FIELD: 'AP-103'
+          ACTION: "comment_create"
+          COMMENT_BODY: "Color update to ${{COLOR}} in Codefresh build [${{CF_BUILD_ID}}|${{CF_BUILD_URL}}] finished in Codefresh."
+
+  # enrich-image:
+  #   title: Enrich image with annotations
+  #   type: image-enricher
+  #   stage: test
+  #   arguments:
+  #     IMAGE: 'aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}'
+  #     BRANCH: '${{CF_BRANCH}}'
+  #     REPO: 'aperture-sci/rollouts-demo'
+  #     GIT_PROVIDER_NAME: github-app
 
   clone_qa:
     title: "Cloning repository for QA"
@@ -104,6 +118,18 @@ steps:
       add:
         - manifests/color/aperture-qa/rollout.yaml
         - manifests/color/aperture-qa/deployment.yaml
+
+  sync_qa:
+    title: Sync ArgoCD app in QA and  wait
+    stage: qa
+    image: curlimages/curl:8.00.1
+    commands:
+      - |
+        curl -X POST "${{URL}}app-proxy/api/graphql" \
+          -H "Accept: application/json,text/plain,*/*" \
+          -H "Content-Type: application/json;charset=utf-8" \
+          -H "x-access-token: ${{X-ACCESS-TOKEN}}" \
+          -d "{\"operationName\":\"sync\",\"variables\":{\"applicationName\":\"color-qa\",\"options\":{\"name\":\"color-qa\",\"dryRun\":false,\"prune\":true,\"revision\":\"HEAD\",\"strategy\":{\"hook\":{\"force\":false}},\"syncOptions\":{\"items\":[\"CreateNamespace=true\",\"RespectIgnoreDifferences=foreground\"]},\"resources\":null}},\"query\":\"query sync($applicationName: String!, $options: SyncOptions) {\\n  sync(applicationName: $applicationName, options: $options) {\\n    metadata {\\n      name\\n      __typename\\n    }\\n    __typename\\n  }\\n}\"}"
 
   approve_staging:
     stage: staging

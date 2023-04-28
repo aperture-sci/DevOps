@@ -1,0 +1,176 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kc-v-qa-rollout-reporter-sa
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kc-v-qa-rollout-reporter-role
+rules:
+- apiGroups:
+  - argoproj.io
+  resources:
+  - analysisruns
+  - rollouts
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - apps
+  resources:
+  - replicasets
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kc-v-qa-rollout-reporter-role-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kc-v-qa-rollout-reporter-role
+subjects:
+- kind: ServiceAccount
+  namespace: codefresh-hosted
+  name: kc-v-qa-rollout-reporter-sa
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: EventSource
+metadata:
+  name: kc-v-qa-rollout-reporter
+  labels:
+    app.kubernetes.io/managed-by: cf
+spec:
+  eventBusName: codefresh-eventbus
+  resource:
+    analysisruns:
+      cluster: kc-v-qa
+      group: argoproj.io
+      version: v1alpha1
+      resource: analysisruns
+      eventTypes:
+      - ADD
+      - UPDATE
+      - DELETE
+    replicasets:
+      cluster: kc-v-qa
+      group: apps
+      version: v1
+      resource: replicasets
+      eventTypes:
+      - ADD
+      - UPDATE
+      - DELETE
+    rollouts:
+      cluster: kc-v-qa
+      group: argoproj.io
+      version: v1alpha1
+      resource: rollouts
+      eventTypes:
+      - ADD
+      - UPDATE
+      - DELETE
+  template:
+    serviceAccountName: kc-v-qa-rollout-reporter-sa
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: kc-v-qa-rollout-reporter
+  labels:
+    app.kubernetes.io/managed-by: cf
+spec:
+  dependencies:
+  - name: analysisruns
+    eventSourceName: kc-v-qa-rollout-reporter
+    eventName: analysisruns
+  - name: replicasets
+    eventSourceName: kc-v-qa-rollout-reporter
+    eventName: replicasets
+  - name: rollouts
+    eventSourceName: kc-v-qa-rollout-reporter
+    eventName: rollouts
+  eventBusName: codefresh-eventbus
+  triggers:
+  - template:
+      name: rollouts
+      conditions: rollouts
+      http:
+        method: POST
+        url: https://g.codefresh.io/2.0/api/events
+        headers:
+          Content-Type: application/json
+        secureHeaders:
+        - name: Authorization
+          valueFrom:
+            secretKeyRef:
+              key: token
+              name: codefresh-token
+        payload:
+        - dest: data.object
+          src:
+            dataKey: body
+            dependencyName: rollouts
+    retryStrategy:
+      duration: 0
+      steps: 3
+  - template:
+      name: replicasets
+      conditions: replicasets
+      http:
+        method: POST
+        url: https://g.codefresh.io/2.0/api/events
+        headers:
+          Content-Type: application/json
+        secureHeaders:
+        - name: Authorization
+          valueFrom:
+            secretKeyRef:
+              key: token
+              name: codefresh-token
+        payload:
+        - dest: data.object
+          src:
+            dataKey: body
+            dependencyName: replicasets
+    retryStrategy:
+      duration: 0
+      steps: 3
+  - template:
+      name: analysisruns
+      conditions: analysisruns
+      http:
+        method: POST
+        url: https://g.codefresh.io/2.0/api/events
+        headers:
+          Content-Type: application/json
+        secureHeaders:
+        - name: Authorization
+          valueFrom:
+            secretKeyRef:
+              key: token
+              name: codefresh-token
+        payload:
+        - dest: data.object
+          src:
+            dataKey: body
+            dependencyName: analysisruns
+    retryStrategy:
+      duration: 0
+      steps: 3
