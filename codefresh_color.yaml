@@ -125,11 +125,11 @@ steps:
     image: curlimages/curl:8.00.1
     commands:
       - |
-        curl -X POST "${{URL}}app-proxy/api/graphql" \
+        curl -X POST "${{URL}}/app-proxy/api/graphql" \
           -H "Accept: application/json,text/plain,*/*" \
           -H "Content-Type: application/json;charset=utf-8" \
           -H "x-access-token: ${{X-ACCESS-TOKEN}}" \
-          -d "{\"operationName\":\"sync\",\"variables\":{\"applicationName\":\"color-qa\",\"options\":{\"name\":\"color-qa\",\"dryRun\":false,\"prune\":true,\"revision\":\"HEAD\",\"strategy\":{\"hook\":{\"force\":false}},\"syncOptions\":{\"items\":[\"CreateNamespace=true\",\"RespectIgnoreDifferences=foreground\"]},\"resources\":null}},\"query\":\"query sync($applicationName: String!, $options: SyncOptions) {\\n  sync(applicationName: $applicationName, options: $options) {\\n    metadata {\\n      name\\n      __typename\\n    }\\n    __typename\\n  }\\n}\"}"
+          -d '{"operationName":"sync","variables":{"applicationName":"color-qa","options":{"name":"color-qa","dryRun":false,"prune":true,"revision":"HEAD","strategy":{"hook":{"force":false}},"syncOptions":{"items":["CreateNamespace=true","RespectIgnoreDifferences=foreground"]},"resources":null}},"query":"query sync($applicationName: String!, $options: SyncOptions) {\n sync(applicationName: $applicationName, options: $options) {metadata {name\n__typename}__typename}}"}'
 
   approve_staging:
     stage: staging
