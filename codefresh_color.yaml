@@ -174,6 +174,18 @@ steps:
         - manifests/color/aperture-staging/rollout.yaml
         - manifests/color/aperture-staging/deployment.yaml
 
+  sync_staging:
+    title: Sync ArgoCD app in staging and  wait
+    stage: staging
+    image: curlimages/curl:8.00.1
+    commands:
+      - |
+        curl -X POST "${{URL}}/app-proxy/api/graphql" \
+          -H "Accept: application/json,text/plain,*/*" \
+          -H "Content-Type: application/json;charset=utf-8" \
+          -H "x-access-token: ${{X-ACCESS-TOKEN}}" \
+          -d '{"operationName":"sync","variables":{"applicationName":"color-staging","options":{"name":"color-staging","dryRun":false,"prune":true,"revision":"HEAD","strategy":{"hook":{"force":false}},"syncOptions":{"items":["CreateNamespace=true","RespectIgnoreDifferences=foreground"]},"resources":null}},"query":"query sync($applicationName: String!, $options: SyncOptions) {\n sync(applicationName: $applicationName, options: $options) {metadata {name\n__typename}__typename}}"}'
+
   approve_prod:
     stage: prod
     type: pending-approval
@@ -215,3 +227,15 @@ steps:
       add:
         - manifests/color/aperture-prod/rollout.yaml
         - manifests/color/aperture-prod/deployment.yaml
+
+  sync_prod:
+    title: Sync ArgoCD app in prod and  wait
+    stage: prod
+    image: curlimages/curl:8.00.1
+    commands:
+      - |
+        curl -X POST "${{URL}}/app-proxy/api/graphql" \
+          -H "Accept: application/json,text/plain,*/*" \
+          -H "Content-Type: application/json;charset=utf-8" \
+          -H "x-access-token: ${{X-ACCESS-TOKEN}}" \
+          -d '{"operationName":"sync","variables":{"applicationName":"color-prod","options":{"name":"color-prod","dryRun":false,"prune":true,"revision":"HEAD","strategy":{"hook":{"force":false}},"syncOptions":{"items":["CreateNamespace=true","RespectIgnoreDifferences=foreground"]},"resources":null}},"query":"query sync($applicationName: String!, $options: SyncOptions) {\n sync(applicationName: $applicationName, options: $options) {metadata {name\n__typename}__typename}}"}'
