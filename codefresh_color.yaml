@@ -2,6 +2,7 @@ version: "1.0"
 stages:
  - clone
  - build
+ - dev
  - qa
  - staging
  - prod
@@ -75,15 +76,65 @@ steps:
           ACTION: "comment_create"
           COMMENT_BODY: "Color update to ${{COLOR}} in Codefresh build [${{CF_BUILD_ID}}|${{CF_BUILD_URL}}] finished in Codefresh."
 
-  # enrich-image:
-  #   title: Enrich image with annotations
-  #   type: image-enricher
-  #   stage: test
-  #   arguments:
-  #     IMAGE: 'aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}'
-  #     BRANCH: '${{CF_BRANCH}}'
-  #     REPO: 'aperture-sci/rollouts-demo'
-  #     GIT_PROVIDER_NAME: github-app
+      enrich-image:
+        title: Enrich image with annotations
+        type: image-enricher
+        stage: test
+        arguments:
+          IMAGE: 'aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}'
+          BRANCH: '${{CF_BRANCH}}'
+          REPO: 'aperture-sci/rollouts-demo'
+          GIT_PROVIDER_NAME: github-app
+
+  clone_dev:
+    title: "Cloning repository for dev"
+    type: "git-clone"
+    git: "github"
+    repo: aperture-sci/DevOps
+    revision: "main"
+    depth: 1
+    stage: dev
+
+  update_dev_manifest:
+    description: update the image version for dev
+    image: mikefarah/yq:3.3.4
+    working_directory: '/codefresh/volume/DevOps'
+    stage: dev
+    commands:
+      - yq w -i manifests/color/aperture-dev/rollout.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
+      - yq w -i manifests/color/aperture-dev/deployment.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
+
+  commit_and_push_dev:
+    title: Commit changes and push
+    type: git-commit
+    stage: dev
+    arguments:
+      repo: aperture-sci/DevOps
+      git: github-lr
+      working_directory: /codefresh/volume/DevOps
+      commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
+      git_user_name: lrochette
+      git_user_email: laurent.rochette@codefresh.io
+      allow_empty: true
+      add:
+        - manifests/color/aperture-dev/rollout.yaml
+        - manifests/color/aperture-dev/deployment.yaml
+
+  sync_dev:
+    type: aperture-sci/argo-sync:1.0.0
+    title: Sync color app to dev
+    stage: dev
+    arguments:
+      RUNTIME: datacenter
+      APPLICATION: color-dev
+
+  approve_qa:
+    stage: qa
+    type: pending-approval
+    timeout:
+      timeUnit: minutes
+      duration: 5
+      finalState: approved
 
   clone_qa:
     title: "Cloning repository for QA"
@@ -120,25 +171,20 @@ steps:
         - manifests/color/aperture-qa/deployment.yaml
 
   sync_qa:
+    type: aperture-sci/argo-sync:1.0.0
     title: Sync ArgoCD app in QA and  wait
     stage: qa
-    image: curlimages/curl:8.00.1
-    commands:
-      - |
-        curl -X POST "${{URL}}/app-proxy/api/graphql" \
-          -H "Accept: application/json,text/plain,*/*" \
-          -H "Content-Type: application/json;charset=utf-8" \
-          -H "x-access-token: ${{X-ACCESS-TOKEN}}" \
-          -d '{"operationName":"sync","variables":{"applicationName":"color-qa","options":{"name":"color-qa","dryRun":false,"prune":true,"revision":"HEAD","strategy":{"hook":{"force":false}},"syncOptions":{"items":["CreateNamespace=true","RespectIgnoreDifferences=foreground"]},"resources":null}},"query":"query sync($applicationName: String!, $options: SyncOptions) {\n sync(applicationName: $applicationName, options: $options) {metadata {name\n__typename}__typename}}"}'
+    arguments:
+      RUNTIME: datacenter
+      APPLICATION: color-qa
 
   approve_staging:
     stage: staging
     type: pending-approval
     timeout:
       timeUnit: minutes
-      duration: 10
+      duration: 5
       finalState: approved
-
 
   clone_staging:
     title: "Cloning repository"
@@ -176,22 +222,18 @@ steps:
 
   sync_staging:
     title: Sync ArgoCD app in staging and  wait
+    type: aperture-sci/argo-sync:1.0.0
     stage: staging
-    image: curlimages/curl:8.00.1
-    commands:
-      - |
-        curl -X POST "${{URL}}/app-proxy/api/graphql" \
-          -H "Accept: application/json,text/plain,*/*" \
-          -H "Content-Type: application/json;charset=utf-8" \
-          -H "x-access-token: ${{X-ACCESS-TOKEN}}" \
-          -d '{"operationName":"sync","variables":{"applicationName":"color-staging","options":{"name":"color-staging","dryRun":false,"prune":true,"revision":"HEAD","strategy":{"hook":{"force":false}},"syncOptions":{"items":["CreateNamespace=true","RespectIgnoreDifferences=foreground"]},"resources":null}},"query":"query sync($applicationName: String!, $options: SyncOptions) {\n sync(applicationName: $applicationName, options: $options) {metadata {name\n__typename}__typename}}"}'
+    arguments:
+      RUNTIME: datacenter
+      APPLICATION: color-staging
 
   approve_prod:
     stage: prod
     type: pending-approval
     timeout:
       timeUnit: minutes
-      duration: 10
+      duration: 5
       finalState: approved
 
   clone_prod:
@@ -230,12 +272,8 @@ steps:
 
   sync_prod:
     title: Sync ArgoCD app in prod and  wait
+    type: aperture-sci/argo-sync:1.0.0
     stage: prod
-    image: curlimages/curl:8.00.1
-    commands:
-      - |
-        curl -X POST "${{URL}}/app-proxy/api/graphql" \
-          -H "Accept: application/json,text/plain,*/*" \
-          -H "Content-Type: application/json;charset=utf-8" \
-          -H "x-access-token: ${{X-ACCESS-TOKEN}}" \
-          -d '{"operationName":"sync","variables":{"applicationName":"color-prod","options":{"name":"color-prod","dryRun":false,"prune":true,"revision":"HEAD","strategy":{"hook":{"force":false}},"syncOptions":{"items":["CreateNamespace=true","RespectIgnoreDifferences=foreground"]},"resources":null}},"query":"query sync($applicationName: String!, $options: SyncOptions) {\n sync(applicationName: $applicationName, options: $options) {metadata {name\n__typename}__typename}}"}'
+    arguments:
+      RUNTIME: datacenter
+      APPLICATION: color-prod
