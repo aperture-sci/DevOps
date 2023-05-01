@@ -3,8 +3,7 @@ kind: Kustomization
 resources:
 - ../base
 - ingress.yaml
-# - ingress-preview.yaml
-# - service-preview.yaml
-# - rollout.yaml
-- deployment.yaml
+- ingress-preview.yaml
+- rollout.yaml
+# - deployment.yaml
 namespace: qa
