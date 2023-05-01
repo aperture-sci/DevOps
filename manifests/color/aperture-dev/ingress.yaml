@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: color
+  annotations:
+    ingress.kubernetes.io/proxy-body-size: 100M
+    kubernetes.io/ingress.class: nginx
+    ingress.kubernetes.io/app-root: /
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - host: 34.67.64.195/datacenter
+      http:
+        paths:
+          - path: /color(/|$)(.*)
+            backend:
+              service:
+                name: color
+                port:
+                  number: 80
+            pathType: ImplementationSpecific
