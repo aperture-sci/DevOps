@@ -1,6 +1,6 @@
 buslog:
   image:
-    tag: main-93d76ea
+    tag: styleGitOps-adoption_050217008-03e80eb
     repository: docker.io/aperturesci/buslog
   rollout:
     replicas: 5
@@ -9,9 +9,10 @@ buslog:
         steps:
           - setWeight: 20
           - pause: {duration: 10s}
+          - setWeight: 100
 ctrlr:
   image:
-    tag: main-748e542
+    tag: main-d86885b
     repository: docker.io/aperturesci/ctrlr
   rollout:
     replicas: 5
@@ -20,11 +21,12 @@ ctrlr:
         steps:
           - setWeight: 20
           - pause: {duration: 30s}
-          - setWeight: 20
+          - setWeight: 50
           - pause: {duration: 30s}
+          - setWeight: 100
 flask-ui:
   image:
-    tag: main-e456428
+    tag: main-1daf46b
     repository: docker.io/aperturesci/flask-ui
   rollout:
     replicas: 5
@@ -33,5 +35,6 @@ flask-ui:
         steps:
           - setWeight: 20
           - pause: {duration: 30s}
-          - setWeight: 20
+          - setWeight: 50
           - pause: {duration: 30s}
+          - setWeight: 100
