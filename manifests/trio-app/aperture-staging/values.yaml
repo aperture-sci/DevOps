@@ -1,12 +1,40 @@
 buslog:
   image:
-    tag: main-addc572
+    tag: vendorService-mesh-refactor_050219010-1326ad1
     repository: docker.io/aperturesci/buslog
+  replicaCount: 3
+  rollout:    
+    strategy:
+      canary:
+        steps:
+          - setWeight: 20
+          - pause: {duration: 10s}
+          - setWeight: 100
 ctrlr:
   image:
-    tag: main-d86885b
+    tag: candidate-addc572
     repository: docker.io/aperturesci/ctrlr
+  replicaCount: 3
+  rollout:
+    strategy:
+      canary:
+        steps:
+          - setWeight: 20
+          - pause: {duration: 30s}
+          - setWeight: 50
+          - pause: {duration: 30s}
+          - setWeight: 100
 flask-ui:
   image:
-    tag: main-23fbbb7
+    tag: analysisPod-scheduling-error_050218014-57ae008
     repository: docker.io/aperturesci/flask-ui
+  replicaCount: 3
+  rollout:
+    strategy:
+      canary:
+        steps:
+          - setWeight: 20
+          - pause: {duration: 30s}
+          - setWeight: 50
+          - pause: {duration: 30s}
+          - setWeight: 100
