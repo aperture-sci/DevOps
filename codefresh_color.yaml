@@ -225,7 +225,7 @@ steps:
     type: aperture-sci/argo-sync:1.0.0
     stage: staging
     arguments:
-      RUNTIME: staging-vcluster
+      RUNTIME: codefresh-hosted
       APPLICATION: color-staging
 
   approve_prod:
