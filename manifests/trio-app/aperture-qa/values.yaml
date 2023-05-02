@@ -1,7 +1,14 @@
 buslog:
   image:
-    tag: styleGitOps-adoption_050217008-5cb5902
+    tag: styleGitOps-adoption_050217008-16924ff
     repository: docker.io/aperturesci/buslog
+  rollout:
+    replicas: 5
+    strategy:
+      canary:
+        steps:
+          - setWeight: 20
+          - pause: {duration: 10s}
 ctrlr:
   image:
     tag: main-d86885b
