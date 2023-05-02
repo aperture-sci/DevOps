@@ -189,14 +189,14 @@ steps:
       duration: 5
       finalState: approved
 
-  clone_staging:
-    title: "Cloning repository"
-    type: "git-clone"
-    git: "github"
-    repo: aperture-sci/DevOps
-    revision: "main"
-    depth: 1
-    stage: staging
+  # clone_staging:
+  #   title: "Cloning repository"
+  #   type: "git-clone"
+  #   git: "github"
+  #   repo: aperture-sci/DevOps
+  #   revision: "main"
+  #   depth: 1
+  #   stage: staging
 
   update_staging_manifest:
     description: update the image version for staging
@@ -240,14 +240,14 @@ steps:
       duration: 5
       finalState: approved
 
-  clone_prod:
-    title: "Cloning repository"
-    type: "git-clone"
-    git: "github"
-    repo: aperture-sci/DevOps
-    revision: "main"
-    depth: 1
-    stage: prod
+  # clone_prod:
+  #   title: "Cloning repository"
+  #   type: "git-clone"
+  #   git: "github"
+  #   repo: aperture-sci/DevOps
+  #   revision: "main"
+  #   depth: 1
+  #   stage: prod
 
   update_prod_manifest:
     description: update the image version for prod
