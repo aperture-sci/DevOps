@@ -13,6 +13,7 @@ steps:
     title: "Cloning repository"
     stage: clone
     type: "git-clone"
+    depth: 1
     repo: "${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}"
     revision: "${{CF_BRANCH}}"
     git: "github"
@@ -116,6 +117,7 @@ steps:
   #     git_user_name: lrochette
   #     git_user_email: laurent.rochette@codefresh.io
   #     allow_empty: true
+  #     rebase: true
   #     add:
   #       - manifests/color/aperture-dev/rollout.yaml
   #       - manifests/color/aperture-dev/deployment.yaml
@@ -166,6 +168,7 @@ steps:
       git_user_name: lrochette
       git_user_email: laurent.rochette@codefresh.io
       allow_empty: true
+      rebase: true
       add:
         - manifests/color/aperture-qa/rollout.yaml
         - manifests/color/aperture-qa/deployment.yaml
@@ -216,6 +219,7 @@ steps:
       git_user_name: lrochette
       git_user_email: laurent.rochette@codefresh.io
       allow_empty: true
+      rebase: true
       add:
         - manifests/color/aperture-staging/rollout.yaml
         - manifests/color/aperture-staging/deployment.yaml
@@ -266,6 +270,7 @@ steps:
       git_user_name: lrochette
       git_user_email: laurent.rochette@codefresh.io
       allow_empty: true
+      rebase: true
       add:
         - manifests/color/aperture-prod/rollout.yaml
         - manifests/color/aperture-prod/deployment.yaml
