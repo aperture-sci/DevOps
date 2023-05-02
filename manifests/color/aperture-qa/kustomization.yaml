@@ -4,6 +4,6 @@ resources:
 - ../base
 - ingress.yaml
 #- ingress-preview.yaml
-# - rollout.yaml
-- deployment.yaml
+- rollout.yaml
+#- deployment.yaml
 namespace: qa

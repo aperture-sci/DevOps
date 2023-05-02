@@ -6,7 +6,7 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   destination:
-    name: 'kc-v-staging'
+    server: 'https://staging.kubecon.sales-dev.codefresh.io'
     namespace: staging
   source:
     path: manifests/color/aperture-staging

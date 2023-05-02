@@ -9,7 +9,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   rules:
-    - host: color.staging.kubecon.sales-dev.codefresh.io
+    - host: color.prod.kubecon.sales-dev.codefresh.io
       http:
         paths:
           - path: /color-preview(/|$)(.*)
@@ -18,4 +18,4 @@ spec:
                 name: color-preview
                 port:
                   number: 80
-            pathType: Prefix
+            pathType: ImplementationSpecific

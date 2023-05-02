@@ -6,7 +6,7 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   destination:
-    name: 'kc-v-prod'
+    server: 'https://prod.kubecon.sales-dev.codefresh.io'
     namespace: prod
   source:
     path: manifests/color/aperture-prod
