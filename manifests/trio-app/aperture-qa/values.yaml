@@ -1,6 +1,6 @@
 buslog:
   image:
-    tag: styleGitOps-adoption_050217008-03e80eb
+    tag: vendorService-mesh-refactor_050219010-1326ad1
     repository: docker.io/aperturesci/buslog
   replicaCount: 3
   rollout:    
@@ -12,7 +12,7 @@ buslog:
           - setWeight: 100
 ctrlr:
   image:
-    tag: main-d86885b
+    tag: candidate-addc572
     repository: docker.io/aperturesci/ctrlr
   replicaCount: 3
   rollout:
@@ -26,7 +26,7 @@ ctrlr:
           - setWeight: 100
 flask-ui:
   image:
-    tag: main-1daf46b
+    tag: analysisPod-scheduling-error_050218014-57ae008
     repository: docker.io/aperturesci/flask-ui
   replicaCount: 3
   rollout:
