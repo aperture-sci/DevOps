@@ -2,8 +2,8 @@ buslog:
   image:
     tag: styleGitOps-adoption_050217008-03e80eb
     repository: docker.io/aperturesci/buslog
-  rollout:
-    replicas: 5
+  replicaCount: 3
+  rollout:    
     strategy:
       canary:
         steps:
@@ -14,8 +14,8 @@ ctrlr:
   image:
     tag: main-d86885b
     repository: docker.io/aperturesci/ctrlr
+  replicaCount: 3
   rollout:
-    replicas: 5
     strategy:
       canary:
         steps:
@@ -28,8 +28,8 @@ flask-ui:
   image:
     tag: main-1daf46b
     repository: docker.io/aperturesci/flask-ui
+  replicaCount: 3
   rollout:
-    replicas: 5
     strategy:
       canary:
         steps:
