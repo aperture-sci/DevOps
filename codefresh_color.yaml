@@ -133,10 +133,10 @@ steps:
   approve_staging:
     stage: staging
     type: pending-approval
-    # timeout:
-    #   timeUnit: minutes
-    #   duration: 5
-    #   finalState: approved
+    timeout:
+      timeUnit: minutes
+      duration: 5
+      finalState: approved
 
   update_staging_manifest:
     description: update the image version for staging
@@ -175,10 +175,10 @@ steps:
   approve_prod:
     stage: prod
     type: pending-approval
-    # timeout:
-    #   timeUnit: minutes
-    #   duration: 5
-    #   finalState: approved
+    timeout:
+      timeUnit: minutes
+      duration: 5
+      finalState: approved
 
   update_prod_manifest:
     description: update the image version for prod
