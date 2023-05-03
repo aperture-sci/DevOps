@@ -86,57 +86,6 @@ steps:
           BRANCH: '${{CF_BRANCH}}'
           REPO: 'aperture-sci/rollouts-demo'
           GIT_PROVIDER_NAME: github-app
-  #
-  # clone_dev:
-  #   title: "Cloning repository for dev"
-  #   type: "git-clone"
-  #   git: "github"
-  #   repo: aperture-sci/DevOps
-  #   revision: "main"
-  #   depth: 1
-  #   stage: dev
-  #
-  # update_dev_manifest:
-  #   description: update the image version for dev
-  #   image: mikefarah/yq:3.3.4
-  #   working_directory: '/codefresh/volume/DevOps'
-  #   stage: dev
-  #   commands:
-  #     - yq w -i manifests/color/aperture-dev/rollout.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
-  #     - yq w -i manifests/color/aperture-dev/deployment.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
-  #
-  # commit_and_push_dev:
-  #   title: Commit changes and push
-  #   type: git-commit
-  #   stage: dev
-  #   arguments:
-  #     repo: aperture-sci/DevOps
-  #     git: github-lr
-  #     working_directory: /codefresh/volume/DevOps
-  #     commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
-  #     git_user_name: lrochette
-  #     git_user_email: laurent.rochette@codefresh.io
-  #     allow_empty: true
-  #     rebase: true
-  #     add:
-  #       - manifests/color/aperture-dev/rollout.yaml
-  #       - manifests/color/aperture-dev/deployment.yaml
-  #
-  # sync_dev:
-  #   type: aperture-sci/argo-sync:1.0.0
-  #   title: Sync color app to dev
-  #   stage: dev
-  #   arguments:
-  #     RUNTIME: datacenter
-  #     APPLICATION: color-dev
-
-  # approve_qa:
-  #   stage: qa
-  #   type: pending-approval
-  #   timeout:
-  #     timeUnit: minutes
-  #     duration: 5
-  #     finalState: approved
 
   clone_qa:
     title: "Cloning repository for QA"
@@ -189,15 +138,6 @@ steps:
       duration: 5
       finalState: approved
 
-  # clone_staging:
-  #   title: "Cloning repository"
-  #   type: "git-clone"
-  #   git: "github"
-  #   repo: aperture-sci/DevOps
-  #   revision: "main"
-  #   depth: 1
-  #   stage: staging
-
   update_staging_manifest:
     description: update the image version for staging
     image: mikefarah/yq:3.3.4
@@ -239,15 +179,6 @@ steps:
       timeUnit: minutes
       duration: 5
       finalState: approved
-
-  # clone_prod:
-  #   title: "Cloning repository"
-  #   type: "git-clone"
-  #   git: "github"
-  #   repo: aperture-sci/DevOps
-  #   revision: "main"
-  #   depth: 1
-  #   stage: prod
 
   update_prod_manifest:
     description: update the image version for prod
