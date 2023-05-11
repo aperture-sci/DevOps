@@ -7,16 +7,16 @@ metadata:
 spec:
   destination:
     server: 'https://qa.kubecon.sales-dev.codefresh.io'
-    namespace: qa
+    namespace: qa-francisco
   source:
     path: manifests/color/aperture-qa
     repoURL: 'https://github.com/aperture-sci/DevOps'
     targetRevision: HEAD
   project: default
   syncPolicy:
-    # automated:
-    #   prune: true
-    #   selfHeal: true
+    automated:
+      prune: true
+      selfHeal: true
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true

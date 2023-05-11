@@ -6,4 +6,4 @@ resources:
 #- ingress-preview.yaml
 - rollout.yaml
 #- deployment.yaml
-namespace: qa
+#namespace: qa
