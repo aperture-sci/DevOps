@@ -123,7 +123,7 @@ steps:
         - manifests/color/aperture-qa/deployment.yaml
 
   sync_qa:
-    type: aperture-sci/argo-sync:1.0.0
+    type: aperture-sci/argo-sync:1.1.0
     title: Sync ArgoCD app in QA and  wait
     stage: qa
     arguments:
@@ -166,7 +166,7 @@ steps:
 
   sync_staging:
     title: Sync ArgoCD app in staging and  wait
-    type: aperture-sci/argo-sync:1.0.0
+    type: aperture-sci/argo-sync:1.1.0
     stage: staging
     arguments:
       RUNTIME: codefresh-hosted
@@ -208,7 +208,7 @@ steps:
 
   sync_prod:
     title: Sync ArgoCD app in prod and  wait
-    type: aperture-sci/argo-sync:1.0.0
+    type: aperture-sci/argo-sync:1.1.0
     stage: prod
     arguments:
       RUNTIME: codefresh-hosted
