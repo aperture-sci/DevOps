@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: trioapp-qa
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    name: 'kc-v-qa'
+    namespace: default
+  source:
+    path: manifests/trio-app/aperture-qa
+    repoURL: 'https://github.com/aperture-sci/DevOps'
+    targetRevision: HEAD
+    # plugin: 
+    #   name: kustomize-build-with-helm
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
