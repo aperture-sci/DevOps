@@ -1,6 +1,6 @@
 buslog:
   image:
-    tag: main-ddd4575
+    tag: main-deafcf1
     repository: docker.io/aperturesci/buslog
   replicaCount: 3
   rollout:
