@@ -6,7 +6,7 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   destination:
-    name: 'kc-v-qa'
+    name: codefresh-hosted
     namespace: multi-app-test
   source:
     path: manifests/multi-apps/aperture-qa/app-of-app-manifests
