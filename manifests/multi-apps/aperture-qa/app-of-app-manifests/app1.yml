@@ -16,8 +16,8 @@ spec:
       name: multi-synced-apps-app1-1-qa
     spec:
       destination:
-        name: "{{item.destination.name}}"
-        namespace: "{{item.destination.namespace}}"
+        name: "{{destination.name}}"
+        namespace: "{{destination.namespace}}"
       source:
         path: manifests/multi-apps/aperture-qa/app1
         repoURL: 'https://github.com/aperture-sci/DevOps'
