@@ -8,7 +8,7 @@ spec:
   generators:
     - list:
         elements:
-          name: 'kc-v-qa'
+        - name: 'kc-v-qa'
           namespace: multi-app-test
   template:
     metadata:
