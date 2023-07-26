@@ -4,8 +4,6 @@ metadata:
   name: multi-synced-apps-app1-qa
 #  annotations:
 #    argocd.argoproj.io/sync-wave: "1"
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
 spec:
   destination:
     name: 'kc-v-qa'
