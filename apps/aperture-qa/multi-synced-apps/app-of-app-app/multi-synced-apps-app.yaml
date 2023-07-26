@@ -6,8 +6,8 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   destination:
-    name: codefresh-hosted
-    namespace: multi-app-test
+    server: https://kubernetes.default.svc
+    namespace: codefresh-hosted
   source:
     path: manifests/multi-apps/aperture-qa/app-of-app-manifests
     repoURL: 'https://github.com/aperture-sci/DevOps'
