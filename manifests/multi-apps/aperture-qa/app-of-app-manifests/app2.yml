@@ -2,14 +2,14 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: multi-synced-apps-app2-qa
-#  annotations:
-#    argocd.argoproj.io/sync-wave: "2"
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   destination:
     name: 'kc-v-qa'
     namespace: multi-app-test
   source:
-    path: manifests/multi-synced-apps/aperture-qa/app2
+    path: manifests/multi-apps/aperture-qa/app2
     repoURL: 'https://github.com/aperture-sci/DevOps'
     targetRevision: HEAD
   project: default
