@@ -1,10 +1,13 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: my-app2-pod
+  name: slow-pod2
 spec:
+  initContainers:
+    - name: init-container
+      image: busybox
+      command: ["/bin/sh", "-c"]
+      args: ["sleep 120"] # Sleep for 2 minutes (120 seconds)
   containers:
-    - name: nginx-container
+    - name: main-container
       image: nginx:latest
-      ports:
-        - containerPort: 80
