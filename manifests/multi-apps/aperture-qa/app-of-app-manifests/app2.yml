@@ -8,16 +8,15 @@ spec:
   generators:
     - list:
         elements:
-          - destination:
-              name: 'kc-v-qa'
-              namespace: multi-app-test
+          name: 'kc-v-qa'
+          namespace: multi-app-test
   template:
     metadata:
       name: multi-synced-apps-app2-2-qa
     spec:
       destination:
-        name: "{{destination.name}}"
-        namespace: "{{destination.namespace}}"
+        name: "{{name}}"
+        namespace: "{{namespace}}"
       source:
         path: manifests/multi-apps/aperture-qa/app2
         repoURL: 'https://github.com/aperture-sci/DevOps'
