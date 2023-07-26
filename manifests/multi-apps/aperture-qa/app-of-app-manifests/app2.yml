@@ -1,22 +1,30 @@
 apiVersion: argoproj.io/v1alpha1
-kind: Application
+kind: ApplicationSet
 metadata:
   name: multi-synced-apps-app2-qa
   annotations:
     argocd.argoproj.io/sync-wave: "2"
 spec:
-  destination:
-    name: 'kc-v-qa'
-    namespace: multi-app-test
-  source:
-    path: manifests/multi-apps/aperture-qa/app2
-    repoURL: 'https://github.com/aperture-sci/DevOps'
-    targetRevision: HEAD
-  project: default
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
-      - ServerSideApply=true
+  generators:
+    - list:
+        elements:
+          - destination:
+              name: 'kc-v-qa'
+              namespace: multi-app-test
+  template:
+    spec:
+      destination:
+        name: "{{item.destination.name}}"
+        namespace: "{{item.destination.namespace}}"
+      source:
+        path: manifests/multi-apps/aperture-qa/app2
+        repoURL: 'https://github.com/aperture-sci/DevOps'
+        targetRevision: HEAD
+      project: default
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true
