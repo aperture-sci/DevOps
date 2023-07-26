@@ -12,6 +12,8 @@ spec:
               name: 'kc-v-qa'
               namespace: multi-app-test
   template:
+    metadata:
+      name: multi-synced-apps-app1-qa
     spec:
       destination:
         name: "{{item.destination.name}}"
