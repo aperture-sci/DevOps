@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: multi-synced-apps-qa
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    name: 'kc-v-qa'
+    namespace: multi-app-test
+  source:
+    path: apps/aperture-qa/multi-synced-apps/app-of-app-manifests
+    repoURL: 'https://github.com/aperture-sci/DevOps'
+    targetRevision: HEAD
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
