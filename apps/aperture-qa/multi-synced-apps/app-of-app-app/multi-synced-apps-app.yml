@@ -9,7 +9,7 @@ spec:
     name: 'kc-v-qa'
     namespace: multi-app-test
   source:
-    path: apps/aperture-qa/multi-synced-apps/app-of-app-manifests
+    path: manifests/multi-apps/aperture-qa/app-of-app-manifests
     repoURL: 'https://github.com/aperture-sci/DevOps'
     targetRevision: HEAD
   project: default
