@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: color
-          image: aperturesci/rollouts-demo:89ec7eb
+          image: aperturesci/rollouts-demo:c7c1fa3
           imagePullPolicy: Always
           ports:
             - name: http
