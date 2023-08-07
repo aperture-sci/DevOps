@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: regions-example
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: kc-v-prod 
+        url: https://prod.kubecon.sales-dev.codefresh.io
+        region: usa
+      - cluster: kc-v-qa 
+        url: https://qa.kubecon.sales-dev.codefresh.io
+        region: eu
+      - cluster: kc-v-staging 
+        url: https://staging.kubecon.sales-dev.codefresh.io
+        region: asia
+  template:
+    metadata:
+      name: 'my-app-region-{{region}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/aperture-sci/DevOps.git
+        targetRevision: simple-appset
+        path: apps/region-appset
+      destination:
+        server: '{{url}}'
+        namespace: region-example
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true  
+        automated: 
+          prune: true 
+          selfHeal: true 
