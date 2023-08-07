@@ -24,7 +24,7 @@ spec:
       source:
         repoURL: https://github.com/aperture-sci/DevOps.git
         targetRevision: simple-appset
-        path: apps/region-appset
+        path: manifests/simple-app
       destination:
         server: '{{url}}'
         namespace: region-example
