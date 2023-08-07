@@ -10,7 +10,7 @@ spec:
     namespace: default
   source:
     path: manifests/trio-app/aperture-prod
-    repoURL: 'https://github.com/aperture-sci/DevOps'
+    repoURL: 'https://github.com/aperture-sci/DevOps.git'
     targetRevision: HEAD
     # plugin: 
     #   name: kustomize-build-with-helm
