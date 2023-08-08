@@ -4,6 +4,8 @@ metadata:
   name: example-usa
   finalizers:
     - resources-finalizer.argocd.argoproj.io/foreground
+  annotations:
+    codefresh.io/app-group: three-regions
 spec:
   project: default
   source:
