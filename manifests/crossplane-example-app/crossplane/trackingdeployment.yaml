@@ -16,4 +16,4 @@ spec:
     spec:
       containers:
         - name: crosstracker
-          image: aperturesci/rollouts-demo:ed5bdc6
+          image: aperturesci/rollouts-demo:a834073
