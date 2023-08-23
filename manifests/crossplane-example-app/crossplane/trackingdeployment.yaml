@@ -15,5 +15,5 @@ spec:
         app: crosstracker
     spec:
       containers:
-      - name: crosstracker
-        image: aperturesci/crosstracker:prtest-ee89875
+        - name: crosstracker
+          image: aperturesci/rollouts-demo:ed5bdc6
