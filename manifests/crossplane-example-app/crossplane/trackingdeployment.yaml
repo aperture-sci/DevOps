@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crosstracker
+  labels:
+    app: crosstracker
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: crosstracker
+  template:
+    metadata:
+      labels:
+        app: crosstracker
+    spec:
+      containers:
+        - name: crosstracker
+          image: aperturesci/crosstracker:prtest
