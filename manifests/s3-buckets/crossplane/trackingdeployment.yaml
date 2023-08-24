@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: crosstracker
+  name: s3-buckets-crosstracker
   labels:
-    app: crosstracker
+    app: s3-buckets-crosstracker
 spec:
   replicas: 0
   selector:
     matchLabels:
-      app: crosstracker
+      app: s3-buckets-crosstracker
   template:
     metadata:
       labels:
-        app: crosstracker
+        app: s3-buckets-crosstracker
     spec:
       containers:
-        - name: crosstracker
+        - name: s3-buckets-crosstracker
           image: aperturesci/crosstracker:oss-28-buckets
