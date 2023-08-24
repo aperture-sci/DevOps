@@ -16,4 +16,4 @@ spec:
     spec:
       containers:
         - name: crosstracker
-          image: aperturesci/crosstracker:prtest
+          image: aperturesci/crosstracker:prtest1
