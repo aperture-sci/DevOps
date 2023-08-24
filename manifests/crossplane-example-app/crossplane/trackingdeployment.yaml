@@ -16,4 +16,4 @@ spec:
     spec:
       containers:
         - name: crosstracker
-          image: aperturesci/crosstracker:oss-28-buckets
+          image: aperturesci/crosstracker:oss-29tweaks
