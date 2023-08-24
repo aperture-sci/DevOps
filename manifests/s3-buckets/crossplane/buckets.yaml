@@ -1,0 +1,29 @@
+apiVersion: s3.aws.upbound.io/v1beta1
+kind: Bucket
+metadata:
+  name: crossplane-bucket-106474d3d
+spec:
+  forProvider:
+    region: us-east-2
+  providerConfigRef:
+    name: default
+---
+apiVersion: s3.aws.upbound.io/v1beta1
+kind: Bucket
+metadata:
+  name: crossplane-bucket-998def775
+spec:
+  forProvider:
+    region: us-east-2
+  providerConfigRef:
+    name: default
+---
+apiVersion: s3.aws.upbound.io/v1beta1
+kind: Bucket
+metadata:
+  name: crossplane-bucket-3464ef722
+spec:
+  forProvider:
+    region: us-east-2
+  providerConfigRef:
+    name: default
