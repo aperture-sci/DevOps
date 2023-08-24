@@ -16,13 +16,13 @@ spec:
       namespace: crossplane-system
       name: aws-secret
       key: creds
----
-apiVersion: s3.aws.upbound.io/v1beta1
-kind: Bucket
-metadata:
-  name: crossplane-bucket-106474d3d
-spec:
-  forProvider:
-    region: us-east-2
-  providerConfigRef:
-    name: default
+# ---
+# apiVersion: s3.aws.upbound.io/v1beta1
+# kind: Bucket
+# metadata:
+#   name: crossplane-bucket-106474d3d
+# spec:
+#   forProvider:
+#     region: us-east-2
+#   providerConfigRef:
+#     name: default
