@@ -4,6 +4,8 @@ metadata:
   name: color-prod
   finalizers:
     - resources-finalizer.argocd.argoproj.io
+  annotations:
+    codefresh.io/product: color-app
 spec:
   destination:
     server: 'https://prod.kubecon.sales-dev.codefresh.io'
