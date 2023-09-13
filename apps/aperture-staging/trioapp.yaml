@@ -4,6 +4,8 @@ metadata:
   name: trioapp-staging
   finalizers:
     - resources-finalizer.argocd.argoproj.io
+  annotations:
+    codefresh.io/product: trio-app
 spec:
   destination:
     name: 'kc-v-staging'
