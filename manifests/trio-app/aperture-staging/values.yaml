@@ -1,6 +1,6 @@
 buslog:
   image:
-    tag: main-aa5304f
+    tag: main-0698789
     repository: docker.io/aperturesci/buslog
   replicaCount: 3
   rollout:
@@ -13,7 +13,7 @@ buslog:
           - setWeight: 100
 ctrlr:
   image:
-    tag: main-5a01006
+    tag: main-b556a0b
     repository: docker.io/aperturesci/ctrlr
   replicaCount: 3
   rollout:
