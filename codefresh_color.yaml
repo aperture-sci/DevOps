@@ -51,10 +51,10 @@ steps:
             - color: ${{COLOR}}
             display: color
 
-  # jira:
-  #   type: parallel
-  #   stage: build
-  #   steps:
+  jira:
+    type: parallel
+    stage: build
+    steps:
   #     jira-issue-extractor:
   #       title: Enrich image with annotations
   #       type: jira-issue-extractor
@@ -65,18 +65,18 @@ steps:
   #         MESSAGE: '${{CF_COMMIT_MESSAGE}}'
   #         JIRA_CONTEXT: jira
   #
-  #     JiraCommentCreate:
-  #       title: "Add Jira Comment"
-  #       type: "jira-issue-manager"
-  #       fail_fast: false
-  #       arguments:
-  #         JIRA_API_KEY: ${{JIRA_API_KEY}}
-  #         JIRA_BASE_URL: ${{JIRA_URL}}
-  #         JIRA_USERNAME: ${{JIRA_USER}}
-  #         JIRA_ISSUE_SOURCE_FIELD: 'AP-103'
-  #         ACTION: "comment_create"
-  #         COMMENT_BODY: "Color update to ${{COLOR}} in Codefresh build [${{CF_BUILD_ID}}|${{CF_BUILD_URL}}] finished in Codefresh."
-  #
+      JiraCommentCreate:
+        title: "Add Jira Comment"
+        type: "jira-issue-manager"
+        fail_fast: false
+        arguments:
+          JIRA_API_KEY: ${{JIRA_API_KEY}}
+          JIRA_BASE_URL: ${{JIRA_URL}}
+          JIRA_USERNAME: ${{JIRA_USER}}
+          JIRA_ISSUE_SOURCE_FIELD: 'AP-103'
+          ACTION: "comment_create"
+          COMMENT_BODY: "Color update to ${{COLOR}} in Codefresh build [${{CF_BUILD_ID}}|${{CF_BUILD_URL}}] finished in Codefresh."
+
   #     enrich-image:
   #       title: Enrich image with annotations
   #       type: image-enricher
@@ -102,11 +102,9 @@ steps:
       CF_GIT_REPO: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
       CF_GIT_BRANCH: '${{CF_BRANCH}}'
       CF_GIT_REVISION: '${{CF_REVISION}}'
-      CF_JIRA_API_TOKEN: '${{JIRA_API_KEY}}'
-      CF_JIRA_EMAIL: ${{JIRA_USER}}
-      CF_JIRA_HOST_URL: '${{JIRA_URL}}'
+      CF_JIRA_INTEGRATION: jira-intg
       CF_JIRA_MESSAGE: '${{CF_COMMIT_MESSAGE}}'
-      CF_JIRA_PROJECT_PREFIX: AP    
+      CF_JIRA_PROJECT_PREFIX: AP
   clone_qa:
     title: "Cloning repository for QA"
     type: "git-clone"
