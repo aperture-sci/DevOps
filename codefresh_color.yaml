@@ -51,42 +51,62 @@ steps:
             - color: ${{COLOR}}
             display: color
 
-  jira:
-    type: parallel
+  # jira:
+  #   type: parallel
+  #   stage: build
+  #   steps:
+  #     jira-issue-extractor:
+  #       title: Enrich image with annotations
+  #       type: jira-issue-extractor
+  #       stage: "build"
+  #       arguments:
+  #         IMAGE: 'docker.io/aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}'
+  #         JIRA_PROJECT_PREFIX: 'AP'
+  #         MESSAGE: '${{CF_COMMIT_MESSAGE}}'
+  #         JIRA_CONTEXT: jira
+  #
+  #     JiraCommentCreate:
+  #       title: "Add Jira Comment"
+  #       type: "jira-issue-manager"
+  #       fail_fast: false
+  #       arguments:
+  #         JIRA_API_KEY: ${{JIRA_API_KEY}}
+  #         JIRA_BASE_URL: ${{JIRA_URL}}
+  #         JIRA_USERNAME: ${{JIRA_USER}}
+  #         JIRA_ISSUE_SOURCE_FIELD: 'AP-103'
+  #         ACTION: "comment_create"
+  #         COMMENT_BODY: "Color update to ${{COLOR}} in Codefresh build [${{CF_BUILD_ID}}|${{CF_BUILD_URL}}] finished in Codefresh."
+  #
+  #     enrich-image:
+  #       title: Enrich image with annotations
+  #       type: image-enricher
+  #       stage: test
+  #       arguments:
+  #         IMAGE: 'aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}'
+  #         BRANCH: '${{CF_BRANCH}}'
+  #         REPO: 'aperture-sci/rollouts-demo'
+  #         GIT_PROVIDER_NAME: github-app
+
+  report:
     stage: build
-    steps:
-      jira-issue-extractor:
-        title: Enrich image with annotations
-        type: jira-issue-extractor
-        stage: "build"
-        arguments:
-          IMAGE: 'docker.io/aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}'
-          JIRA_PROJECT_PREFIX: 'AP'
-          MESSAGE: '${{CF_COMMIT_MESSAGE}}'
-          JIRA_CONTEXT: jira
-
-      JiraCommentCreate:
-        title: "Add Jira Comment"
-        type: "jira-issue-manager"
-        fail_fast: false
-        arguments:
-          JIRA_API_KEY: ${{JIRA_API_KEY}}
-          JIRA_BASE_URL: ${{JIRA_URL}}
-          JIRA_USERNAME: ${{JIRA_USER}}
-          JIRA_ISSUE_SOURCE_FIELD: 'AP-103'
-          ACTION: "comment_create"
-          COMMENT_BODY: "Color update to ${{COLOR}} in Codefresh build [${{CF_BUILD_ID}}|${{CF_BUILD_URL}}] finished in Codefresh."
-
-      enrich-image:
-        title: Enrich image with annotations
-        type: image-enricher
-        stage: test
-        arguments:
-          IMAGE: 'aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}'
-          BRANCH: '${{CF_BRANCH}}'
-          REPO: 'aperture-sci/rollouts-demo'
-          GIT_PROVIDER_NAME: github-app
-
+    title: Report image to Codefresh CD
+    type: codefresh-report-image
+    working_directory: /code
+    arguments:
+      CF_API_KEY: ${{CF_TOKEN}}
+      CF_IMAGE: 'docker.io/aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}'
+      CF_RUNTIME_NAME: codefresh-hosted
+      CF_CONTAINER_REGISTRY_INTEGRATION: docker-intg
+      CF_GITHUB_TOKEN: '${{GITHUB_TOKEN}}'
+      CF_GIT_PROVIDER: github
+      CF_GIT_REPO: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
+      CF_GIT_BRANCH: '${{CF_BRANCH}}'
+      CF_GIT_REVISION: '${{CF_REVISION}}'
+      CF_JIRA_API_TOKEN: '${{JIRA_API_KEY}}'
+      CF_JIRA_EMAIL: ${{JIRA_USER}}
+      CF_JIRA_HOST_URL: '${{JIRA_URL}}'
+      CF_JIRA_MESSAGE: '${{CF_COMMIT_MESSAGE}}'
+      CF_JIRA_PROJECT_PREFIX: AP    
   clone_qa:
     title: "Cloning repository for QA"
     type: "git-clone"
