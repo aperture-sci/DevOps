@@ -54,7 +54,7 @@ steps:
   report:
     stage: build
     title: Report image to Codefresh CD
-    type: codefresh-report-image:1.0.9
+    type: codefresh-report-image
     working_directory: /code
     fail_fast: false
     arguments:
@@ -65,7 +65,7 @@ steps:
       CF_GITHUB_TOKEN: '${{GITHUB_TOKEN}}'
       CF_GIT_PROVIDER: github
       CF_GIT_REPO: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
-      CF_GIT_BRANCH: '${{CF_BRANCH}}'
+      CF_GIT_BRANCH: 'main'
       CF_GIT_REVISION: '${{CF_REVISION}}'
       CF_JIRA_INTEGRATION: jira-intg
       CF_JIRA_MESSAGE: '${{CF_COMMIT_MESSAGE}}'
@@ -103,7 +103,7 @@ steps:
         stage: test
         arguments:
           IMAGE: 'aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}'
-          BRANCH: '${{CF_BRANCH}}'
+          BRANCH: 'main'
           REPO: 'aperture-sci/rollouts-demo'
           GIT_PROVIDER_NAME: github-app
 
