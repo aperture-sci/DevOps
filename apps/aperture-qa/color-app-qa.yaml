@@ -8,8 +8,8 @@ metadata:
     codefresh.io/product: color-app
 spec:
   destination:
-    server: 'https://qa.kubecon.sales-dev.codefresh.io'
-    namespace: qa-francisco
+    name: 'kc-v-qa'
+    namespace: qa
   source:
     path: manifests/color/aperture-qa
     repoURL: 'https://github.com/aperture-sci/DevOps'

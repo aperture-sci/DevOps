@@ -8,7 +8,7 @@ metadata:
     codefresh.io/product: color-app
 spec:
   destination:
-    server: 'https://prod.kubecon.sales-dev.codefresh.io'
+    name: 'kc-v-prod'
     namespace: prod
   source:
     path: manifests/color/aperture-prod
