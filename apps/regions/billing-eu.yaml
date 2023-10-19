@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: billing-asia
+  name: billing-eu
   finalizers:
     - resources-finalizer.argocd.argoproj.io/foreground
   annotations:
@@ -13,7 +13,7 @@ spec:
     repoURL: https://github.com/aperture-sci/DevOps.git
     targetRevision: HEAD
   destination:
-    name: target-asia
+    name: target-eu
     namespace: default
   syncPolicy:
     automated:
