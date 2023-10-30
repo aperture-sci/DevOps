@@ -4,6 +4,8 @@ metadata:
   name: interest
   finalizers:
     - resources-finalizer.argocd.argoproj.io/foreground
+  annotations:
+    codefresh.io/product: interest  
 spec:
   project: default
   source:
