@@ -5,6 +5,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
   annotations:
+    argocd.argoproj.io/manifest-generate-paths: /manifests/color/aperture-staging
     codefresh.io/product: color-app
 spec:
   destination:
