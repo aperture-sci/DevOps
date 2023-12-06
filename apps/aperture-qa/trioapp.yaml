@@ -14,7 +14,7 @@ spec:
     path: manifests/trio-app/aperture-qa
     repoURL: 'https://github.com/aperture-sci/DevOps'
     targetRevision: HEAD
-    # plugin: 
+    # plugin:
     #   name: kustomize-build-with-helm
   project: default
   syncPolicy:
@@ -23,4 +23,4 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-      - ServerSideApply=true
+      # - ServerSideApply=true
