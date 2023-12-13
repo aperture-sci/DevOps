@@ -147,7 +147,7 @@ steps:
     title: Sync ArgoCD app in QA and  wait
     stage: qa
     arguments:
-      RUNTIME: codefresh-hosted
+      RUNTIME: gitops
       APPLICATION: color-qa
 
   approve_staging:
@@ -189,7 +189,7 @@ steps:
     type: argo-cd-sync:0.4.5
     stage: staging
     arguments:
-      RUNTIME: codefresh-hosted
+      RUNTIME: gitops
       APPLICATION: color-staging
 
   approve_prod:
@@ -231,5 +231,5 @@ steps:
     type: argo-cd-sync:0.4.5
     stage: prod
     arguments:
-      RUNTIME: codefresh-hosted
+      RUNTIME: gitops
       APPLICATION: color-prod
