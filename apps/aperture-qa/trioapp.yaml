@@ -8,7 +8,7 @@ metadata:
     codefresh.io/product: trio-app
 spec:
   destination:
-    name: 'kc-v-qa'
+    name: 'kc-v-qa-broken'
     namespace: default
   source:
     path: manifests/trio-app/aperture-qa
