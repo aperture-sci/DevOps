@@ -13,7 +13,7 @@ spec:
   source:
     path: manifests/trio-app/aperture-staging
     repoURL: 'https://github.com/aperture-sci/DevOps'
-    targetRevision: HEAD
+    targetRevision: main
     # plugin:
     #   name: kustomize-build-with-helm
   project: default
