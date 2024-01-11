@@ -57,7 +57,7 @@ steps:
     working_directory: /code
     fail_fast: false
     arguments:
-      CF_API_KEY: ${{CF_TOKEN}}
+      CF_API_KEY: ${{CF_API_KEY}}
       CF_IMAGE: 'docker.io/aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}'
       CF_RUNTIME_NAME: gitops
       CF_CONTAINER_REGISTRY_INTEGRATION: docker-intg
