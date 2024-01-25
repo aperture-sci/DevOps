@@ -16,4 +16,4 @@ spec:
     spec:
       containers:
         - name: crosstracker
-          image: aperturesci/crosstracker:oss-29tweaks
+          image: aperturesci/crosstracker:trioapp-staging-11441
