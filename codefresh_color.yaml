@@ -59,13 +59,14 @@ steps:
             - sha: ${{CF_SHORT_REVISION}}
             - color: ${{COLOR}}
             display: color
-   prepcosign:
-     title: Fetch Keys
-     image: ubuntu:lunar
-     commands:
-       - echo ${{COSIGN_KEY64}} | base64 -d > ${{CF_VOLUME_PATH}}/cosign.key
-       - mkdir -p ${{CF_VOLUME_PATH}}/.docker
-       - echo ${{DOCKERCONFIG}} | base64 -d > ${{CF_VOLUME_PATH}}/.docker/config.json
+
+  prepcosign:
+    title: Fetch Keys
+    image: ubuntu:lunar
+    commands:
+     - echo ${{COSIGN_KEY64}} | base64 -d > ${{CF_VOLUME_PATH}}/cosign.key
+     - mkdir -p ${{CF_VOLUME_PATH}}/.docker
+     - echo ${{DOCKERCONFIG}} | base64 -d > ${{CF_VOLUME_PATH}}/.docker/config.json
 
 
   reporting:
