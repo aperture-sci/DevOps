@@ -2,6 +2,7 @@ version: "1.0"
 stages:
  - clone
  - build
+ - metadata
  - dev
  - qa
  - staging
@@ -58,40 +59,48 @@ steps:
             - sha: ${{CF_SHORT_REVISION}}
             - color: ${{COLOR}}
             display: color
+   prepcosign:
+     title: Fetch Keys
+     image: ubuntu:lunar
+     commands:
+       - echo ${{COSIGN_KEY64}} | base64 -d > ${{CF_VOLUME_PATH}}/cosign.key
+       - mkdir -p ${{CF_VOLUME_PATH}}/.docker
+       - echo ${{DOCKERCONFIG}} | base64 -d > ${{CF_VOLUME_PATH}}/.docker/config.json
 
-  report:
-    stage: build
-    title: Report image to Codefresh CD
-    type: codefresh-report-image
-    working_directory: /code
-    fail_fast: false
-    arguments:
-      CF_API_KEY: ${{CF_API_KEY}}
-      CF_IMAGE: 'docker.io/aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}'
-      CF_RUNTIME_NAME: gitops
-      CF_CONTAINER_REGISTRY_INTEGRATION: docker-intg
-      CF_GITHUB_TOKEN: '${{GITHUB_TOKEN}}'
-      CF_GIT_PROVIDER: github
-      CF_GIT_REPO: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
-      CF_GIT_BRANCH: 'master'
-      CF_GIT_REVISION: '${{CF_REVISION}}'
-      CF_JIRA_INTEGRATION: jira-intg
-      CF_JIRA_MESSAGE: '${{CF_COMMIT_MESSAGE}}'
-      CF_JIRA_PROJECT_PREFIX: AP
 
-  jira:
+  reporting:
+    title: Reporting
     type: parallel
-    stage: build
+    stage: metadata
     steps:
-      jira-issue-extractor:
-        title: Enrich image with annotations
-        type: jira-issue-extractor
-        stage: "build"
+      enrich-image:
+        stage: build
+        title: Report image to Codefresh CD
+        type: codefresh-report-image
+        working_directory: /code
+        fail_fast: false
         arguments:
-          IMAGE: 'docker.io/aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}'
-          JIRA_PROJECT_PREFIX: 'AP'
-          MESSAGE: '${{CF_COMMIT_MESSAGE}}'
-          JIRA_CONTEXT: jira
+          CF_API_KEY: ${{CF_API_KEY}}
+          CF_IMAGE: 'docker.io/aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}'
+          CF_RUNTIME_NAME: gitops
+          CF_CONTAINER_REGISTRY_INTEGRATION: docker-intg
+          CF_GITHUB_TOKEN: '${{GITHUB_TOKEN}}'
+          CF_GIT_PROVIDER: github
+          CF_GIT_REPO: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
+          CF_GIT_BRANCH: 'master'
+          CF_GIT_REVISION: '${{CF_REVISION}}'
+          CF_JIRA_INTEGRATION: jira-intg
+          CF_JIRA_MESSAGE: '${{CF_COMMIT_MESSAGE}}'
+          CF_JIRA_PROJECT_PREFIX: AP
+
+      cosign:
+        title: Cosign Image
+        image: bitnami/cosign:2
+        fail_fast: false
+        commands:
+          - cp -r ${{CF_VOLUME_PATH}}/.docker /
+          - cosign sign --key ${{CF_VOLUME_PATH}}/cosign.key aperturesci/rollouts-demo:${{CF_SHORT_REVISION}} -a CICD=Codefresh --yes
+          - rm ${{CF_VOLUME_PATH}}/cosign.key
 
       JiraCommentCreate:
         title: "Add Jira Comment"
@@ -105,15 +114,30 @@ steps:
           ACTION: "comment_create"
           COMMENT_BODY: "Color update to ${{COLOR}} in Codefresh build [${{CF_BUILD_ID}}|${{CF_BUILD_URL}}] finished in Codefresh."
 
-      enrich-image:
-        title: Enrich image with annotations
-        type: image-enricher
-        stage: test
-        arguments:
-          IMAGE: 'aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}'
-          BRANCH: 'master'
-          REPO: 'aperture-sci/rollouts-demo'
-          GIT_PROVIDER_NAME: github-lr
+  # jira:
+  #   type: parallel
+  #   stage: build
+  #   steps:
+  #     jira-issue-extractor:
+  #       title: Enrich image with annotations
+  #       type: jira-issue-extractor
+  #       stage: "build"
+  #       arguments:
+  #         IMAGE: 'docker.io/aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}'
+  #         JIRA_PROJECT_PREFIX: 'AP'
+  #         MESSAGE: '${{CF_COMMIT_MESSAGE}}'
+  #         JIRA_CONTEXT: jira
+
+
+      # enrich-image:
+      #   title: Enrich image with annotations
+      #   type: image-enricher
+      #   stage: test
+      #   arguments:
+      #     IMAGE: 'aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}'
+      #     BRANCH: 'master'
+      #     REPO: 'aperture-sci/rollouts-demo'
+      #     GIT_PROVIDER_NAME: github-lr
 
 
   clone_qa:
