@@ -177,7 +177,7 @@ steps:
         - manifests/color/aperture-qa/deployment.yaml
 
   sync_qa:
-    type: argo-cd-sync:0.4.5
+    type: argo-cd-sync:1.4.3
     title: Sync ArgoCD app in QA and  wait
     stage: qa
     arguments:
@@ -220,7 +220,7 @@ steps:
 
   sync_staging:
     title: Sync ArgoCD app in staging and  wait
-    type: argo-cd-sync:0.4.5
+    type: argo-cd-sync:1.4.3
     stage: staging
     arguments:
       RUNTIME: gitops
@@ -262,7 +262,7 @@ steps:
 
   sync_prod:
     title: Sync ArgoCD app in prod and  wait
-    type: argo-cd-sync:0.4.5
+    type: argo-cd-sync:1.4.3
     stage: prod
     arguments:
       RUNTIME: gitops
