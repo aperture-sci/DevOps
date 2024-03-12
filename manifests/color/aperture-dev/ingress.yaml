@@ -9,7 +9,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   rules:
-    - host: 34.67.64.195/datacenter
+    - host: gitops.sa.cf-cd.com
       http:
         paths:
           - path: /color(/|$)(.*)
