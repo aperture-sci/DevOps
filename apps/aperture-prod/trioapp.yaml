@@ -6,6 +6,7 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
   annotations:
     codefresh.io/product: trio-app
+    codefresh.io/app-group: trio
 spec:
   destination:
     name: 'kc-v-prod'
