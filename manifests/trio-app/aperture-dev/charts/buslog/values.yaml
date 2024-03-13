@@ -1,0 +1,19 @@
+replicaCount: 1
+image:
+  pullPolicy: IfNotPresent
+  repository: 336151728602.dkr.ecr.us-east-1.amazonaws.com/buslog
+  tag: main-f505305
+service:
+  name: buslog
+  type: ClusterIP
+  externalPort: 80
+  internalPort: 5000
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+ingress:
+  enabled: false

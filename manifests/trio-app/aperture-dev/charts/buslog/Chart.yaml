@@ -1,0 +1,4 @@
+apiVersion: v1
+description: buslog service
+name: buslog
+version: 1.4.6
