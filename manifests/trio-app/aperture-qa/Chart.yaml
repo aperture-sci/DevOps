@@ -6,7 +6,7 @@ type: application
 version: 0.1.12
 dependencies:
   - name: buslog
-    version: "1.4.7"
+    version: 1.4.6
     repository: "https://h.cfcr.io/aperture-sci/public"
   - name: ctrlr
     version: "1.3.5"
