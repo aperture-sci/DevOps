@@ -5,6 +5,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
   annotations:
+    argocd.argoproj.io/manifest-generate-paths: /manifests/trio-app/aperture-dev
     codefresh.io/product: trio-app
     codefresh.io/app-group: trio
 spec:
