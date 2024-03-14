@@ -1,12 +1,12 @@
 version: "1.0"
 stages:
- - clone
- - build
- - metadata
- - dev
- - qa
- - staging
- - prod
+  - clone
+  - build
+  - metadata
+  - dev
+  - qa
+  - staging
+  - prod
 
 hooks:
   on_fail:
@@ -46,9 +46,9 @@ steps:
     registry: dockerhub
     stage: "build"
     build_arguments:
-    - COLOR=${{COLOR}}
-    - LATENCY=0
-    - ERROR_RATE=0
+      - COLOR=${{COLOR}}
+      - LATENCY=0
+      - ERROR_RATE=0
     metadata:
       set:
         - color: ${{COLOR}}
@@ -56,18 +56,17 @@ steps:
       annotations:
         set:
           - annotations:
-            - sha: ${{CF_SHORT_REVISION}}
-            - color: ${{COLOR}}
+              - sha: ${{CF_SHORT_REVISION}}
+              - color: ${{COLOR}}
             display: color
 
   prepcosign:
     title: Fetch Keys
     image: ubuntu:lunar
     commands:
-     - echo ${{COSIGN_KEY64}} | base64 -d > ${{CF_VOLUME_PATH}}/cosign.key
-     - mkdir -p ${{CF_VOLUME_PATH}}/.docker
-     - echo ${{DOCKERCONFIG}} | base64 -d > ${{CF_VOLUME_PATH}}/.docker/config.json
-
+      - echo ${{COSIGN_KEY64}} | base64 -d > ${{CF_VOLUME_PATH}}/cosign.key
+      - mkdir -p ${{CF_VOLUME_PATH}}/.docker
+      - echo ${{DOCKERCONFIG}} | base64 -d > ${{CF_VOLUME_PATH}}/.docker/config.json
 
   reporting:
     title: Reporting
@@ -82,16 +81,16 @@ steps:
         fail_fast: false
         arguments:
           CF_API_KEY: ${{CF_API_KEY}}
-          CF_IMAGE: 'docker.io/aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}'
+          CF_IMAGE: "docker.io/aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
           CF_RUNTIME_NAME: gitops
           CF_CONTAINER_REGISTRY_INTEGRATION: docker-intg
-          CF_GITHUB_TOKEN: '${{GITHUB_TOKEN}}'
+          CF_GITHUB_TOKEN: "${{GITHUB_TOKEN}}"
           CF_GIT_PROVIDER: github
-          CF_GIT_REPO: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
-          CF_GIT_BRANCH: 'master'
-          CF_GIT_REVISION: '${{CF_REVISION}}'
+          CF_GIT_REPO: "${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}"
+          CF_GIT_BRANCH: "master"
+          CF_GIT_REVISION: "${{CF_REVISION}}"
           CF_JIRA_INTEGRATION: jira-intg
-          CF_JIRA_MESSAGE: '${{CF_COMMIT_MESSAGE_ESCAPED}}'
+          CF_JIRA_MESSAGE: "${{CF_COMMIT_MESSAGE_ESCAPED}}"
           CF_JIRA_PROJECT_PREFIX: AP
 
       cosign:
@@ -111,34 +110,33 @@ steps:
           JIRA_API_KEY: ${{JIRA_API_KEY}}
           JIRA_BASE_URL: ${{JIRA_URL}}
           JIRA_USERNAME: ${{JIRA_USER}}
-          JIRA_ISSUE_SOURCE_FIELD: 'AP-103'
+          JIRA_ISSUE_SOURCE_FIELD: "AP-103"
           ACTION: "comment_create"
           COMMENT_BODY: "Color update to ${{COLOR}} in Codefresh build [${{CF_BUILD_ID}}|${{CF_BUILD_URL}}] finished in Codefresh."
 
-      jira:
-        type: parallel
-        stage: build
-        steps:
-          jira-issue-extractor:
-            title: Enrich image with annotations
-            type: jira-issue-extractor
-            stage: "build"
-            arguments:
-              IMAGE: 'docker.io/aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}'
-              JIRA_PROJECT_PREFIX: 'AP'
-              MESSAGE: '${{CF_COMMIT_MESSAGE}}'
-              JIRA_CONTEXT: jira
+      # jira:
+      #   type: parallel
+      #   stage: build
+      #   steps:
+      #     jira_issue_extractor:
+      #       title: Enrich image with annotations
+      #       type: jira-issue-extractor
+      #       stage: "build"
+      #       arguments:
+      #         IMAGE: "docker.io/aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
+      #         JIRA_PROJECT_PREFIX: "AP"
+      #         MESSAGE: "${{CF_COMMIT_MESSAGE}}"
+      #         JIRA_CONTEXT: jira
 
-
-        enrich-image:
-          title: Enrich image with annotations
-          type: image-enricher
-          stage: test
-          arguments:
-            IMAGE: 'aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}'
-            BRANCH: 'master'
-            REPO: 'aperture-sci/rollouts-demo'
-            GIT_PROVIDER_NAME: github-lr
+      #   enrich_image:
+      #     title: Enrich image with annotations
+      #     type: image-enricher
+      #     stage: test
+      #     arguments:
+      #       IMAGE: "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
+      #       BRANCH: "master"
+      #       REPO: "aperture-sci/rollouts-demo"
+      #       GIT_PROVIDER_NAME: github-lr
 
   clone_dev:
     title: "Cloning repository for DEV"
@@ -152,7 +150,7 @@ steps:
   update_dev_manifest:
     description: update the image version for Dev
     image: mikefarah/yq:3.3.4
-    working_directory: '/codefresh/volume/gitops_applications'
+    working_directory: "/codefresh/volume/gitops_applications"
     stage: dev
     commands:
       - yq w -i manifests/color/dev/rollout.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
@@ -191,7 +189,6 @@ steps:
       duration: 5
       finalState: approved
 
-
   clone_qa:
     title: "Cloning repository for QA"
     type: "git-clone"
@@ -204,7 +201,7 @@ steps:
   update_qa_manifest:
     description: update the image version for qa
     image: mikefarah/yq:3.3.4
-    working_directory: '/codefresh/gitops_applications'
+    working_directory: "/codefresh/gitops_applications"
     stage: qa
     commands:
       - yq w -i manifests/color/qa/rollout.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
@@ -217,7 +214,7 @@ steps:
     arguments:
       repo: aperture-sci/gitops_applications
       git: github-lr
-      working_directory: '/codefresh/gitops_applications'
+      working_directory: "/codefresh/gitops_applications"
       commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
       git_user_name: lrochette
       git_user_email: laurent.rochette@codefresh.io
@@ -246,7 +243,7 @@ steps:
   update_staging_manifest:
     description: update the image version for staging
     image: mikefarah/yq:3.3.4
-    working_directory: '/codefresh/gitops_applications'
+    working_directory: "/codefresh/gitops_applications"
     stage: staging
     commands:
       - yq w -i manifests/color/staging/rollout.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
@@ -259,7 +256,7 @@ steps:
     arguments:
       repo: aperture-sci/gitops_applications
       git: github-lr
-      working_directory: '/codefresh/gitops_applications'
+      working_directory: "/codefresh/gitops_applications"
       commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
       git_user_name: lrochette
       git_user_email: laurent.rochette@codefresh.io
@@ -288,7 +285,7 @@ steps:
   update_prod_manifest:
     description: update the image version for prod
     image: mikefarah/yq:3.3.4
-    working_directory: '/codefresh/gitops_applications'
+    working_directory: "/codefresh/gitops_applications"
     stage: prod
     commands:
       - yq w -i manifests/color/prod/rollout.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
@@ -301,7 +298,7 @@ steps:
     arguments:
       repo: aperture-sci/gitops_applications
       git: github-lr
-      working_directory: '/codefresh/gitops_applications'
+      working_directory: "/codefresh/gitops_applications"
       commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
       git_user_name: lrochette
       git_user_email: laurent.rochette@codefresh.io
