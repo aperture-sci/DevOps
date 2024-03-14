@@ -61,8 +61,9 @@ steps:
             display: color
 
   prepcosign:
-    title: Fetch Keys
+    title: Fetch Cosign and Docker Keys
     image: ubuntu:lunar
+    stage: metadata
     commands:
       - echo ${{COSIGN_KEY64}} | base64 -d > ${{CF_VOLUME_PATH}}/cosign.key
       - mkdir -p ${{CF_VOLUME_PATH}}/.docker
