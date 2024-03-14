@@ -175,7 +175,7 @@ steps:
 
   sync_dev:
     type: argo-cd-sync:1.4.3
-    title: Sync ArgoCD app in QA and  wait
+    title: Sync ArgoCD app in DEV and wait
     stage: dev
     arguments:
       RUNTIME: gitops
@@ -201,7 +201,7 @@ steps:
   update_qa_manifest:
     description: update the image version for qa
     image: mikefarah/yq:3.3.4
-    working_directory: "/codefresh/gitops_applications"
+    working_directory: "/codefresh/volume/gitops_applications"
     stage: qa
     commands:
       - yq w -i manifests/color/qa/rollout.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
@@ -214,7 +214,7 @@ steps:
     arguments:
       repo: aperture-sci/gitops_applications
       git: github-lr
-      working_directory: "/codefresh/gitops_applications"
+      working_directory: "/codefresh/volume/gitops_applications"
       commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
       git_user_name: lrochette
       git_user_email: laurent.rochette@codefresh.io
@@ -243,7 +243,7 @@ steps:
   update_staging_manifest:
     description: update the image version for staging
     image: mikefarah/yq:3.3.4
-    working_directory: "/codefresh/gitops_applications"
+    working_directory: "/codefresh/volume/gitops_applications"
     stage: staging
     commands:
       - yq w -i manifests/color/staging/rollout.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
@@ -256,7 +256,7 @@ steps:
     arguments:
       repo: aperture-sci/gitops_applications
       git: github-lr
-      working_directory: "/codefresh/gitops_applications"
+      working_directory: "/codefresh/volume/gitops_applications"
       commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
       git_user_name: lrochette
       git_user_email: laurent.rochette@codefresh.io
@@ -285,7 +285,7 @@ steps:
   update_prod_manifest:
     description: update the image version for prod
     image: mikefarah/yq:3.3.4
-    working_directory: "/codefresh/gitops_applications"
+    working_directory: "/codefresh/volume/gitops_applications"
     stage: prod
     commands:
       - yq w -i manifests/color/prod/rollout.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
@@ -298,7 +298,7 @@ steps:
     arguments:
       repo: aperture-sci/gitops_applications
       git: github-lr
-      working_directory: "/codefresh/gitops_applications"
+      working_directory: "/codefresh/volume/gitops_applications"
       commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
       git_user_name: lrochette
       git_user_email: laurent.rochette@codefresh.io
