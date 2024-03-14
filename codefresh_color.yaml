@@ -140,12 +140,63 @@ steps:
             REPO: 'aperture-sci/rollouts-demo'
             GIT_PROVIDER_NAME: github-lr
 
+  clone_dev:
+    title: "Cloning repository for DEV"
+    type: "git-clone"
+    git: "github"
+    repo: aperture-sci/gitops_applications
+    revision: "main"
+    depth: 1
+    stage: dev
+
+  update_dev_manifest:
+    description: update the image version for Dev
+    image: mikefarah/yq:3.3.4
+    working_directory: '/codefresh/volume/gitops_applications'
+    stage: dev
+    commands:
+      - yq w -i manifests/color/dev/rollout.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
+      - yq w -i manifests/color/dev/deployment.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
+
+  commit_and_push_dev:
+    title: Commit Dev changes and push
+    type: git-commit:0.1.3
+    stage: dev
+    arguments:
+      repo: aperture-sci/gitops_applications
+      git: github-lr
+      working_directory: /codefresh/volume/gitops_applications
+      commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
+      git_user_name: lrochette
+      git_user_email: laurent.rochette@codefresh.io
+      allow_empty: true
+      rebase: true
+      add:
+        - manifests/color/dev/rollout.yaml
+        - manifests/color/dev/deployment.yaml
+
+  sync_dev:
+    type: argo-cd-sync:1.4.3
+    title: Sync ArgoCD app in QA and  wait
+    stage: dev
+    arguments:
+      RUNTIME: gitops
+      APPLICATION: color-dev
+
+  approve_qa:
+    stage: qa
+    type: pending-approval
+    timeout:
+      timeUnit: minutes
+      duration: 5
+      finalState: approved
+
 
   clone_qa:
     title: "Cloning repository for QA"
     type: "git-clone"
     git: "github"
-    repo: aperture-sci/DevOps
+    repo: aperture-sci/gitops_applications
     revision: "main"
     depth: 1
     stage: qa
@@ -153,28 +204,28 @@ steps:
   update_qa_manifest:
     description: update the image version for qa
     image: mikefarah/yq:3.3.4
-    working_directory: '/codefresh/volume/DevOps'
+    working_directory: '/codefresh/gitops_applications'
     stage: qa
     commands:
-      - yq w -i manifests/color/aperture-qa/rollout.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
-      - yq w -i manifests/color/aperture-qa/deployment.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
+      - yq w -i manifests/color/qa/rollout.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
+      - yq w -i manifests/color/qa/deployment.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
 
   commit_and_push_qa:
     title: Commit changes and push
     type: git-commit:0.1.3
     stage: qa
     arguments:
-      repo: aperture-sci/DevOps
+      repo: aperture-sci/gitops_applications
       git: github-lr
-      working_directory: /codefresh/volume/DevOps
+      working_directory: '/codefresh/gitops_applications'
       commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
       git_user_name: lrochette
       git_user_email: laurent.rochette@codefresh.io
       allow_empty: true
       rebase: true
       add:
-        - manifests/color/aperture-qa/rollout.yaml
-        - manifests/color/aperture-qa/deployment.yaml
+        - manifests/color/qa/rollout.yaml
+        - manifests/color/qa/deployment.yaml
 
   sync_qa:
     type: argo-cd-sync:1.4.3
@@ -195,28 +246,28 @@ steps:
   update_staging_manifest:
     description: update the image version for staging
     image: mikefarah/yq:3.3.4
-    working_directory: '/codefresh/volume/DevOps'
+    working_directory: '/codefresh/gitops_applications'
     stage: staging
     commands:
-      - yq w -i manifests/color/aperture-staging/rollout.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
-      - yq w -i manifests/color/aperture-staging/deployment.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
+      - yq w -i manifests/color/staging/rollout.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
+      - yq w -i manifests/color/staging/deployment.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
 
   commit_and_push_staging:
     title: Commit changes and push
     type: git-commit:0.1.3
     stage: staging
     arguments:
-      repo: aperture-sci/DevOps
+      repo: aperture-sci/gitops_applications
       git: github-lr
-      working_directory: /codefresh/volume/DevOps
+      working_directory: '/codefresh/gitops_applications'
       commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
       git_user_name: lrochette
       git_user_email: laurent.rochette@codefresh.io
       allow_empty: true
       rebase: true
       add:
-        - manifests/color/aperture-staging/rollout.yaml
-        - manifests/color/aperture-staging/deployment.yaml
+        - manifests/color/staging/rollout.yaml
+        - manifests/color/staging/deployment.yaml
 
   sync_staging:
     title: Sync ArgoCD app in staging and  wait
@@ -237,28 +288,28 @@ steps:
   update_prod_manifest:
     description: update the image version for prod
     image: mikefarah/yq:3.3.4
-    working_directory: '/codefresh/volume/DevOps'
+    working_directory: '/codefresh/gitops_applications'
     stage: prod
     commands:
-      - yq w -i manifests/color/aperture-prod/rollout.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
-      - yq w -i manifests/color/aperture-prod/deployment.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
+      - yq w -i manifests/color/prod/rollout.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
+      - yq w -i manifests/color/prod/deployment.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
 
   commit_and_push_prod:
     title: Commit changes and push
     type: git-commit:0.1.3
     stage: prod
     arguments:
-      repo: aperture-sci/DevOps
+      repo: aperture-sci/gitops_applications
       git: github-lr
-      working_directory: /codefresh/volume/DevOps
+      working_directory: '/codefresh/gitops_applications'
       commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
       git_user_name: lrochette
       git_user_email: laurent.rochette@codefresh.io
       allow_empty: true
       rebase: true
       add:
-        - manifests/color/aperture-prod/rollout.yaml
-        - manifests/color/aperture-prod/deployment.yaml
+        - manifests/color/prod/rollout.yaml
+        - manifests/color/prod/deployment.yaml
 
   sync_prod:
     title: Sync ArgoCD app in prod and  wait
