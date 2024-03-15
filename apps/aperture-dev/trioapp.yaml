@@ -4,6 +4,8 @@ metadata:
   name: trioapp-dev
   finalizers:
     - resources-finalizer.argocd.argoproj.io
+  labels:
+    app.kubernetes.io/instance: dev
   annotations:
     argocd.argoproj.io/manifest-generate-paths: /manifests/trio-app/aperture-dev
     codefresh.io/product: trio-app
