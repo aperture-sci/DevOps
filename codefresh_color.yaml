@@ -154,8 +154,8 @@ steps:
     working_directory: "/codefresh/volume/gitops_applications"
     stage: dev
     commands:
-      - yq w -i manifests/color/dev/rollout.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
-      - yq w -i manifests/color/dev/deployment.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
+      - yq w -i manifests/color/dev/rollout.yaml 'spec.template.spec.containers[0].image' "docker.io/aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
+      - yq w -i manifests/color/dev/deployment.yaml 'spec.template.spec.containers[0].image' "docker.io/aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
 
   commit_and_push_dev:
     title: Commit Dev changes and push
@@ -205,8 +205,8 @@ steps:
     working_directory: "/codefresh/volume/gitops_applications"
     stage: qa
     commands:
-      - yq w -i manifests/color/qa/rollout.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
-      - yq w -i manifests/color/qa/deployment.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
+      - yq w -i manifests/color/qa/rollout.yaml 'spec.template.spec.containers[0].image' "docker.io/aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
+      - yq w -i manifests/color/qa/deployment.yaml 'spec.template.spec.containers[0].image' "docker.io/aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
 
   commit_and_push_qa:
     title: Commit changes and push
@@ -247,8 +247,8 @@ steps:
     working_directory: "/codefresh/volume/gitops_applications"
     stage: staging
     commands:
-      - yq w -i manifests/color/staging/rollout.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
-      - yq w -i manifests/color/staging/deployment.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
+      - yq w -i manifests/color/staging/rollout.yaml 'spec.template.spec.containers[0].image' "docker.io/aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
+      - yq w -i manifests/color/staging/deployment.yaml 'spec.template.spec.containers[0].image' "docker.io/aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
 
   commit_and_push_staging:
     title: Commit changes and push
@@ -289,8 +289,8 @@ steps:
     working_directory: "/codefresh/volume/gitops_applications"
     stage: prod
     commands:
-      - yq w -i manifests/color/prod/rollout.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
-      - yq w -i manifests/color/prod/deployment.yaml 'spec.template.spec.containers[0].image' "aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
+      - yq w -i manifests/color/prod/rollout.yaml 'spec.template.spec.containers[0].image' "docker.io/aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
+      - yq w -i manifests/color/prod/deployment.yaml 'spec.template.spec.containers[0].image' "docker.io/aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
 
   commit_and_push_prod:
     title: Commit changes and push
