@@ -8,15 +8,15 @@ stages:
   - staging
   - prod
 
-hooks:
-  on_fail:
-    steps:
-      exec:
-        type: slack-post-channel:0.0.7
-        arguments:
-          SLACK_TOKEN: ${{LR_SLACK_TOKEN}}
-          SLACK_CHANNEL: aperture-sci-demo
-          SLACK_MESSAGE: "CICD build for color failed. See ${{CF_BUILD_URL}}"
+# hooks:
+#   on_fail:
+#     steps:
+#       exec:
+#         type: slack-post-channel:0.0.7
+#         arguments:
+#           SLACK_TOKEN: ${{LR_SLACK_TOKEN}}
+#           SLACK_CHANNEL: aperture-sci-demo
+#           SLACK_MESSAGE: "CICD build for color failed. See ${{CF_BUILD_URL}}"
 steps:
   clone:
     title: "Cloning repository"
