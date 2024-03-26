@@ -175,7 +175,7 @@ steps:
         - manifests/color/dev/deployment.yaml
 
   sync_dev:
-    type: argo-cd-sync:1.4.3
+    type: argo-cd-sync:1.4.4
     title: Sync ArgoCD app in DEV and wait
     stage: dev
     arguments:
@@ -226,7 +226,7 @@ steps:
         - manifests/color/qa/deployment.yaml
 
   sync_qa:
-    type: argo-cd-sync:1.4.3
+    type: argo-cd-sync:1.4.4
     title: Sync ArgoCD app in QA and  wait
     stage: qa
     arguments:
@@ -269,7 +269,7 @@ steps:
 
   sync_staging:
     title: Sync ArgoCD app in staging and  wait
-    type: argo-cd-sync:1.4.3
+    type: argo-cd-sync:1.4.4
     stage: staging
     arguments:
       RUNTIME: gitops
@@ -311,7 +311,7 @@ steps:
 
   sync_prod:
     title: Sync ArgoCD app in prod and  wait
-    type: argo-cd-sync:1.4.3
+    type: argo-cd-sync:1.4.4
     stage: prod
     arguments:
       RUNTIME: gitops
