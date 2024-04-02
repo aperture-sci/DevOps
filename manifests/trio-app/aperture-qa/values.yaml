@@ -1,6 +1,6 @@
 buslog:
   image:
-    tag: main-2dca6be
+    tag: main-8653157
     repository: docker.io/aperturesci/buslog
   replicaCount: 3
   rollout:
@@ -13,7 +13,7 @@ buslog:
           - setWeight: 100
 ctrlr:
   image:
-    tag: main-119f5c6
+    tag: main-904687e
     repository: docker.io/aperturesci/ctrlr
   replicaCount: 3
   rollout:
@@ -29,7 +29,7 @@ ctrlr:
           - setWeight: 100
 flask-ui:
   image:
-    tag: main-ab47ba0
+    tag: main-23cc446
     repository: docker.io/aperturesci/flask-ui
   replicaCount: 3
   rollout:
