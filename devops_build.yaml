@@ -1,0 +1,203 @@
+# More examples of Codefresh YAML can be found at
+# https://codefresh.io/docs/docs/yaml-examples/examples/
+
+version: "1.0"
+# Stages can help you organize your steps in stages
+stages:
+  - "build"
+  - "test"
+  - "metadata"
+  - "deploy"
+
+hooks:
+  on_fail:
+    steps:
+      exec:
+        type: slack-post-channel:0.0.7
+        arguments:
+          SLACK_TOKEN: ${{LR_SLACK_TOKEN}}
+          SLACK_CHANNEL: aperture-sci-demo
+          SLACK_MESSAGE: "CI build for ${{BUILDNAME}} failed. See ${{CF_BUILD_URL}}"
+
+steps:
+  clone:
+    title: "Cloning repository"
+    type: git-clone
+    repo: "${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}"
+    # CF_BRANCH value is auto set when pipeline is triggered
+    # Learn more at codefresh.io/docs/docs/codefresh-yaml/variables/
+    revision: "${{BUILD_BRANCH}}"
+    git: "codefresh-github-app"
+    stage: "build"
+
+  build:
+    title: "Building Docker image"
+    type: "build"
+    registry: dockerhub
+    image_name: "aperturesci/${{BUILDNAME}}"
+    working_directory: "${{clone}}/${{BUILDPATH}}"
+    tags:
+    - "${{CF_BRANCH_TAG_NORMALIZED}}"
+    dockerfile: "Dockerfile"
+    stage: "build"
+    on_success:
+      annotations:
+        set:
+         - annotations:
+           - service: ${{BUILDNAME}}
+           display: service
+
+  tags:
+    title: "Adding additkonal tags"
+    type: push
+    candidate: ${{build}}
+    registry: dockerhub
+    stage: build
+    tags:
+    - "${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}"
+    - ${{CF_SHORT_REVISION}}
+
+  tests:
+    title: Run Tests
+    stage: test
+    type: parallel
+    fail_fast: false
+    # when:
+    #   condition:
+    #     all:
+    #       onmaster: "'${{CF_BRANCH_TAG_NORMALIZED}}' == 'main'"
+    steps:
+
+      test-report-uploader:
+        title: Unit Tests
+        type: test-report-uploader:1.0.1
+        stage: test
+        working_directory: '${{clone}}/${{BUILDPATH}}'
+        fail_fast: false
+        arguments:
+          test_image: "aperturesci/${{BUILDNAME}}"
+          test_image_tag: "${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}"
+          commands:
+            - "pip install pytest allure-pytest && pytest --alluredir=${{CF_VOLUME_PATH}}/allure-results"
+          environment:
+            - ALLURE_DIR=${{CF_VOLUME_PATH}}/allure-results
+            - BUCKET_NAME=aperture-sci
+            - CF_STORAGE_INTEGRATION=google
+        when:
+          condition:
+            all:
+              onlytrioapp: "'${{APPNAME}}' == 'trio-app'"
+      trivy:
+        title: Trivy Security Image Scan
+        image: aquasec/trivy:0.39.1
+        stage: test
+        enviornment:
+          - CI = true
+        commands:
+          - trivy image aperturesci/${{BUILDNAME}}:${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}
+
+      prepcosign:
+       title: Fetch Keys
+       image: ubuntu:lunar
+       commands:
+         - echo ${{COSIGN_KEY64}} | base64 -d > ${{CF_VOLUME_PATH}}/cosign.key
+         - mkdir -p ${{CF_VOLUME_PATH}}/.docker
+         - echo ${{DOCKERCONFIG}} | base64 -d > ${{CF_VOLUME_PATH}}/.docker/config.json
+
+  collectevents:
+    title: "Collect Events"
+    stage: "metadata"
+    image: d3fk/s3cmd:arch-stable
+    fail_fast: false
+    commands:
+    # Load s3cmd config
+    - echo "$s3cfg" | base64 -d > /root/.s3cfg
+    - latest_file=$(s3cmd ls --recursive s3://aperturedevops/aperture-sci/${CF_REPO_NAME}/ | sort -r -k1,1 | head -n 1 | awk '{print $NF}')
+    - s3cmd get $latest_file /codefresh/volume/event.json --force
+    - echo "Getting $latest_file"
+    when:
+      condition:
+        all:
+          onlytrioapp: "'${{APPNAME}}' == 'trio-app'"
+
+  reporting:
+    title: Reporting
+    type: parallel
+    stage: "metadata"
+    fail_fast: false
+    when:
+      condition:
+        all:
+          onmaster: "'${{CF_BRANCH_TAG_NORMALIZED}}' == 'main'"
+    steps:
+      ReportImageMetadataAll:
+        type: codefresh-report-image:1.0.10
+        working_directory: /code
+        arguments:
+          CF_API_KEY: '${{CF_API_KEY}}'
+          CF_RUNTIME_NAME: gitops
+          CF_GITHUB_TOKEN: '${{GITHUB_TOKEN}}'
+          CF_GIT_PROVIDER: github
+          CF_GIT_REPO: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
+          CF_GIT_BRANCH: '${{CF_BRANCH}}'
+          CF_JIRA_INTEGRATION: jira-intg
+          CF_JIRA_MESSAGE: "${{CF_COMMIT_MESSAGE_ESCAPED}}"
+          CF_JIRA_PROJECT_PREFIX: '${{JIRA_PREFIX}}'
+          CF_IMAGE: 'docker.io/aperturesci/${{BUILDNAME}}:${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}'
+          CF_CONTAINER_REGISTRY_INTEGRATION: docker-intg
+
+#       JiraCommentCreate:
+#         title: "Add Jira Comment"
+#         type: "jira-issue-manager"
+#         fail_fast: false
+#         arguments:
+#           JIRA_API_KEY: ${{JIRA_API}}
+#           JIRA_BASE_URL: ${{JIRA_URL}}
+#           JIRA_USERNAME: ${{JIRA_USER}}
+#           JIRA_ISSUE_SOURCE_FIELD: '${{CF_COMMIT_MESSAGE}}'
+#           ACTION: "comment_create"
+#           COMMENT_BODY: "Build [${{CF_BUILD_ID}}|${{CF_BUILD_URL}}] finished in Codefresh. [Test Results|${{TEST_REPORT_LINK}}]"
+
+      cosign:
+        title: Cosign Image
+        image: bitnami/cosign:2
+        fail_fast: false
+        commands:
+          - cp -r ${{CF_VOLUME_PATH}}/.docker /
+          - cosign sign --key ${{CF_VOLUME_PATH}}/cosign.key aperturesci/${{BUILDNAME}}:${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}} -a CICD=Codefresh --yes
+          - rm ${{CF_VOLUME_PATH}}/cosign.key
+
+  deployLoanToQA:
+    title: Trigger deployment to QA for Loan services
+    type: codefresh-run:1.5.3
+    stage: "deploy"
+    arguments:
+      PIPELINE_ID: DevOps/deployLoan
+      VARIABLE:
+        - APPNAME="${{BUILDNAME}}"
+        - TAG="${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}"
+    when:
+      condition:
+        all:
+          excuteforloan: "'${{APPNAME}}' == 'loan-app'"
+          onmaster: "'${{CF_BRANCH_TAG_NORMALIZED}}' == 'main'"
+
+  deployTrioToDev:
+    title: Trigger deployment to QA for Loan services
+    type: codefresh-run:1.5.3
+    stage: "deploy"
+    arguments:
+      PIPELINE_ID: DevOps/deploy
+      NO_CF_CACHE: true
+      TRIGGER_ID: 643d83f939be024edc4c04fa
+      BRANCH: main
+      VARIABLE:
+        - CF_REPO_NAME=DevOps
+        - COMMIT_MESSAGE="${{CF_COMMIT_MESSAGE_ESCAPED}}"
+        - APPNAME="trio-app"
+        - APPENV="aperture-dev"
+    when:
+      condition:
+        all:
+          excutefortrioapp: "'${{APPNAME}}' == 'trio-app'"
+          onmaster: "'${{CF_BRANCH_TAG_NORMALIZED}}' == 'main'"
