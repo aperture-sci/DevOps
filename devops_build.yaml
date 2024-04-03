@@ -193,7 +193,7 @@ steps:
       BRANCH: main
       VARIABLE:
         - CF_REPO_NAME=DevOps
-        - COMMIT_MESSAGE='${{CF_COMMIT_MESSAGE}}'
+        - COMMIT_MESSAGE="${{CF_COMMIT_MESSAGE_ESCAPED}}"
         - APPNAME="trio-app"
         - APPENV="aperture-dev"
     when:
