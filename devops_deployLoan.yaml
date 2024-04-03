@@ -1,0 +1,90 @@
+version: "1.0"
+stages:
+ - clone
+ - prep
+ - deploy
+
+hooks:
+  on_fail:
+    steps:
+      exec:
+        type: slack-post-channel:0.0.7
+        arguments:
+          SLACK_TOKEN: ${{LR_SLACK_TOKEN}}
+          SLACK_CHANNEL: aperture-sci-demo
+          SLACK_MESSAGE: "Loan deployment build for ${{APPNAME}} failed. See ${{CF_BUILD_URL}}"
+
+steps:
+  clone:
+    title: "Cloning repository"
+    type: "git-clone"
+    repo: "aperture-sci/promotions-demo"
+    revision: "main"
+    git: github-app
+    stage: clone
+
+  get_chart_version:
+    title: "Get the version of the chart"
+    image: mikefarah/yq:3.3.4
+    stage: prep
+    working_directory: ${{clone}}
+    commands:
+      - |
+        CVERSION=$(yq  r manifests/$APPNAME/qa/Chart.yaml 'appVersion')
+        cf_export CVERSION=$CVERSION
+        export RND=$(( ( RANDOM % 100 )  + 1 ))
+        cf_export RND=$RND
+        echo "Random: $RND"
+        if [ $RND -le 7 ] ; then
+          cf_export PART="minor"
+        else
+          cf_export PART="patch"
+        fi
+  wait:
+    description: buffer for var to be exported properly
+    image: mikefarah/yq:3.3.4
+    stage: prep
+    commands:
+      - sleep 1
+    on_success:
+      annotations:
+        set:
+         - annotations:
+           - image: ${{APPNAME}}:${{TAG}}
+           display: image
+
+  bumpVersion:
+    type: semversioner:0.1.6
+    stage: prep
+    arguments:
+      SEMVERSIONER_VERSION: ${{CVERSION}}
+      SEMVERSIONER_ACTION: bump
+      SEMVERSIONER_PART: ${{PART}}
+
+  update_qa_manifest:
+      stage: deploy
+      title: "update the image version for qa"
+      image: mikefarah/yq:3.3.4
+      working_directory: ${{clone}}
+      commands:
+        - yq w -i manifests/$APPNAME/qa/values.yaml 'loans.image.tag' "${{TAG}}"
+        - cat manifests/$APPNAME/qa/values.yaml
+        - yq w -i manifests/$APPNAME/qa/Chart.yaml 'appVersion' "${{steps.bumpVersion.output.SEMVERSIONER_RESULT}}"
+        - cat manifests/$APPNAME/qa/Chart.yaml
+
+  commit_and_push:
+      title: Commit changes and push
+      type: git-commit:0.1.3
+      stage: deploy
+      arguments:
+        repo: aperture-sci/promotions-demo
+        git: github-app
+        working_directory: '/codefresh/volume/promotions-demo'
+        commit_message: "Update image tag for ${{APPNAME}} and bump Chart version"
+        git_user_name: lrochette
+        git_user_email: laurent.rochette@codefresh.io
+        allow_empty: true
+        force_push: true
+        add:
+          - manifests/${{APPNAME}}/qa/values.yaml
+          - manifests/${{APPNAME}}/qa/Chart.yaml
