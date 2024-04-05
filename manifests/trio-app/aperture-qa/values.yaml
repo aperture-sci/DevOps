@@ -9,7 +9,7 @@ buslog:
         steps:
           - setWeight: 20
           - pause:
-              duration: 10s
+              duration: 5s
           - setWeight: 100
 ctrlr:
   image:
@@ -22,10 +22,10 @@ ctrlr:
         steps:
           - setWeight: 20
           - pause:
-              duration: 30s
+              duration: 5s
           - setWeight: 50
           - pause:
-              duration: 30s
+              duration: 5s
           - setWeight: 100
 flask-ui:
   image:
@@ -38,8 +38,8 @@ flask-ui:
         steps:
           - setWeight: 20
           - pause:
-              duration: 30s
+              duration: 5s
           - setWeight: 50
           - pause:
-              duration: 30s
+              duration: 5s
           - setWeight: 100
