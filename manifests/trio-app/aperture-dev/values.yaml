@@ -21,8 +21,7 @@ ctrlr:
       canary:
         steps:
           - setWeight: 20
-          - pause:
-              duration:5s
+          - pause: duration:5s
           - setWeight: 50
           - pause:
               duration: 5s
