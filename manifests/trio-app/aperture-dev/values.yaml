@@ -22,7 +22,7 @@ ctrlr:
         steps:
           - setWeight: 20
           - pause:
-              duration:5s
+              duration: 5s
           - setWeight: 50
           - pause:
               duration: 5s
