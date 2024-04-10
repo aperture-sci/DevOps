@@ -1,4 +1,4 @@
-version: "1.0"
+devversion: "1.0"
 stages:
  - clone
  - prep
@@ -30,7 +30,7 @@ steps:
     working_directory: ${{clone}}
     commands:
       - |
-        CVERSION=$(yq  r manifests/$APPNAME/qa/Chart.yaml 'appVersion')
+        CVERSION=$(yq  r manifests/$APPNAME/dev/Chart.yaml 'appVersion')
         cf_export CVERSION=$CVERSION
         export RND=$(( ( RANDOM % 100 )  + 1 ))
         cf_export RND=$RND
@@ -61,16 +61,16 @@ steps:
       SEMVERSIONER_ACTION: bump
       SEMVERSIONER_PART: ${{PART}}
 
-  update_qa_manifest:
+  update_dev_manifest:
       stage: deploy
-      title: "update the image version for qa"
+      title: "update the image version for dev"
       image: mikefarah/yq:3.3.4
       working_directory: ${{clone}}
       commands:
-        - yq w -i manifests/$APPNAME/qa/values.yaml 'loans.image.tag' "${{TAG}}"
-        - cat manifests/$APPNAME/qa/values.yaml
-        - yq w -i manifests/$APPNAME/qa/Chart.yaml 'appVersion' "${{steps.bumpVersion.output.SEMVERSIONER_RESULT}}"
-        - cat manifests/$APPNAME/qa/Chart.yaml
+        - yq w -i manifests/$APPNAME/dev/values.yaml 'loans.image.tag' "${{TAG}}"
+        - cat manifests/$APPNAME/dev/values.yaml
+        - yq w -i manifests/$APPNAME/dev/Chart.yaml 'appVersion' "${{steps.bumpVersion.output.SEMVERSIONER_RESULT}}"
+        - cat manifests/$APPNAME/dev/Chart.yaml
 
   commit_and_push:
       title: Commit changes and push
@@ -86,5 +86,5 @@ steps:
         allow_empty: true
         force_push: true
         add:
-          - manifests/${{APPNAME}}/qa/values.yaml
-          - manifests/${{APPNAME}}/qa/Chart.yaml
+          - manifests/${{APPNAME}}/dev/values.yaml
+          - manifests/${{APPNAME}}/dev/Chart.yaml
