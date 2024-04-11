@@ -175,7 +175,7 @@ steps:
       PIPELINE_ID: DevOps/deployLoan
       VARIABLE:
         - APPNAME="${{BUILDNAME}}"
-        - ENV="dev"
+        - APPENV="dev"
         - TAG="${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}"
     when:
       condition:

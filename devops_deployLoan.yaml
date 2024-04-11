@@ -30,7 +30,7 @@ steps:
     working_directory: ${{clone}}
     commands:
       - |
-        CVERSION=$(yq  r manifests/$APPNAME/$ENV/Chart.yaml 'appVersion')
+        CVERSION=$(yq  r manifests/$APPNAME/$APPENV/Chart.yaml 'appVersion')
         cf_export CVERSION=$CVERSION
         export RND=$(( ( RANDOM % 100 )  + 1 ))
         cf_export RND=$RND
@@ -67,10 +67,10 @@ steps:
       image: mikefarah/yq:3.3.4
       working_directory: ${{clone}}
       commands:
-        - yq w -i manifests/$APPNAME/$ENV/values.yaml 'loans.image.tag' "${{TAG}}"
-        - cat manifests/$APPNAME/$ENV/values.yaml
-        - yq w -i manifests/$APPNAME/$ENV/Chart.yaml 'appVersion' "${{steps.bumpVersion.output.SEMVERSIONER_RESULT}}"
-        - cat manifests/$APPNAME/$ENV/Chart.yaml
+        - yq w -i manifests/$APPNAME/$APPENV/values.yaml 'loans.image.tag' "${{TAG}}"
+        - cat manifests/$APPNAME/$APPENV/values.yaml
+        - yq w -i manifests/$APPNAME/$APPENV/Chart.yaml 'appVersion' "${{steps.bumpVersion.output.SEMVERSIONER_RESULT}}"
+        - cat manifests/$APPNAME/$APPENV/Chart.yaml
 
   commit_and_push:
       title: Commit changes and push
@@ -86,5 +86,5 @@ steps:
         allow_empty: true
         force_push: true
         add:
-          - manifests/${{APPNAME}}/$ENV/values.yaml
-          - manifests/${{APPNAME}}/$ENV/Chart.yaml
+          - manifests/${{APPNAME}}/$APPENV/values.yaml
+          - manifests/${{APPNAME}}/$APPENV/Chart.yaml
