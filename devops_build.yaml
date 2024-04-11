@@ -167,7 +167,7 @@ steps:
           - cosign sign --key ${{CF_VOLUME_PATH}}/cosign.key aperturesci/${{BUILDNAME}}:${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}} -a CICD=Codefresh --yes
           - rm ${{CF_VOLUME_PATH}}/cosign.key
 
-  deployLoanToQA:
+  deployLoanToDev:
     title: Trigger deployment to QA for Loan services
     type: codefresh-run:1.5.3
     stage: "deploy"
@@ -175,6 +175,7 @@ steps:
       PIPELINE_ID: DevOps/deployLoan
       VARIABLE:
         - APPNAME="${{BUILDNAME}}"
+        - ENV="dev"
         - TAG="${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}"
     when:
       condition:
