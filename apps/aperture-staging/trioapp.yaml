@@ -7,6 +7,8 @@ metadata:
   annotations:
     codefresh.io/product: trio-app
     codefresh.io/app-group: trio
+  labels:
+    codefresh.io/product: trio-app
 spec:
   destination:
     name: 'kc-v-staging'
