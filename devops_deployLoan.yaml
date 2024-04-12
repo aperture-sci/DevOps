@@ -67,6 +67,7 @@ steps:
       image: mikefarah/yq:3.3.4
       working_directory: ${{clone}}
       commands:
+        - cf_export APPVERSION=${{steps.bumpVersion.output.SEMVERSIONER_RESULT}}
         - yq w -i manifests/$APPNAME/$APPENV/values.yaml 'loans.image.tag' "${{TAG}}"
         - cat manifests/$APPNAME/$APPENV/values.yaml
         - yq w -i manifests/$APPNAME/$APPENV/Chart.yaml 'appVersion' "${{steps.bumpVersion.output.SEMVERSIONER_RESULT}}"
@@ -88,3 +89,8 @@ steps:
         add:
           - manifests/${{APPNAME}}/$APPENV/values.yaml
           - manifests/${{APPNAME}}/$APPENV/Chart.yaml
+      on_success:
+        annotations:
+          set:
+           - annotations:
+             - appVersion: ${{APPVERSION}}
