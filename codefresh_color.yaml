@@ -72,7 +72,7 @@ steps:
   obtain_id_token:
     stage: "cosign-sign"
     title: Obtain ID Token
-    type: obtain-oidc-id-token
+    type: obtain-oidc-id-token:1.2.3
     arguments:
       AUDIENCE: 'sigstore'
 
@@ -119,7 +119,7 @@ steps:
             export SIGSTORE_ID_TOKEN=$ID_TOKEN
             cp -r ${{CF_VOLUME_PATH}}/.docker /
             cosign sign --oidc-issuer "https://oidc.codefresh.io" --yes=true aperturesci/rollouts-demo:${{CF_SHORT_REVISION}} -a CICD=Codefresh --yes
-            rm ${{CF_VOLUME_PATH}}/cosign.key
+            rm ${{CF_VOLUME_PATH}}/.docker
 
       JiraCommentCreate:
         title: "Add Jira Comment"
