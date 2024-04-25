@@ -66,9 +66,15 @@ steps:
     image: ubuntu:lunar
     stage: metadata
     commands:
-      - echo ${{COSIGN_KEY64}} | base64 -d > ${{CF_VOLUME_PATH}}/cosign.key
       - mkdir -p ${{CF_VOLUME_PATH}}/.docker
       - echo ${{DOCKERCONFIG}} | base64 -d > ${{CF_VOLUME_PATH}}/.docker/config.json
+
+  obtain_id_token:
+    stage: "cosign-sign"
+    title: Obtain ID Token
+    type: obtain-oidc-id-token
+    arguments:
+      AUDIENCE: 'sigstore'
 
   reporting:
     title: Reporting
@@ -95,14 +101,25 @@ steps:
           CF_JIRA_MESSAGE: "${{CF_COMMIT_MESSAGE_ESCAPED}}"
           CF_JIRA_PROJECT_PREFIX: AP
 
+      # cosign:
+      #   title: Cosign Image
+      #   image: bitnami/cosign:2
+      #   fail_fast: false
+      #   commands:
+      #     - cp -r ${{CF_VOLUME_PATH}}/.docker /
+      #     - cosign sign --key ${{CF_VOLUME_PATH}}/cosign.key aperturesci/rollouts-demo:${{CF_SHORT_REVISION}} -a CICD=Codefresh --yes
+      #     - rm ${{CF_VOLUME_PATH}}/cosign.key
+
       cosign:
-        title: Cosign Image
+        title: Keyless Image cosign
         image: bitnami/cosign:2
         fail_fast: false
         commands:
-          - cp -r ${{CF_VOLUME_PATH}}/.docker /
-          - cosign sign --key ${{CF_VOLUME_PATH}}/cosign.key aperturesci/rollouts-demo:${{CF_SHORT_REVISION}} -a CICD=Codefresh --yes
-          - rm ${{CF_VOLUME_PATH}}/cosign.key
+          - |
+            export SIGSTORE_ID_TOKEN=$ID_TOKEN
+            cp -r ${{CF_VOLUME_PATH}}/.docker /
+            cosign sign --oidc-issuer "https://oidc.codefresh.io" --yes=true aperturesci/rollouts-demo:${{CF_SHORT_REVISION}} -a CICD=Codefresh --yes
+            rm ${{CF_VOLUME_PATH}}/cosign.key
 
       JiraCommentCreate:
         title: "Add Jira Comment"
