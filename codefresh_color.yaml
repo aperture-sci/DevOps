@@ -119,7 +119,7 @@ steps:
             export SIGSTORE_ID_TOKEN=$ID_TOKEN
             cp -r ${{CF_VOLUME_PATH}}/.docker /
             cosign sign --oidc-issuer "https://oidc.codefresh.io" --yes=true aperturesci/rollouts-demo:${{CF_SHORT_REVISION}} -a CICD=Codefresh --yes
-            rm ${{CF_VOLUME_PATH}}/.docker
+            rm -rf ${{CF_VOLUME_PATH}}/.docker
 
       JiraCommentCreate:
         title: "Add Jira Comment"
