@@ -19,6 +19,7 @@ steps:
     title: "Cloning repository"
     type: "git-clone"
     repo: "aperture-sci/promotions-demo"
+    depth: 1
     revision: "main"
     git: github-app
     stage: clone
