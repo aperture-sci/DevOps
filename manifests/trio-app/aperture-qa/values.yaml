@@ -13,7 +13,7 @@ buslog:
           - setWeight: 100
 ctrlr:
   image:
-    tag: main-30400a4
+    tag: main-b17e45f
     repository: docker.io/aperturesci/ctrlr
   replicaCount: 3
   rollout:
