@@ -87,7 +87,7 @@ steps:
       repo: aperture-sci/DevOps
       git: github-app
       working_directory: "${{CF_VOLUME_PATH}}/${{CF_REPO_NAME}}"
-      commit_message: "[promotion:demo] ${{COMMIT_MESSAGE}} for ${{APPENV}}"
+      commit_message: "[promotion:trio-flow] ${{COMMIT_MESSAGE}} for ${{APPENV}}"
       git_user_name: todaywasawesome
       git_user_email: dan@codefresh.io
       allow_empty: true
