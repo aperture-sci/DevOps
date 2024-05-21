@@ -82,7 +82,7 @@ steps:
         repo: aperture-sci/promotions-demo
         git: github-app
         working_directory: '/codefresh/volume/promotions-demo'
-        commit_message: "[promotion:sequential-$APPNAME] Update image tag for ${{APPNAME}} and bump Chart version"
+        commit_message: "[promotion:sequential-${{APPNAME}}] Update image tag for ${{APPNAME}} and bump Chart version"
         git_user_name: lrochette
         git_user_email: laurent.rochette@codefresh.io
         allow_empty: true
