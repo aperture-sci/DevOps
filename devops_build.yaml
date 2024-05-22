@@ -118,6 +118,13 @@ steps:
       condition:
         all:
           onlytrioapp: "'${{APPNAME}}' == 'trio-app'"
+  
+  extract_pr_branch:
+    image: codefresh/cli
+    fail_fast: false
+    commands:
+      - cf_export PR_BRANCH=$(jq -r .pull_request.head.ref /codefresh/volume/event.json)
+      
 
   reporting:
     title: Reporting
@@ -138,7 +145,7 @@ steps:
           CF_GITHUB_TOKEN: '${{GITHUB_TOKEN}}'
           CF_GIT_PROVIDER: github
           CF_GIT_REPO: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
-          CF_GIT_BRANCH: '${{CF_BRANCH}}'
+          CF_GIT_BRANCH: '${{PR_BRANCH}}'
           CF_JIRA_INTEGRATION: jira-intg
           CF_JIRA_MESSAGE: "${{CF_COMMIT_MESSAGE_ESCAPED}}"
           CF_JIRA_PROJECT_PREFIX: '${{JIRA_PREFIX}}'
