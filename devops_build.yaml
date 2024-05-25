@@ -124,6 +124,7 @@ steps:
     fail_fast: false
     commands:
       - cf_export PR_BRANCH=$(jq -r .pull_request.head.ref /codefresh/volume/event.json)
+      - cf_export DOCKERFILE_CONTENT=$(cat /codefresh/volume/${{CF_REPO_NAME}}/${{BUILDPATH}}/Dockerfile |base64 )
 
 
   reporting:
@@ -151,7 +152,7 @@ steps:
           CF_JIRA_PROJECT_PREFIX: '${{JIRA_PREFIX}}'
           CF_IMAGE: 'docker.io/aperturesci/${{BUILDNAME}}:${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}'
           CF_CONTAINER_REGISTRY_INTEGRATION: docker-intg
-
+          CF_DOCKERFILE_CONTENT: '${{DOCKERFILE_CONTENT}}'
 #       JiraCommentCreate:
 #         title: "Add Jira Comment"
 #         type: "jira-issue-manager"
