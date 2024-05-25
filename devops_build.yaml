@@ -114,14 +114,21 @@ steps:
     - latest_file=$(s3cmd ls --recursive s3://aperturedevops/aperture-sci/${CF_REPO_NAME}/ | sort -r -k1,1 | head -n 1 | awk '{print $NF}')
     - s3cmd get $latest_file /codefresh/volume/event.json --force
     - echo "Getting $latest_file"
-
+    when:
+      condition:
+        all:
+          onmaster: "'${{CF_BRANCH_TAG_NORMALIZED}}' == 'main'"
+          
   extract_pr_branch:
     image: codefresh/cli
     fail_fast: false
     commands:
       - cf_export PR_BRANCH=$(jq -r .pull_request.head.ref /codefresh/volume/event.json)
       - cf_export DOCKERFILE_CONTENT=$(cat /codefresh/volume/${{CF_REPO_NAME}}/${{BUILDPATH}}/Dockerfile |base64 )
-
+    when:
+      condition:
+        all:
+          onmaster: "'${{CF_BRANCH_TAG_NORMALIZED}}' == 'main'"
   reporting:
     title: Reporting
     type: parallel
