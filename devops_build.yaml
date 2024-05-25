@@ -114,10 +114,6 @@ steps:
     - latest_file=$(s3cmd ls --recursive s3://aperturedevops/aperture-sci/${CF_REPO_NAME}/ | sort -r -k1,1 | head -n 1 | awk '{print $NF}')
     - s3cmd get $latest_file /codefresh/volume/event.json --force
     - echo "Getting $latest_file"
-    # when:
-    #   condition:
-    #     all:
-    #       onlytrioapp: "'${{APPNAME}}' == 'trio-app'"
 
   extract_pr_branch:
     image: codefresh/cli
@@ -151,18 +147,6 @@ steps:
           CF_JIRA_PROJECT_PREFIX: '${{JIRA_PREFIX}}'
           CF_IMAGE: 'docker.io/aperturesci/${{BUILDNAME}}:${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}'
           CF_CONTAINER_REGISTRY_INTEGRATION: docker-intg
-
-#       JiraCommentCreate:
-#         title: "Add Jira Comment"
-#         type: "jira-issue-manager"
-#         fail_fast: false
-#         arguments:
-#           JIRA_API_KEY: ${{JIRA_API}}
-#           JIRA_BASE_URL: ${{JIRA_URL}}
-#           JIRA_USERNAME: ${{JIRA_USER}}
-#           JIRA_ISSUE_SOURCE_FIELD: '${{CF_COMMIT_MESSAGE}}'
-#           ACTION: "comment_create"
-#           COMMENT_BODY: "Build [${{CF_BUILD_ID}}|${{CF_BUILD_URL}}] finished in Codefresh. [Test Results|${{TEST_REPORT_LINK}}]"
 
       cosign:
         title: Cosign Image
