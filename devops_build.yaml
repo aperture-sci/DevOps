@@ -102,25 +102,9 @@ steps:
          - echo ${{COSIGN_KEY64}} | base64 -d > ${{CF_VOLUME_PATH}}/cosign.key
          - mkdir -p ${{CF_VOLUME_PATH}}/.docker
          - echo ${{DOCKERCONFIG}} | base64 -d > ${{CF_VOLUME_PATH}}/.docker/config.json
-
-  collectevents:
-    title: "Collect Events"
-    stage: "metadata"
-    image: d3fk/s3cmd:arch-stable
-    fail_fast: false
-    commands:
-    # Load s3cmd config
-    - echo "$s3cfg" | base64 -d > /root/.s3cfg
-    - latest_file=$(s3cmd ls --recursive s3://aperturedevops/aperture-sci/${CF_REPO_NAME}/ | sort -r -k1,1 | head -n 1 | awk '{print $NF}')
-    - s3cmd get $latest_file /codefresh/volume/event.json --force
-    - echo "Getting $latest_file"
-    when:
-      condition:
-        all:
-          onmaster: "'${{CF_BRANCH_TAG_NORMALIZED}}' == 'main'"
-          
+         
   get_pr_branch_from_commit:
-    title: "Gettingthe related PR branch of this commit using GH CLI"
+    title: "Getting the related PR branch that introduced this commit, using GH CLI"
     image: maniator/gh
     fail_fast: false
     working_directory: '${{clone}}'
@@ -146,6 +130,22 @@ steps:
         all:
           onmaster: "'${{CF_BRANCH_TAG_NORMALIZED}}' == 'main'"
     stage: "metadata"
+  
+  collectevents:
+    title: "Collect Events"
+    stage: "metadata"
+    image: d3fk/s3cmd:arch-stable
+    fail_fast: false
+    commands:
+    # Load s3cmd config
+    - echo "$s3cfg" | base64 -d > /root/.s3cfg
+    - latest_file=$(s3cmd ls --recursive s3://aperturedevops/aperture-sci/${CF_REPO_NAME}/ | sort -r -k1,1 | head -n 1 | awk '{print $NF}')
+    - s3cmd get $latest_file /codefresh/volume/event.json --force
+    - echo "Getting $latest_file"
+    when:
+      condition:
+        all:
+          onmaster: "'${{CF_BRANCH_TAG_NORMALIZED}}' == 'main'"
           
   extract_pr_branch:
     title: "Extracting the related PR branch of this commit"
