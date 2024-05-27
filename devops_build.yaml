@@ -119,15 +119,28 @@ steps:
         all:
           onmaster: "'${{CF_BRANCH_TAG_NORMALIZED}}' == 'main'"
           
-  extract_pr_branch_v2:
-    title: "Extracting the related PR branch of this commit using GH CLI"
+  get_pr_branch_from_commit:
+    title: "Gettingthe related PR branch of this commit using GH CLI"
     image: maniator/gh
     fail_fast: false
+    working_directory: '${{clone}}'
     commands:
-      - cf_export PR_BRANCH=$(gh pr list --search "${{CF_REVISION}}" --state merged --json headRefName | jq -r .[0].headRefName)
-      - cf_export DOCKERFILE_CONTENT=$(cat /codefresh/volume/${{CF_REPO_NAME}}/${{BUILDPATH}}/Dockerfile | base64 )
+      - gh pr list --search "${{CF_REVISION}}" --state merged --json headRefName > /codefresh/volume/pr_branch.json
     environment:
       - GITHUB_TOKEN=${{GITHUB_TOKEN}}
+    when:
+      condition:
+        all:
+          onmaster: "'${{CF_BRANCH_TAG_NORMALIZED}}' == 'main'"
+    stage: "metadata"
+
+  extract_pr_branch_v2:
+    title: "Extracting the related PR branch of this commit"
+    image: codefresh/cli
+    fail_fast: false
+    commands:
+      - cf_export PR_BRANCH=$(jq -r .[0].headRefName /codefresh/volume/pr_branch.json)
+      - cf_export DOCKERFILE_CONTENT=$(cat /codefresh/volume/${{CF_REPO_NAME}}/${{BUILDPATH}}/Dockerfile |base64 )
     when:
       condition:
         all:
