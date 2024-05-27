@@ -124,7 +124,7 @@ steps:
     fail_fast: false
     commands:
       - cf_export PR_BRANCH=$(jq -r .[0].headRefName /codefresh/volume/pr_branch.json)
-      - cf_export DOCKERFILE_CONTENT=$(cat /codefresh/volume/${{CF_REPO_NAME}}/${{BUILDPATH}}/Dockerfile |base64 )
+      - cf_export DOCKERFILE_CONTENT=$(cat /codefresh/volume/${{CF_REPO_NAME}}/${{BUILDPATH}}/Dockerfile | base64 -w 0 )
     when:
       condition:
         all:
@@ -153,7 +153,7 @@ steps:
     fail_fast: false
     commands:
       - cf_export PR_BRANCH=$(jq -r .pull_request.head.ref /codefresh/volume/event.json)
-      - cf_export DOCKERFILE_CONTENT=$(cat /codefresh/volume/${{CF_REPO_NAME}}/${{BUILDPATH}}/Dockerfile |base64 )
+      - cf_export DOCKERFILE_CONTENT=$(cat /codefresh/volume/${{CF_REPO_NAME}}/${{BUILDPATH}}/Dockerfile | base64 -w 0)
     when:
       condition:
         all:
