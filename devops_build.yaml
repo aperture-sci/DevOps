@@ -120,7 +120,7 @@ steps:
 
   extract_pr_branch_v2:
     title: "Extracting the related PR branch of this commit"
-    image: codefresh/cli
+    image: backplane/jq:latest
     fail_fast: false
     commands:
       - cf_export PR_BRANCH=$(jq -r .[0].headRefName /codefresh/volume/pr_branch.json)
