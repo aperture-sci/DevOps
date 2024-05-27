@@ -120,6 +120,7 @@ steps:
           onmaster: "'${{CF_BRANCH_TAG_NORMALIZED}}' == 'main'"
           
   extract_pr_branch:
+    title: "Extracting the related PR branch of this commit"
     image: codefresh/cli
     fail_fast: false
     commands:
@@ -129,6 +130,8 @@ steps:
       condition:
         all:
           onmaster: "'${{CF_BRANCH_TAG_NORMALIZED}}' == 'main'"
+    stage: "metadata"
+    
   reporting:
     title: Reporting
     type: parallel
