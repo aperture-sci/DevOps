@@ -131,34 +131,34 @@ steps:
           onmaster: "'${{CF_BRANCH_TAG_NORMALIZED}}' == 'main'"
     stage: "metadata"
   
-  collectevents:
-    title: "Collect Events"
-    stage: "metadata"
-    image: d3fk/s3cmd:arch-stable
-    fail_fast: false
-    commands:
-    # Load s3cmd config
-    - echo "$s3cfg" | base64 -d > /root/.s3cfg
-    - latest_file=$(s3cmd ls --recursive s3://aperturedevops/aperture-sci/${CF_REPO_NAME}/ | sort -r -k1,1 | head -n 1 | awk '{print $NF}')
-    - s3cmd get $latest_file /codefresh/volume/event.json --force
-    - echo "Getting $latest_file"
-    when:
-      condition:
-        all:
-          onmaster: "'${{CF_BRANCH_TAG_NORMALIZED}}' == 'main'"
+  # collectevents:
+  #   title: "Collect Events"
+  #   stage: "metadata"
+  #   image: d3fk/s3cmd:arch-stable
+  #   fail_fast: false
+  #   commands:
+  #   # Load s3cmd config
+  #   - echo "$s3cfg" | base64 -d > /root/.s3cfg
+  #   - latest_file=$(s3cmd ls --recursive s3://aperturedevops/aperture-sci/${CF_REPO_NAME}/ | sort -r -k1,1 | head -n 1 | awk '{print $NF}')
+  #   - s3cmd get $latest_file /codefresh/volume/event.json --force
+  #   - echo "Getting $latest_file"
+  #   when:
+  #     condition:
+  #       all:
+  #         onmaster: "'${{CF_BRANCH_TAG_NORMALIZED}}' == 'main'"
           
-  extract_pr_branch:
-    title: "Extracting the related PR branch of this commit"
-    image: codefresh/cli
-    fail_fast: false
-    commands:
-      - cf_export PR_BRANCH=$(jq -r .pull_request.head.ref /codefresh/volume/event.json)
-      - cf_export DOCKERFILE_CONTENT=$(cat /codefresh/volume/${{CF_REPO_NAME}}/${{BUILDPATH}}/Dockerfile | base64 -w 0)
-    when:
-      condition:
-        all:
-          onmaster: "'${{CF_BRANCH_TAG_NORMALIZED}}' == 'main'"
-    stage: "metadata"
+  # extract_pr_branch:
+  #   title: "Extracting the related PR branch of this commit"
+  #   image: codefresh/cli
+  #   fail_fast: false
+  #   commands:
+  #     - cf_export PR_BRANCH=$(jq -r .pull_request.head.ref /codefresh/volume/event.json)
+  #     - cf_export DOCKERFILE_CONTENT=$(cat /codefresh/volume/${{CF_REPO_NAME}}/${{BUILDPATH}}/Dockerfile | base64 -w 0)
+  #   when:
+  #     condition:
+  #       all:
+  #         onmaster: "'${{CF_BRANCH_TAG_NORMALIZED}}' == 'main'"
+  #   stage: "metadata"
     
   reporting:
     title: Reporting
