@@ -182,7 +182,7 @@ steps:
           CF_GIT_BRANCH: '${{PR_BRANCH}}'
           CF_JIRA_INTEGRATION: jira-intg
           CF_JIRA_MESSAGE: "${{CF_COMMIT_MESSAGE_ESCAPED}}"
-          CF_JIRA_PROJECT_PREFIX: '${{JIRA_PREFIX}}'
+          CF_JIRA_PROJECT_PREFIX: '/AP-\d+/gmi'
           CF_IMAGE: 'docker.io/aperturesci/${{BUILDNAME}}:${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}'
           CF_CONTAINER_REGISTRY_INTEGRATION: docker-intg
           CF_DOCKERFILE_CONTENT: '${{DOCKERFILE_CONTENT}}'
