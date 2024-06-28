@@ -73,6 +73,7 @@ steps:
     stage: "cosign-sign"
     title: Obtain ID Token
     type: obtain-oidc-id-token:1.2.3
+    stage: metadata
     arguments:
       AUDIENCE: 'sigstore'
 
