@@ -70,7 +70,7 @@ steps:
       - echo ${{DOCKERCONFIG}} | base64 -d > ${{CF_VOLUME_PATH}}/.docker/config.json
 
   obtain_id_token:
-    stage: "cosign-sign"
+    stage: "metadata"
     title: Obtain ID Token
     type: obtain-oidc-id-token:1.2.3
     arguments:
@@ -79,7 +79,7 @@ steps:
   reporting:
     title: Reporting
     type: parallel
-    stage: "cosign-sign"
+    stage: "metadata"
     steps:
       enrich-image:
         stage: build
@@ -104,6 +104,7 @@ steps:
       # cosign:
       #   title: Cosign Image
       #   image: bitnami/cosign:2
+      #   stage: metadata
       #   fail_fast: false
       #   commands:
       #     - cp -r ${{CF_VOLUME_PATH}}/.docker /
