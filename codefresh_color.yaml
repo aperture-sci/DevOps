@@ -255,6 +255,15 @@ steps:
       duration: 5
       finalState: approved
 
+  clone_staging:
+    title: "Cloning repository for staging"
+    type: "git-clone"
+    git: "github"
+    repo: aperture-sci/gitops_applications
+    revision: "main"
+    depth: 1
+    stage: staging
+
   update_staging_manifest:
     description: update the image version for staging
     image: mikefarah/yq:3.3.4
@@ -294,6 +303,15 @@ steps:
       timeUnit: minutes
       duration: 5
       finalState: approved
+
+  clone_prod:
+    title: "Cloning repository for PROD"
+    type: "git-clone"
+    git: "github"
+    repo: aperture-sci/gitops_applications
+    revision: "main"
+    depth: 1
+    stage: prod
 
   update_prod_manifest:
     description: update the image version for prod
