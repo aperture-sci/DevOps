@@ -102,7 +102,7 @@ steps:
          - echo ${{COSIGN_KEY64}} | base64 -d > ${{CF_VOLUME_PATH}}/cosign.key
          - mkdir -p ${{CF_VOLUME_PATH}}/.docker
          - echo ${{DOCKERCONFIG}} | base64 -d > ${{CF_VOLUME_PATH}}/.docker/config.json
-         
+
   get_pr_branch_from_commit:
     title: "Getting the related PR branch that introduced this commit, using GH CLI"
     image: maniator/gh
@@ -130,7 +130,7 @@ steps:
         all:
           onmaster: "'${{CF_BRANCH_TAG_NORMALIZED}}' == 'main'"
     stage: "metadata"
-  
+
   # collectevents:
   #   title: "Collect Events"
   #   stage: "metadata"
@@ -146,7 +146,7 @@ steps:
   #     condition:
   #       all:
   #         onmaster: "'${{CF_BRANCH_TAG_NORMALIZED}}' == 'main'"
-          
+
   # extract_pr_branch:
   #   title: "Extracting the related PR branch of this commit"
   #   image: codefresh/cli
@@ -159,7 +159,7 @@ steps:
   #       all:
   #         onmaster: "'${{CF_BRANCH_TAG_NORMALIZED}}' == 'main'"
   #   stage: "metadata"
-    
+
   reporting:
     title: Reporting
     type: parallel
@@ -197,7 +197,7 @@ steps:
           - rm ${{CF_VOLUME_PATH}}/cosign.key
 
   deployLoanToDev:
-    title: Trigger deployment to QA for Loan services
+    title: Trigger deployment to DEV for Loan services
     type: codefresh-run:1.5.3
     stage: "deploy"
     arguments:
@@ -213,7 +213,7 @@ steps:
           onmaster: "'${{CF_BRANCH_TAG_NORMALIZED}}' == 'main'"
 
   deployTrioToDev:
-    title: Trigger deployment to QA for Loan services
+    title: Trigger deployment to DEV for Loan services
     type: codefresh-run:1.5.3
     stage: "deploy"
     arguments:
