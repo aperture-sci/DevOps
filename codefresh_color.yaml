@@ -169,7 +169,7 @@ steps:
 
   update_dev_manifest:
     description: update the image version for Dev
-    image: color/cli
+    image: codefresh/cli
     working_directory: "/codefresh/volume/gitops_applications"
     stage: dev
     commands:
@@ -218,7 +218,7 @@ steps:
 
   update_qa_manifest:
     description: update the image version for qa
-    image: color/cli
+    image: codefresh/cli
     working_directory: "/codefresh/volume/gitops_applications"
     stage: qa
     commands:
@@ -267,7 +267,7 @@ steps:
 
   update_staging_manifest:
     description: update the image version for staging
-    image: color/cli
+    image: codefresh/cli
     working_directory: "/codefresh/volume/gitops_applications"
     stage: staging
     commands:
@@ -316,7 +316,7 @@ steps:
 
   update_prod_manifest:
     description: update the image version for prod
-    image: color/cli
+    image: codefresh/cli
     working_directory: "/codefresh/volume/gitops_applications"
     stage: prod
     commands:
