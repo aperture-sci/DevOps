@@ -173,7 +173,7 @@ steps:
     working_directory: "/codefresh/volume/gitops_applications"
     stage: dev
     commands:
-      - yq w -i manifests/color/dev/kustomization.yaml 'images[0].newTag' "'${{CF_SHORT_REVISION}}'"
+      - yq w -i manifests/color/dev/kustomization.yaml 'images[0].newTag' "${{CF_SHORT_REVISION}}"
 
   commit_and_push_dev:
     title: Commit Dev changes and push
