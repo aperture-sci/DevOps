@@ -47,7 +47,7 @@ steps:
            display: service
 
   tags:
-    title: "Adding additkonal tags"
+    title: "Adding additional tags"
     type: push
     candidate: ${{build}}
     registry: dockerhub
