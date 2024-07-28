@@ -61,20 +61,24 @@ steps:
               - color: ${{COLOR}}
             display: color
 
-  prepcosign:
-    title: Fetch Cosign and Docker Keys
-    image: ubuntu:lunar
-    stage: metadata
-    commands:
-      - mkdir -p ${{CF_VOLUME_PATH}}/.docker
-      - echo ${{DOCKERCONFIG}} | base64 -d > ${{CF_VOLUME_PATH}}/.docker/config.json
-
-  obtain_id_token:
+  tasks:
+    type: parallel
     stage: "metadata"
-    title: Obtain ID Token
-    type: obtain-oidc-id-token:1.2.3
-    arguments:
-      AUDIENCE: 'sigstore'
+    steps:
+      prepcosign:
+        title: Fetch Cosign and Docker Keys
+        image: ubuntu:lunar
+        stage: metadata
+        commands:
+          - mkdir -p ${{CF_VOLUME_PATH}}/.docker
+          - echo ${{DOCKERCONFIG}} | base64 -d > ${{CF_VOLUME_PATH}}/.docker/config.json
+
+      obtain_id_token:
+        stage: "metadata"
+        title: Obtain ID Token
+        type: obtain-oidc-id-token:1.2.3
+        arguments:
+          AUDIENCE: 'sigstore'
 
   reporting:
     title: Reporting
