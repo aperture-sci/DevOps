@@ -9,7 +9,6 @@ spec:
         revision: HEAD
         directories:
           - path: manifests/trio-app/*
-            exclude: manifests/trio-app/base
   template:
     metadata:
       name: '{{path.basename}}'
