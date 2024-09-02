@@ -13,8 +13,8 @@ spec:
   template:
     metadata:
       annotation:
-        codefresh.io/product: product_name
-      name: cf-101-'{{path.basename}}'
+        codefresh.io/product: cf-101
+      name: cf-101-{{path.basename}}
       finalizers:
         - resources-finalizer.argocd.argoproj.io/foreground
     spec:
