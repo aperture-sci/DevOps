@@ -12,7 +12,9 @@ spec:
         
   template:
     metadata:
-      name: '{{path.basename}}'
+      annotation:
+        codefresh.io/product: product_name
+      name: cf-101-'{{path.basename}}'
       finalizers:
         - resources-finalizer.argocd.argoproj.io/foreground
     spec:
