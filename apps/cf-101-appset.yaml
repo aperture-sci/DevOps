@@ -8,7 +8,8 @@ spec:
         repoURL: https://github.com/aperture-sci/DevOps.git
         revision: HEAD
         directories:
-          - path: manifests/trio-app/*
+          - path: manifests/trio-app/aperture-*
+        
   template:
     metadata:
       name: '{{path.basename}}'
