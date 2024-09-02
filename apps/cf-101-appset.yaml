@@ -12,7 +12,7 @@ spec:
         
   template:
     metadata:
-      annotation:
+      annotations:
         codefresh.io/product: cf-101
       name: cf-101-{{path.basename}}
       finalizers:
