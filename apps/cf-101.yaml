@@ -1,0 +1,44 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: cf-101-appset
+spec:
+  generators:
+    - git:
+        repoURL: https://github.com/aperture-sci/DevOps.git
+        revision: HEAD
+        directories:
+          - path: manifests/trio-app/aperture-*
+        
+  template:
+    metadata:
+      labels:
+        env: '{{path.basename}}'
+      annotations:
+        codefresh.io/product: cf-101
+      name: cf-101-{{path.basename}}
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io/foreground
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/aperture-sci/DevOps.git
+        targetRevision: HEAD
+        path: '{{path}}'
+      destination:
+        name: in-cluster
+        namespace: '{{path.basename}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+          allowEmpty: false
+        syncOptions:
+          - PrunePropagationPolicy=foreground
+          - Replace=false
+          - PruneLast=false
+          - Validate=true
+          - CreateNamespace=true
+          - ApplyOutOfSyncOnly=false
+          - ServerSideApply=true
+          - RespectIgnoreDifferences=false
