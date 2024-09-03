@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        env: {{path.basename}}
+        env: product
       annotations:
         codefresh.io/product: cf-101
       name: cf-101-{{path.basename}}
