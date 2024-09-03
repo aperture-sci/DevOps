@@ -16,4 +16,4 @@ spec:
     spec:
       containers:
         - name: crosstracker
-          image: aperturesci/crosstracker:trioapp-staging-11441
+          image: aperturesci/crosstracker:cf-101-aperture-qa
