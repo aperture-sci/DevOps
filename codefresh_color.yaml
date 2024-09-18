@@ -84,6 +84,7 @@ steps:
     title: Reporting
     type: parallel
     stage: "metadata"
+    fail_fast: false
     steps:
       enrich-image:
         stage: build
