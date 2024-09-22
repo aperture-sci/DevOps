@@ -2,27 +2,26 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: trioapp-dev
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
   annotations:
     argocd.argoproj.io/manifest-generate-paths: /manifests/trio-app/aperture-dev
     codefresh.io/product: trio
     codefresh.io/app-group: trio
 spec:
-  destination:
-    name: 'in-cluster'
-    namespace: dev
+  project: default
   source:
     path: manifests/trio-app/aperture-dev
-    repoURL: 'https://github.com/aperture-sci/DevOps'
+    repoURL: https://github.com/aperture-sci/DevOps
     targetRevision: main
-    # plugin:
-    #   name: kustomize-build-with-helm
-  project: default
+  destination:
+    name: in-cluster
+    namespace: dev
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
     syncOptions:
+      - PrunePropagationPolicy=foreground
+      - Replace=false
+      - PruneLast=false
+      - Validate=true
       - CreateNamespace=true
-      # - ServerSideApply=true
+      - ApplyOutOfSyncOnly=false
+      - ServerSideApply=true
+      - RespectIgnoreDifferences=false
