@@ -13,27 +13,28 @@ spec:
           - cluster: kc-v-qa
             short: qa
             ns: qa
-          # - cluster: kc-v-staging
-          #   short: staging
-          # ns: staging
           - cluster: kc-v-prod
             short: prod
             ns: prod
+          # - cluster: kc-v-staging
+          #   short: staging
+          # ns: staging
+
   template:
     metadata:
       name: trioapp-{{short}}
       finalizers:
         - resources-finalizer.argocd.argoproj.io
       annotations:
-        argocd.argoproj.io/manifest-generate-paths: /manifests/trio-app/aperture-{{short}}
+        argocd.argoproj.io/manifest-generate-paths: '/manifests/trio-app/aperture-{{short}}'
         codefresh.io/product: trio
         codefresh.io/app-group: trio
     spec:
       destination:
-        name: {{cluster}}
-        namespace: {{ns}}
+        name: '{{cluster}}'
+        namespace: '{{ns}}'
       source:
-        path: manifests/trio-app/aperture-{{short}}
+        path: 'manifests/trio-app/aperture-{{short}}'
         repoURL: 'https://github.com/aperture-sci/DevOps'
         targetRevision: main
       project: default
