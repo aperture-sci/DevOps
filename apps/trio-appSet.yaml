@@ -17,7 +17,7 @@ spec:
             short: prod
             ns: prod
           - cluster: kc-v-prod
-            short: prod
+            short: prod-us
             ns: prod
           - cluster: target-asia
             short: prod-asia
