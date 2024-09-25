@@ -30,7 +30,7 @@ spec:
         codefresh.io/app-group: trio
     spec:
       destination:
-        name: 'in-cluster'
+        name: {{cluster}}
         namespace: {{ns}}
       source:
         path: manifests/trio-app/aperture-{{short}}
