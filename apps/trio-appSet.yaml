@@ -16,7 +16,15 @@ spec:
           - cluster: kc-v-prod
             short: prod
             ns: prod
-          # - cluster: kc-v-staging
+          - cluster: kc-v-prod
+            short: prod
+            ns: prod
+          - cluster: target-asia
+            short: prod-asia
+            ns: prod
+          - cluster: target-eu
+            short: prod-eu
+            ns: prod          # - cluster: kc-v-staging
           #   short: staging
           # ns: staging
 
