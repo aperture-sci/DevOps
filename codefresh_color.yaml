@@ -17,6 +17,10 @@ hooks:
           SLACK_TOKEN: ${{LR_SLACK_TOKEN}}
           SLACK_CHANNEL: topic-codefresh-demo
           SLACK_MESSAGE: "CICD build for color failed. See ${{CF_BUILD_URL}}"
+        when:
+          condition:
+            all:
+              alert: "'${{SLACK_ALERT}}' == 'true'"
 
 steps:
   clone:
