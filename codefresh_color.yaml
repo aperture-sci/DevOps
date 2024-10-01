@@ -28,6 +28,7 @@ steps:
     stage: clone
     type: "git-clone"
     depth: 1
+    exclude_blobs: true
     repo: "${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}"
     revision: "${{CF_BRANCH}}"
     git: "github"
@@ -150,6 +151,7 @@ steps:
     repo: aperture-sci/gitops_applications
     revision: "main"
     depth: 1
+    exclude_blobs: true
     stage: dev
 
   update_dev_manifest:
@@ -172,7 +174,7 @@ steps:
       git_user_name: lrochette
       git_user_email: laurent.rochette@codefresh.io
       allow_empty: true
-      rebase: true
+      force_push: true
       add:
         - manifests/color/dev/kustomization.yaml
 
@@ -199,6 +201,7 @@ steps:
     repo: aperture-sci/gitops_applications
     revision: "main"
     depth: 1
+    exclude_blobs: true
     stage: qa
 
   update_qa_manifest:
@@ -221,7 +224,7 @@ steps:
       git_user_name: lrochette
       git_user_email: laurent.rochette@codefresh.io
       allow_empty: true
-      rebase: true
+      force_push: true
       add:
         - manifests/color/qa/kustomization.yaml
 
@@ -248,6 +251,7 @@ steps:
     repo: aperture-sci/gitops_applications
     revision: "main"
     depth: 1
+    exclude_blobs: true
     stage: staging
 
   update_staging_manifest:
@@ -270,7 +274,7 @@ steps:
       git_user_name: lrochette
       git_user_email: laurent.rochette@codefresh.io
       allow_empty: true
-      rebase: true
+      force_push: true
       add:
         - manifests/color/staging/kustomization.yaml
 
@@ -297,6 +301,7 @@ steps:
     repo: aperture-sci/gitops_applications
     revision: "main"
     depth: 1
+    exclude_blobs: true
     stage: prod
 
   update_prod_manifest:
@@ -319,7 +324,7 @@ steps:
       git_user_name: lrochette
       git_user_email: laurent.rochette@codefresh.io
       allow_empty: true
-      rebase: true
+      force_push: true
       add:
         - manifests/color/prod/kustomization.yaml
 
