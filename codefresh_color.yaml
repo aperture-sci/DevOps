@@ -164,7 +164,7 @@ steps:
 
   commit_and_push_dev:
     title: Commit Dev changes and push
-    type: git-commit:0.1.3
+    type: git-commit:0.1.4
     stage: dev
     arguments:
       repo: aperture-sci/gitops_applications
@@ -214,7 +214,7 @@ steps:
 
   commit_and_push_qa:
     title: Commit changes and push
-    type: git-commit:0.1.3
+    type: git-commit:0.1.4
     stage: qa
     arguments:
       repo: aperture-sci/gitops_applications
@@ -264,7 +264,7 @@ steps:
 
   commit_and_push_staging:
     title: Commit changes and push
-    type: git-commit:0.1.3
+    type: git-commit:0.1.4
     stage: staging
     arguments:
       repo: aperture-sci/gitops_applications
@@ -314,7 +314,7 @@ steps:
 
   commit_and_push_prod:
     title: Commit changes and push
-    type: git-commit:0.1.3
+    type: git-commit:0.1.4
     stage: prod
     arguments:
       repo: aperture-sci/gitops_applications
