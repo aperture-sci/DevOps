@@ -2,7 +2,7 @@ buslog:
   image:
     tag: main-6fb1cd0
     repository: docker.io/aperturesci/buslog
-  replicaCount: 3
+  replicaCount: 4
   rollout:
     strategy:
       canary:
