@@ -7,6 +7,7 @@ metadata:
   annotations:
     codefresh.io/product: trio
     codefresh.io/app-group: trio
+    argocd.argoproj.io/manifest-generate-paths: '/manifests/trio-app/aperture-staging
 spec:
   destination:
     name: 'kc-v-staging'
