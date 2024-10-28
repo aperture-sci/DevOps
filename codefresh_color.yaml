@@ -179,10 +179,13 @@ steps:
         - manifests/color/dev/kustomization.yaml
 
   # to be sure to get OutOfSync for Argo Notifications
-  sleep:
-    image: ubuntu
-    commands:
-      - sleep 180
+  approve_dev:
+    stage: dev
+    type: pending-approval
+    timeout:
+      timeUnit: minutes
+      duration: 3
+      finalState: approved
 
   sync_dev:
     type: gitops-argocd-sync:1.4.5
