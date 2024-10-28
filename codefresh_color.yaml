@@ -72,7 +72,7 @@ steps:
     steps:
       prepcosign:
         title: Fetch Cosign and Docker Keys
-        image: ubuntu:lunar
+        image: ubuntu
         stage: metadata
         commands:
           - mkdir -p ${{CF_VOLUME_PATH}}/.docker
@@ -177,6 +177,12 @@ steps:
       force_push: true
       add:
         - manifests/color/dev/kustomization.yaml
+
+  # to be sure to get OutOfSync for Argo Notifications
+  sleep:
+    image: ubuntu
+    commands:
+      - sleep 180
 
   sync_dev:
     type: gitops-argocd-sync:1.4.5
