@@ -13,9 +13,9 @@ spec:
           - cluster: kc-v-qa
             short: qa
             ns: qa
-          # - cluster: kc-v-staging
-          #   short: staging
-          # ns: staging
+          - cluster: kc-v-staging
+            short: staging
+            ns: staging
           - cluster: kc-v-prod
             short: prod-us
             ns: prod
@@ -33,7 +33,7 @@ spec:
       finalizers:
         - resources-finalizer.argocd.argoproj.io
       annotations:
-        argocd.argoproj.io/manifest-generate-paths: '/manifests/trio-app/aperture-{{short}}'
+        argocd.argoproj.io/manifest-generate-paths: '.'
         codefresh.io/product: trio
         codefresh.io/app-group: trio
     spec:
