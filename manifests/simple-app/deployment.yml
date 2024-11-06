@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: webserver-simple
-          image: docker.io/kostiscodefresh/simple-web-app:c88df35
+          image: docker.io/kostiscodefresh/simple-web-app:84f63fc
           ports:
             - containerPort: 8080
