@@ -6,6 +6,7 @@ metadata:
     - resources-finalizer.argocd.argoproj.io/foreground
   annotations:
     codefresh.io/product: billing
+    argocd.argoproj.io/manifest-generate-paths: 'manifests/simple-app-helm'
 spec:
   project: default
   source:
