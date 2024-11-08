@@ -13,9 +13,9 @@ spec:
           - cluster: kc-v-qa
             short: qa
             ns: qa
-          - cluster: kc-v-staging
-            short: staging
-            ns: staging
+          # - cluster: kc-v-staging
+          #   short: staging
+          #   ns: staging
           - cluster: kc-v-prod
             short: prod-us
             ns: prod
