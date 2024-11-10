@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  namespace: gitops
+  name: interest-prod-no-appset
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io/foreground
+  annotations:
+    argocd.argoproj.io/manifest-generate-paths: manifests/interest/prod
+    codefresh.io/app-group: loan
+    codefresh.io/product: interest-no-appset
+  labels:
+    codefresh.io/product: interest-no-appset
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/aperture-sci/promotions-demo.git
+    targetRevision: main
+    path: manifests/interest/prod
+  destination:
+    name: kc-v-prod
+    namespace: prod-no-appset
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - PrunePropagationPolicy=foreground
+      - Replace=false
+      - PruneLast=false
+      - Validate=true
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=false
