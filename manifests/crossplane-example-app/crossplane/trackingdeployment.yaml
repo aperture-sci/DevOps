@@ -16,4 +16,4 @@ spec:
     spec:
       containers:
         - name: crosstracker
-          image: aperturesci/crosstracker:promote-cf-101-aperture-prod-asia-cf-101-aperture-prod-us
+          image: aperturesci/crosstracker:promote-trioapp-staging-trioapp-prod-eu
