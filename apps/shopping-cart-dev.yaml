@@ -11,7 +11,7 @@ spec:
     targetRevision: 1.0.0
     chart: minichart
   destination:
-    name: aperture-qa
+    name: kc-v-qa
     namespace: default
   syncPolicy:
     automated:

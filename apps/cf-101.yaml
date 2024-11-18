@@ -2,6 +2,8 @@ apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
   name: cf-101-appset
+  annotations:
+    test: test
 spec:
   generators:
     - git:

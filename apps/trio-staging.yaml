@@ -1,20 +1,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: trioapp-dev
+  name: trioapp-staging
   finalizers:
     - resources-finalizer.argocd.argoproj.io
   annotations:
-    argocd.argoproj.io/manifest-generate-paths: /manifests/trio-app/aperture-dev
     codefresh.io/product: trio
     codefresh.io/app-group: trio
+    argocd.argoproj.io/manifest-generate-paths: '.'
 spec:
   destination:
-    name: 'in-cluster'
-    namespace: dev
+    name: 'kc-v-staging'
+    namespace: default
   source:
-    path: manifests/trio-app/aperture-dev
-    repoURL: 'https://github.com/aperture-sci/DevOps'
+    path: manifests/trio-app/aperture-staging
+    repoURL: 'https://github.com/aperture-sci/DevOps-staging'
     targetRevision: main
     # plugin:
     #   name: kustomize-build-with-helm

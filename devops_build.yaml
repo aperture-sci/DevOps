@@ -164,7 +164,6 @@ steps:
     title: Reporting
     type: parallel
     stage: "metadata"
-    fail_fast: false
     when:
       condition:
         all:
@@ -190,7 +189,6 @@ steps:
       cosign:
         title: Cosign Image
         image: bitnami/cosign:2
-        fail_fast: false
         commands:
           - cp -r ${{CF_VOLUME_PATH}}/.docker /
           - cosign sign --key ${{CF_VOLUME_PATH}}/cosign.key aperturesci/${{BUILDNAME}}:${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}} -a CICD=Codefresh --yes
