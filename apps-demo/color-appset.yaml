@@ -1,0 +1,49 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: color-demo
+  namespace: gitops
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: in-cluster
+            short: dev
+          # - cluster: kc-v-qa
+          #   short: qa
+          # - cluster: kc-v-staging
+          #   short: staging
+          # - cluster: kc-v-prod
+          #   short: prod
+  template:
+    metadata:
+      name: 'color-demo-{{short}}'
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io/foreground
+      annotations:
+        notifications.argoproj.io/subscribe.outofsync.slack: topic-codefresh-demo
+        argocd.argoproj.io/manifest-generate-paths: '/manifests/color/{{short}}'
+        codefresh.io/product: color
+        codefresh.io/app-group: color
+      # labels:
+      #   codefresh.io/product: color
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/aperture-sci/gitops_applications.git
+        targetRevision: main
+        path: 'manifests/color/{{short}}'
+      destination:
+        name: '{{cluster}}'
+        namespace: '{{short}}'
+      syncPolicy:
+        # automated:
+        #   prune: true
+        #   selfHeal: true
+        syncOptions:
+          - PrunePropagationPolicy=foreground
+          - Replace=false
+          - PruneLast=false
+          - Validate=true
+          - CreateNamespace=true
+          - ApplyOutOfSyncOnly=false
