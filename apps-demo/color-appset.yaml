@@ -5,10 +5,15 @@ metadata:
   namespace: gitops
 spec:
   generators:
-    - list:
-        elements:
-          - cluster: in-cluster
-            short: dev
+    - clusters:
+        selector:
+          matcheExpressions:
+            - key: shortname
+              operator: Exists
+    # - list:
+    #     elements:
+    #       - cluster: demo-dev
+    #         short: dev
           # - cluster: kc-v-qa
           #   short: qa
           # - cluster: kc-v-staging
@@ -17,12 +22,12 @@ spec:
           #   short: prod
   template:
     metadata:
-      name: 'color-demo-{{short}}'
+      name: 'color-demo-{{metadata.labels.shortname}}'
       finalizers:
         - resources-finalizer.argocd.argoproj.io/foreground
       annotations:
         notifications.argoproj.io/subscribe.outofsync.slack: topic-codefresh-demo
-        argocd.argoproj.io/manifest-generate-paths: '/manifests/color/{{short}}'
+        argocd.argoproj.io/manifest-generate-paths: '/manifests/color/{{metadata.labels.shortname}}'
         codefresh.io/product: color
         codefresh.io/app-group: color
       # labels:
@@ -32,10 +37,10 @@ spec:
       source:
         repoURL: https://github.com/aperture-sci/gitops_applications.git
         targetRevision: main
-        path: 'manifests/color/{{short}}'
+        path: 'manifests/color/{{metadata.labels.shortname}}'
       destination:
         name: '{{cluster}}'
-        namespace: '{{short}}'
+        namespace: '{{metadata.labels.shortname}}'
       syncPolicy:
         # automated:
         #   prune: true
