@@ -5,11 +5,12 @@ metadata:
 
 spec:
   generators:
-    - elements:
-      - cluster: demo-dev
-        short: dev
-      - cluster: prod-east
-        short: prod
+    - list:
+        elements:
+          - cluster: demo-dev
+            short: dev
+          - cluster: prod-east
+            short: prod
   template:
     metadata:
       name: globex-{{short}}
