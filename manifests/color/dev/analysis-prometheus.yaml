@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: analysis-prometheus
+spec:
+  args:
+  # - name: api-token
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: basic-auth
+  #       key: auth
+  - name: ingress
+  metrics:
+  - name: success-rate
+    interval: 10s
+    count: 10
+    successCondition:  result[0] > 0.90 #len(result) == 0 ||
+    provider:
+      prometheus:
+        address: http://prometheus-server.monitoring:9090
+        query: >
+          sum(
+            rate(nginx_ingress_controller_requests{ingress="{{args.ingress}}",status!~"[4-5].*"}[20s])
+            /
+            sum(rate(nginx_ingress_controller_requests{ingress="{{args.ingress}}"}[20s]))
+          )
