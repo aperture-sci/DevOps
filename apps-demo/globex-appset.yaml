@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: globex
+  namespace: demo
+spec:
+  generators:
+    - elements:
+      - cluster: demo-dev
+        short: dev
+      - cluster: demo-east
+        short: prod
+  template:
+    metadata:
+      name: globex-{{short}}
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io/foreground
+      annotations:
+        argocd.argoproj.io/manifest-generate-paths: '.'
+        codefresh.io/product: globex
+        codefresh.io/app-group: globex
+    spec:
+      destination:
+        namespace: {{short}}
+        name: {{cluster}}
+      project: default
+      source:
+        path: ./kustomize/globex/overlays/dev
+        repoURL: https://github.com/aperture-sci/DevOps.git
+        targetRevision: main
+      syncPolicy:
+        syncOptions:
+        - CreateNamespace=true
+        automated:
+          prune: true
+          selfHeal: true

@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: globex-dev
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /globex/$2
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: kubecon.sales-dev.codefresh.io
+      http:
+        paths:
+          - path: /globex-dev(/|$)(.*)
+            backend:
+              service:
+                name: globex
+                port:
+                  number: 80
+            pathType: ImplementationSpecific

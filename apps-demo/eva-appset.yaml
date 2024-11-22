@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: eva
+  namespace: gitops
+
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: demo-dev
+            short: dev
+          - cluster: demo-qa
+            short: qa
+  template:
+    metadata:
+      name: 'eva-{{short}}'
+      annotations:
+        argocd.argoproj.io/manifest-generate-paths: '/manifests/eva/{{short}}'
+        codefresh.io/product: example-voting-app
+        codefresh.io/app-group: eva
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/aperture-sci/DevOps.git
+        targetRevision: main
+        path: manifests/eva
+        helm:
+          valueFiles:
+            - "{{short}}/values.yaml"
+      destination:
+        namespace: '{{short}}'
+        name: '{{cluster}}'
+      syncPolicy:
+        automated:
+          allowEmpty: true
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - Validate=false
+          - CreateNamespace=true

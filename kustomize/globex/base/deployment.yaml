@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: globex
+  name: globex
+spec:
+  replicas: xxx
+  selector:
+    matchLabels:
+      app: globex
+  template:
+    metadata:
+      labels:
+        app: globex
+    spec:
+      containers:
+        - name: globex
+          image: aperturesci/globex:xxx
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
