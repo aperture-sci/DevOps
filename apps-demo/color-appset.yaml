@@ -27,7 +27,7 @@ spec:
         - resources-finalizer.argocd.argoproj.io/foreground
       annotations:
         notifications.argoproj.io/subscribe.outofsync.slack: topic-codefresh-demo
-        argocd.argoproj.io/manifest-generate-paths: '/manifests/color/{{metadata.labels.shortname}}'
+        argocd.argoproj.io/manifest-generate-paths: '.'
         codefresh.io/product: color
         codefresh.io/app-group: color
       # labels:
