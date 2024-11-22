@@ -39,7 +39,7 @@ spec:
         targetRevision: main
         path: '/manifests/color/{{metadata.labels.shortname}}'
       destination:
-        name: '{{cluster}}'
+        name: '{{name}}'
         namespace: '{{metadata.labels.shortname}}'
       syncPolicy:
         # automated:
