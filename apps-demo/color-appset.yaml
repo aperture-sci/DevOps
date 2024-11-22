@@ -10,7 +10,9 @@ spec:
           matchExpressions:
             - key: shortname
               operator: Exists
-    # - list:
+          matchLabels:
+            type: "non-prod"
+
     #     elements:
     #       - cluster: demo-dev
     #         short: dev
@@ -35,7 +37,7 @@ spec:
     spec:
       project: default
       source:
-        repoURL: https://github.com/aperture-sci/gitops_applications.git
+        repoURL: https://github.com/aperture-sci/DevOps.git
         targetRevision: main
         path: 'manifests/color/{{metadata.labels.shortname}}'
       destination:
