@@ -1,4 +1,4 @@
-version: "1.0"
+DevOpsversion: "1.0"
 stages:
   - clone
   - build
@@ -148,7 +148,7 @@ steps:
     title: "Cloning repository for DEV"
     type: "git-clone"
     git: "github"
-    repo: aperture-sci/gitops_applications
+    repo: aperture-sci/DevOps
     revision: "main"
     depth: 1
     exclude_blobs: true
@@ -167,9 +167,9 @@ steps:
     type: git-commit:0.1.4
     stage: dev
     arguments:
-      repo: aperture-sci/gitops_applications
+      repo: aperture-sci/DevOps
       git: github-lr
-      working_directory: /codefresh/volume/gitops_applications
+      working_directory: /codefresh/volume/DevOps
       commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
       git_user_name: lrochette
       git_user_email: laurent.rochette@codefresh.io
@@ -207,7 +207,7 @@ steps:
     title: "Cloning repository for QA"
     type: "git-clone"
     git: "github"
-    repo: aperture-sci/gitops_applications
+    repo: aperture-sci/DevOps
     revision: "main"
     depth: 1
     exclude_blobs: true
@@ -216,7 +216,7 @@ steps:
   update_qa_manifest:
     description: update the image version for qa
     image: codefresh/cli
-    working_directory: "/codefresh/volume/gitops_applications"
+    working_directory: "/codefresh/volume/DevOps"
     stage: qa
     commands:
       - yq -i -y '.images[0].newTag="${{CF_SHORT_REVISION}}"' manifests/color/qa/kustomization.yaml
@@ -226,9 +226,9 @@ steps:
     type: git-commit:0.1.4
     stage: qa
     arguments:
-      repo: aperture-sci/gitops_applications
+      repo: aperture-sci/DevOps
       git: github-lr
-      working_directory: "/codefresh/volume/gitops_applications"
+      working_directory: "/codefresh/volume/DevOps"
       commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
       git_user_name: lrochette
       git_user_email: laurent.rochette@codefresh.io
@@ -257,7 +257,7 @@ steps:
     title: "Cloning repository for staging"
     type: "git-clone"
     git: "github"
-    repo: aperture-sci/gitops_applications
+    repo: aperture-sci/DevOps
     revision: "main"
     depth: 1
     exclude_blobs: true
@@ -266,7 +266,7 @@ steps:
   update_staging_manifest:
     description: update the image version for staging
     image: codefresh/cli
-    working_directory: "/codefresh/volume/gitops_applications"
+    working_directory: "/codefresh/volume/DevOps"
     stage: staging
     commands:
       - yq -i -y '.images[0].newTag="${{CF_SHORT_REVISION}}"' manifests/color/staging/kustomization.yaml
@@ -276,9 +276,9 @@ steps:
     type: git-commit:0.1.4
     stage: staging
     arguments:
-      repo: aperture-sci/gitops_applications
+      repo: aperture-sci/DevOps
       git: github-lr
-      working_directory: "/codefresh/volume/gitops_applications"
+      working_directory: "/codefresh/volume/DevOps"
       commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
       git_user_name: lrochette
       git_user_email: laurent.rochette@codefresh.io
@@ -307,7 +307,7 @@ steps:
   #   title: "Cloning repository for PROD"
   #   type: "git-clone"
   #   git: "github"
-  #   repo: aperture-sci/gitops_applications
+  #   repo: aperture-sci/DevOps
   #   revision: "main"
   #   depth: 1
   #   exclude_blobs: true
@@ -316,7 +316,7 @@ steps:
   # update_prod_manifest:
   #   description: update the image version for prod
   #   image: codefresh/cli
-  #   working_directory: "/codefresh/volume/gitops_applications"
+  #   working_directory: "/codefresh/volume/DevOps"
   #   stage: prod
   #   commands:
   #     - yq -i -y '.images[0].newTag="${{CF_SHORT_REVISION}}"' manifests/color/prod/kustomization.yaml
@@ -326,7 +326,7 @@ steps:
   #   type: git-commit:0.1.4
   #   stage: prod
   #   arguments:
-  #     repo: aperture-sci/gitops_applications
+  #     repo: aperture-sci/DevOps
   #     git: github-lr
   #     working_directory: "/codefresh/volume/gitops_applications"
   #     commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
