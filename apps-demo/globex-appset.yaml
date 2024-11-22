@@ -8,7 +8,7 @@ spec:
     - elements:
       - cluster: demo-dev
         short: dev
-      - cluster: demo-east
+      - cluster: prod-east
         short: prod
   template:
     metadata:
