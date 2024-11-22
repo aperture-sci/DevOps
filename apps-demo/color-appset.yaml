@@ -37,7 +37,7 @@ spec:
       source:
         repoURL: https://github.com/aperture-sci/gitops_applications.git
         targetRevision: main
-        path: '/manifests/color/{{metadata.labels.shortname}}'
+        path: 'manifests/color/{{metadata.labels.shortname}}'
       destination:
         name: '{{name}}'
         namespace: '{{metadata.labels.shortname}}'
