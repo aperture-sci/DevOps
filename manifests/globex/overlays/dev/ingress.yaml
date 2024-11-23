@@ -4,6 +4,7 @@ metadata:
   name: globex-dev
   annotations:
     kubernetes.io/ingress.class: nginx-public
+    ingress.kubernetes.io/app-root: /
     link.argocd.argoproj.io/external-link: https://globex-dev.cs.sandbox.codefresh.io/
 
 spec:
