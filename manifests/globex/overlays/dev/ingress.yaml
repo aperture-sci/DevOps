@@ -3,14 +3,16 @@ kind: Ingress
 metadata:
   name: globex-dev
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /globex/$2
+    kubernetes.io/ingress.class: nginx-public
+    link.argocd.argoproj.io/external-link: https://globex-dev.cs.sandbox.codefresh.io/
+
 spec:
   ingressClassName: nginx
   rules:
-    - host: kubecon.sales-dev.codefresh.io
+    - host: globex-dev.cs.sandbox.codefresh.io
       http:
         paths:
-          - path: /globex-dev(/|$)(.*)
+          - path: /
             backend:
               service:
                 name: globex
