@@ -4,9 +4,6 @@ metadata:
   name: globex
 
 spec:
-  goTemplate: true
-  goTemplateOptions: ["missingkey=error"]
-
   generators:
   - list:
       elements:
