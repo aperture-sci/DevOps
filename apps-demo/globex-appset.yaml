@@ -4,6 +4,9 @@ metadata:
   name: globex
 
 spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+
   generators:
   - list:
       elements:
@@ -13,7 +16,7 @@ spec:
         short: prod
   template:
     metadata:
-      name: globex-{{short}}
+      name: 'globex-{{short}}'
       finalizers:
         - resources-finalizer.argocd.argoproj.io/foreground
       annotations:
@@ -22,8 +25,8 @@ spec:
         codefresh.io/app-group: globex
     spec:
       destination:
-        namespace: {{short}}
-        name: {{cluster}}
+        namespace: '{{short}}'
+        name: '{{cluster}}'
       project: default
       source:
         path: ./kustomize/globex/overlays/dev
