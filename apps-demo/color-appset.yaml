@@ -15,7 +15,7 @@ spec:
 
   template:
     metadata:
-      name: 'color-demo-{{metadata.labels.shortname}}'
+      name: 'color-{{metadata.labels.shortname}}'
       finalizers:
         - resources-finalizer.argocd.argoproj.io/foreground
       annotations:

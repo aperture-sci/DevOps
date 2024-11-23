@@ -192,7 +192,7 @@ steps:
     title: Sync ArgoCD app in DEV and wait
     stage: dev
     arguments:
-      RUNTIME: gitops
+      RUNTIME: demo
       APPLICATION: color-dev
 
   approve_qa:
@@ -242,7 +242,7 @@ steps:
     title: Sync ArgoCD app in QA and  wait
     stage: qa
     arguments:
-      RUNTIME: gitops
+      RUNTIME: demo
       APPLICATION: color-qa
 
   approve_staging:
@@ -292,7 +292,7 @@ steps:
     type: gitops-argocd-sync:1.4.5
     stage: staging
     arguments:
-      RUNTIME: gitops
+      RUNTIME: demo
       APPLICATION: color-staging
 
   # approve_prod:
@@ -342,5 +342,5 @@ steps:
   #   type: gitops-argocd-sync:1.4.5
   #   stage: prod
   #   arguments:
-  #     RUNTIME: gitops
+  #     RUNTIME: demo
   #     APPLICATION: color-prod
