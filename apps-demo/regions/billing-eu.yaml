@@ -14,7 +14,7 @@ spec:
     repoURL: https://github.com/aperture-sci/DevOps.git
     targetRevision: HEAD
   destination:
-    name: target-eu
+    name: prod-eu
     namespace: default
   syncPolicy:
     automated:

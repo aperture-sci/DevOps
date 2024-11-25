@@ -15,7 +15,7 @@ spec:
     repoURL: https://github.com/aperture-sci/DevOps.git
     targetRevision: HEAD
   destination:
-    name: target-asia
+    name: prod-asia
     namespace: default
   syncPolicy:
     automated:

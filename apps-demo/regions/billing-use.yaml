@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: billing-usw
+  name: billing-use
   finalizers:
     - resources-finalizer.argocd.argoproj.io/foreground
   annotations:
@@ -14,7 +14,7 @@ spec:
     repoURL: https://github.com/aperture-sci/DevOps.git
     targetRevision: HEAD
   destination:
-    name: target-usw
+    name: prod-east
     namespace: default
   syncPolicy:
     automated:
