@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  replicas: 4
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: nginx
+  workloadRef:                                 # Reference an existing Deployment using workloadRef field
+    apiVersion: apps/v1
+    kind: Deployment
+    name:  nginx-deployment
+  strategy:
+    canary:
+      stableService: nginx-ro
+      canaryService: nginx-preview
+      steps:
+      - setWeight: 50
+      - analysis:
+          templates:
+          - templateName: nginx-scan
+      - setWeight: 100
+---

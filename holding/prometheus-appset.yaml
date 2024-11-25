@@ -1,0 +1,59 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: prometheus
+  namespace: gitops
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: kc-v-dev
+            short: dev
+          - cluster: kc-v-qa
+            short: qa
+          - cluster: kc-v-staging
+            short: staging
+          - cluster: kc-v-prod
+            short: prod
+  template:
+    metadata:
+      name: 'prometheus-{{short}}'
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io/foreground
+      annotations:
+        codefresh.io/product: prometheus
+        codefresh.io/app-group: color
+
+    spec:
+      project: default
+      source:
+        chart: prometheus
+        repoURL: https://prometheus-community.github.io/helm-charts
+        targetRevision: 25.26.0
+        helm:
+          releaseName: prometheus
+          values: |
+            server:
+              baseURL: https://prometheus.{{short}}.kubecon.sales-dev.codefresh.io
+              ingress:
+                enabled: true
+                ingressClassName: nginx
+                hosts:
+                  - prometheus.{{short}}.kubecon.sales-dev.codefresh.io
+            alertmanager:
+              enabled: false
+            kube-state-metrics:
+              enabled: false
+            prometheus-node-exporter:
+              enabled: false
+            prometheus-pushgateway:
+              enabled: false
+      destination:
+        name: '{{cluster}}'
+        namespace: 'monitoring'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true

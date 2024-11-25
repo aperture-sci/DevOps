@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx-privileged
+        image: cgr.dev/chainguard/nginx:latest
+        # cgr.dev/chainguard/nginx:latest
+        # nginx:1.25.4
+        # nginx:1.15.2
+        ports:
+        - containerPort: 80
+        securityContext:
+          allowPrivilegeEscalation: true
+  strategy:
+    canary:
+      stableService: nginx-ro
+      canaryService: nginx-preview
+      steps:
+      - setWeight: 50
+      - analysis:
+          templates:
+          - templateName: nginx-scan
+      - setWeight: 80
+      - pause: {duration: 10s}

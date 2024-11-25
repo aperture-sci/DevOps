@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nginx-ks
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: nginx-ks
+  source:
+    path: manifests/nginx
+    repoURL: 'https://github.com/aperture-sci/gitops_applications'
+    targetRevision: main
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      # - ServerSideApply=true

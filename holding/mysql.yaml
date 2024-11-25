@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mysql-ks
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    codefresh.io/product: mysql
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: mysql
+  source:
+    path: manifests/mysql
+    repoURL: 'https://github.com/aperture-sci/gitops_applications'
+    targetRevision: main
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      # - ServerSideApply=true

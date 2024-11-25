@@ -1,0 +1,69 @@
+kind: AnalysisTemplate
+apiVersion: argoproj.io/v1alpha1
+metadata:
+  name: mysql-scan
+spec:
+  metrics:
+  - name: mysql-scan
+    provider:
+      job:
+        spec:
+          # successfulJobsHistoryLimit: 1
+          # failedJobsHistoryLimit: 1
+          ttlSecondsAfterFinished: 86400
+          template:
+            spec:
+              serviceAccountName: kubescape-scan
+              containers:
+                - name: kubescape
+                  image: quay.io/kubescape/kubescape-cli:v3.0.4
+                  command: ["kubescape"]
+                  args:
+                  - scan
+                  - workload
+                  - --severity-threshold=low
+                  - --namespace=mysql
+                  - Deployment/mysql-ref-deployment
+                  env:
+                    - name: VERBOSE
+                      value: "on"
+                    - name: FRAMEWORKS
+                      value: MITRE
+                # - name: shell
+                #   image: quay.io/kubescape/kubescape-cli:v3.0.4
+                #   # alpine:3.19.1
+                #   command: ["/busybox/sh", "-c"]
+                #   args:
+                #     - >
+                #       echo "kubescape is running ";
+                #       kubescape scan  workload --severity-threshold=low --namespace=mysql Deployment/mysql-ref-deployment | tee /tmp/kubescape.log;
+                #       exitcode=$? ;
+                #       critical=`egrep '\* \d+ Critical' /tmp/kubescape.log | cut -d' ' -f2`;
+                #       echo "critical $critical";
+                #       exit $critical
+              #if [ $critical > 0 ] ; then echo "error" ; exit 1; else echo "OK" ; exit 0 ; fi
+
+              # script:
+              #   image: quay.io/kubescape/kubescape-cli:v3.0.4
+              #   command: [ sh ]
+              #   source: |
+              #     ps
+              #     ls /bin/*sh || true
+              #     ls /usr/local/bin/*sh || true
+              #     find / -name bash || true
+              #     kubescape scan  workload --severity-threshold=low --namespace=mysql Rollout/mysql-rollout
+              #     echo "Exit code $?"
+
+                # - name: ACCOUNT
+                #   valueFrom:
+                #     secretKeyRef:
+                #       name:  armo-secret
+                #       key: account
+                # - name: ACCESS_KEY
+                #   valueFrom:
+                #     secretKeyRef:
+                #       name:  armo-secret
+                #       key: access-key
+
+              restartPolicy: Never
+          backoffLimit: 1

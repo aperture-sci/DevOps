@@ -1,0 +1,48 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: mysql-rollout
+spec:
+  replicas: 4
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: mysql
+  workloadRef:                                 # Reference an existing Deployment using workloadRef field
+    apiVersion: apps/v1
+    kind: Deployment
+    name:  mysql-ref-deployment
+  strategy:
+    canary:
+      stableService: mysql
+      canaryService: mysql-preview
+      steps:
+      - setWeight: 50
+      - pause: {duration: 10s}
+      - analysis:
+          templates:
+          - templateName: mysql-scan
+      - setWeight: 100
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-ref-deployment
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:8.0.22
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: your_password_here

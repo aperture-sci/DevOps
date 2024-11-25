@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kubescape
+  namespace: gitops
+  labels:
+    app: kubescape
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+
+spec:
+  destination:
+    namespace: kubescape
+    server: https://kubernetes.default.svc
+  project: default
+  sources:
+  - chart: kubescape-operator
+    repoURL: https://kubescape.github.io/helm-charts
+    targetRevision: 1.18.4
+    helm:
+      releaseName: kubescape
+      valueFiles:
+        - $values/helm/kubescape/values.yaml
+  - repoURL: https://github.com/aperture-sci/gitops_applications
+    targetRevision: main
+    ref: values
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true

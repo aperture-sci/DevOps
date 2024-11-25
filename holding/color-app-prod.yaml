@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: color-prod
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/manifest-generate-paths: /manifests/color/aperture-prod
+    codefresh.io/product: color-app
+spec:
+  destination:
+    name: 'kc-v-prod'
+    namespace: prod
+  source:
+    path: manifests/color/prod
+    repoURL: 'https://github.com/aperture-sci/gitops_applications'
+    targetRevision: main
+  project: default
+  syncPolicy:
+    # automated:
+    #   prune: true
+    #   selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

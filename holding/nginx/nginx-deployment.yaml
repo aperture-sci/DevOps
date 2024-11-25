@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx-demo
+        image: cgr.dev/chainguard/nginx:latest
+        # cgr.dev/chainguard/nginx:latest
+        # nginx:1.25.4
+        # nginx:1.15.2
+        securityContext:
+          allowPrivilegeEscalation: false
+        resources:
+          limits:
+            cpu: 1
+            memory: 1024Mi
+        ports:
+        - containerPort: 80
