@@ -1,0 +1,211 @@
+apiVersion: argoproj.io/v1alpha1
+kind: EventSource
+metadata:
+  name: promotion-listener
+spec:
+  eventBusName: codefresh-eventbus
+  replicas: 1
+  resource:
+
+    #############################
+    # Loans
+    #############################
+
+    loans-qa:
+      eventTypes:
+        - UPDATE
+      filter:
+        fields:
+          - key: metadata.name
+            operation: ==
+            value: loans-qa
+          - key: status.sync.status
+            operation: ==
+            value: OutOfSync
+      group: argoproj.io
+      namespace: gitops
+      resource: applications
+      version: v1alpha1
+    loans-staging:
+      eventTypes:
+        - UPDATE
+      filter:
+        fields:
+          - key: metadata.name
+            operation: ==
+            value: loans-staging
+          - key: status.sync.status
+            operation: ==
+            value: OutOfSync
+      group: argoproj.io
+      namespace: gitops
+      resource: applications
+      version: v1alpha1
+    loans-production:
+      eventTypes:
+        - UPDATE
+      filter:
+        fields:
+          - key: metadata.name
+            operation: ==
+            value: loans-production
+          - key: status.sync.status
+            operation: ==
+            value: OutOfSync
+      group: argoproj.io
+      namespace: gitops
+      resource: applications
+      version: v1alpha1
+
+    #############################
+    # Accounts
+    #############################
+
+    accounts-qa:
+      eventTypes:
+        - UPDATE
+      filter:
+        fields:
+          - key: metadata.name
+            operation: ==
+            value: accounts-qa
+          - key: status.sync.status
+            operation: ==
+            value: OutOfSync
+      group: argoproj.io
+      namespace: gitops
+      resource: applications
+      version: v1alpha1
+    accounts-staging:
+      eventTypes:
+        - UPDATE
+      filter:
+        fields:
+          - key: metadata.name
+            operation: ==
+            value: accounts-staging
+          - key: status.sync.status
+            operation: ==
+            value: OutOfSync
+      group: argoproj.io
+      namespace: gitops
+      resource: applications
+      version: v1alpha1
+    accounts-production:
+      eventTypes:
+        - UPDATE
+      filter:
+        fields:
+          - key: metadata.name
+            operation: ==
+            value: accounts-production
+          - key: status.sync.status
+            operation: ==
+            value: OutOfSync
+      group: argoproj.io
+      namespace: gitops
+      resource: applications
+      version: v1alpha1
+
+    #############################
+    # Membership
+    #############################
+
+    membership-qa:
+      eventTypes:
+        - UPDATE
+      filter:
+        fields:
+          - key: metadata.name
+            operation: ==
+            value: membership-qa
+          - key: status.sync.status
+            operation: ==
+            value: OutOfSync
+      group: argoproj.io
+      namespace: gitops
+      resource: applications
+      version: v1alpha1
+    membership-staging:
+      eventTypes:
+        - UPDATE
+      filter:
+        fields:
+          - key: metadata.name
+            operation: ==
+            value: membership-staging
+          - key: status.sync.status
+            operation: ==
+            value: OutOfSync
+      group: argoproj.io
+      namespace: gitops
+      resource: applications
+      version: v1alpha1
+    membership-production:
+      eventTypes:
+        - UPDATE
+      filter:
+        fields:
+          - key: metadata.name
+            operation: ==
+            value: membership-production
+          - key: status.sync.status
+            operation: ==
+            value: OutOfSync
+      group: argoproj.io
+      namespace: gitops
+      resource: applications
+      version: v1alpha1
+
+    #############################
+    # Orders
+    #############################
+
+    orders-qa:
+      eventTypes:
+        - UPDATE
+      filter:
+        fields:
+          - key: metadata.name
+            operation: ==
+            value: orders-qa
+          - key: status.sync.status
+            operation: ==
+            value: OutOfSync
+      group: argoproj.io
+      namespace: gitops
+      resource: applications
+      version: v1alpha1
+    orders-staging:
+      eventTypes:
+        - UPDATE
+      filter:
+        fields:
+          - key: metadata.name
+            operation: ==
+            value: orders-staging
+          - key: status.sync.status
+            operation: ==
+            value: OutOfSync
+      group: argoproj.io
+      namespace: gitops
+      resource: applications
+      version: v1alpha1
+    orders-production:
+      eventTypes:
+        - UPDATE
+      filter:
+        fields:
+          - key: metadata.name
+            operation: ==
+            value: orders-production
+          - key: status.sync.status
+            operation: ==
+            value: OutOfSync
+      group: argoproj.io
+      namespace: gitops
+      resource: applications
+      version: v1alpha1
+
+  template:
+    serviceAccountName: codefresh-sa

@@ -1,0 +1,417 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: promotion-workflow-runner
+spec:
+  template:
+    serviceAccountName: argo-server
+  eventBusName: codefresh-eventbus
+  dependencies:
+    ##############################
+    # Loans
+    ##############################
+
+    - name: loans-qa
+      eventName: loans-qa
+      eventSourceName: promotion-listener
+      filters:
+        script: |-
+          if event.body.status.sync.revision ~= event.oldBody.status.sync.revision then return true else return false end
+    - name: loans-staging
+      eventName: loans-staging
+      eventSourceName: promotion-listener
+      filters:
+        script: |-
+          if event.body.status.sync.revision ~= event.oldBody.status.sync.revision then return true else return false end
+    - name: loans-production
+      eventName: loans-production
+      eventSourceName: promotion-listener
+      filters:
+        script: |-
+          if event.body.status.sync.revision ~= event.oldBody.status.sync.revision then return true else return false end
+
+    ##############################
+    # Accounts
+    ##############################
+
+    - name: accounts-qa
+      eventName: accounts-qa
+      eventSourceName: promotion-listener
+      filters:
+        script: |-
+          if event.body.status.sync.revision ~= event.oldBody.status.sync.revision then return true else return false end
+    - name: accounts-staging
+      eventName: accounts-staging
+      eventSourceName: promotion-listener
+      filters:
+        script: |-
+          if event.body.status.sync.revision ~= event.oldBody.status.sync.revision then return true else return false end
+    - name: accounts-production
+      eventName: accounts-production
+      eventSourceName: promotion-listener
+      filters:
+        script: |-
+          if event.body.status.sync.revision ~= event.oldBody.status.sync.revision then return true else return false end
+
+    ##############################
+    # Membership
+    ##############################
+
+    - name: membership-qa
+      eventName: membership-qa
+      eventSourceName: promotion-listener
+      filters:
+        script: |-
+          if event.body.status.sync.revision ~= event.oldBody.status.sync.revision then return true else return false end
+    - name: membership-staging
+      eventName: membership-staging
+      eventSourceName: promotion-listener
+      filters:
+        script: |-
+          if event.body.status.sync.revision ~= event.oldBody.status.sync.revision then return true else return false end
+    - name: membership-production
+      eventName: membership-production
+      eventSourceName: promotion-listener
+      filters:
+        script: |-
+          if event.body.status.sync.revision ~= event.oldBody.status.sync.revision then return true else return false end
+
+    ##############################
+    # Orders
+    ##############################
+
+    - name: orders-qa
+      eventName: orders-qa
+      eventSourceName: promotion-listener
+      filters:
+        script: |-
+          if event.body.status.sync.revision ~= event.oldBody.status.sync.revision then return true else return false end
+    - name: orders-staging
+      eventName: orders-staging
+      eventSourceName: promotion-listener
+      filters:
+        script: |-
+          if event.body.status.sync.revision ~= event.oldBody.status.sync.revision then return true else return false end
+    - name: orders-production
+      eventName: orders-production
+      eventSourceName: promotion-listener
+      filters:
+        script: |-
+          if event.body.status.sync.revision ~= event.oldBody.status.sync.revision then return true else return false end
+     
+
+  triggers:
+    - template:
+        name: post-promotion-wf
+        conditions: >-
+          loans-qa || loans-staging || loans-production || accounts-qa || accounts-staging || accounts-production || membership-qa || membership-staging || membership-production || orders-qa || orders-staging || orders-production
+        argoWorkflow:
+          operation: submit
+          source:
+            resource:
+              apiVersion: argoproj.io/v1alpha1
+              kind: Workflow
+              metadata:
+                generateName: post-promotion-wf-
+                annotations:
+                  codefresh.io/workflow-origin: promotion # identifies this workflow as promotion workflow
+              spec:
+                arguments:
+                  parameters:
+                    - name: APP_NAME
+                    - name: APP_NAMESPACE
+                workflowTemplateRef:
+                  name: post-promotion-poc
+          parameters:
+
+            ##############################
+            # Loans
+            ##############################
+
+            # loans-qa
+
+            - src:
+                dependencyName: loans-qa
+                dataKey: body.status.sync.revision
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-revision'
+            - src:
+                dependencyName: loans-qa
+                dataKey: body.metadata.name
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-name'
+            - src:
+                dependencyName: loans-qa
+                dataKey: body.metadata.namespace
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-namespace'
+            - src:
+                dependencyName: loans-qa
+                dataKey: body.metadata.name
+              dest: spec.arguments.parameters.0.value
+            - src:
+                dependencyName: loans-qa
+                dataKey: body.metadata.namespace
+              dest: spec.arguments.parameters.1.value
+
+            # loans-staging
+
+            - src:
+                dependencyName: loans-staging
+                dataKey: body.status.sync.revision
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-revision'
+            - src:
+                dependencyName: loans-staging
+                dataKey: body.metadata.name
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-name'
+            - src:
+                dependencyName: loans-staging
+                dataKey: body.metadata.namespace
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-namespace'
+            - src:
+                dependencyName: loans-staging
+                dataKey: body.metadata.name
+              dest: spec.arguments.parameters.0.value
+            - src:
+                dependencyName: loans-staging
+                dataKey: body.metadata.namespace
+              dest: spec.arguments.parameters.1.value
+
+            # loans-production
+
+            - src:
+                dependencyName: loans-production
+                dataKey: body.status.sync.revision
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-revision'
+            - src:
+                dependencyName: loans-production
+                dataKey: body.metadata.name
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-name'
+            - src:
+                dependencyName: loans-production
+                dataKey: body.metadata.namespace
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-namespace'
+            - src:
+                dependencyName: loans-production
+                dataKey: body.metadata.name
+              dest: spec.arguments.parameters.0.value
+            - src:
+                dependencyName: loans-production
+                dataKey: body.metadata.namespace
+              dest: spec.arguments.parameters.1.value
+
+            ##############################
+            # Accounts
+            ##############################
+
+            # accounts-qa
+
+            - src:
+                dependencyName: accounts-qa
+                dataKey: body.status.sync.revision
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-revision'
+            - src:
+                dependencyName: accounts-qa
+                dataKey: body.metadata.name
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-name'
+            - src:
+                dependencyName: accounts-qa
+                dataKey: body.metadata.namespace
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-namespace'
+            - src:
+                dependencyName: accounts-qa
+                dataKey: body.metadata.name
+              dest: spec.arguments.parameters.0.value
+            - src:
+                dependencyName: accounts-qa
+                dataKey: body.metadata.namespace
+              dest: spec.arguments.parameters.1.value
+
+            # accounts-staging
+
+            - src:
+                dependencyName: accounts-staging
+                dataKey: body.status.sync.revision
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-revision'
+            - src:
+                dependencyName: accounts-staging
+                dataKey: body.metadata.name
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-name'
+            - src:
+                dependencyName: accounts-staging
+                dataKey: body.metadata.namespace
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-namespace'
+            - src:
+                dependencyName: accounts-staging
+                dataKey: body.metadata.name
+              dest: spec.arguments.parameters.0.value
+            - src:
+                dependencyName: accounts-staging
+                dataKey: body.metadata.namespace
+              dest: spec.arguments.parameters.1.value
+
+            # accounts-production
+
+            - src:
+                dependencyName: accounts-production
+                dataKey: body.status.sync.revision
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-revision'
+            - src:
+                dependencyName: accounts-production
+                dataKey: body.metadata.name
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-name'
+            - src:
+                dependencyName: accounts-production
+                dataKey: body.metadata.namespace
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-namespace'
+            - src:
+                dependencyName: accounts-production
+                dataKey: body.metadata.name
+              dest: spec.arguments.parameters.0.value
+            - src:
+                dependencyName: accounts-production
+                dataKey: body.metadata.namespace
+              dest: spec.arguments.parameters.1.value
+
+            ##############################
+            # Membership
+            ##############################
+
+            # membership-qa
+
+            - src:
+                dependencyName: membership-qa
+                dataKey: body.status.sync.revision
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-revision'
+            - src:
+                dependencyName: membership-qa
+                dataKey: body.metadata.name
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-name'
+            - src:
+                dependencyName: membership-qa
+                dataKey: body.metadata.namespace
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-namespace'
+            - src:
+                dependencyName: membership-qa
+                dataKey: body.metadata.name
+              dest: spec.arguments.parameters.0.value
+            - src:
+                dependencyName: membership-qa
+                dataKey: body.metadata.namespace
+              dest: spec.arguments.parameters.1.value
+
+            # membership-staging
+
+            - src:
+                dependencyName: membership-staging
+                dataKey: body.status.sync.revision
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-revision'
+            - src:
+                dependencyName: membership-staging
+                dataKey: body.metadata.name
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-name'
+            - src:
+                dependencyName: membership-staging
+                dataKey: body.metadata.namespace
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-namespace'
+            - src:
+                dependencyName: membership-staging
+                dataKey: body.metadata.name
+              dest: spec.arguments.parameters.0.value
+            - src:
+                dependencyName: membership-staging
+                dataKey: body.metadata.namespace
+              dest: spec.arguments.parameters.1.value
+
+            # membership-production
+
+            - src:
+                dependencyName: membership-production
+                dataKey: body.status.sync.revision
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-revision'
+            - src:
+                dependencyName: membership-production
+                dataKey: body.metadata.name
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-name'
+            - src:
+                dependencyName: membership-production
+                dataKey: body.metadata.namespace
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-namespace'
+            - src:
+                dependencyName: membership-production
+                dataKey: body.metadata.name
+              dest: spec.arguments.parameters.0.value
+            - src:
+                dependencyName: membership-production
+                dataKey: body.metadata.namespace
+              dest: spec.arguments.parameters.1.value
+
+            ##############################
+            # Orders
+            ##############################
+
+            # orders-qa
+
+            - src:
+                dependencyName: orders-qa
+                dataKey: body.status.sync.revision
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-revision'
+            - src:
+                dependencyName: orders-qa
+                dataKey: body.metadata.name
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-name'
+            - src:
+                dependencyName: orders-qa
+                dataKey: body.metadata.namespace
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-namespace'
+            - src:
+                dependencyName: orders-qa
+                dataKey: body.metadata.name
+              dest: spec.arguments.parameters.0.value
+            - src:
+                dependencyName: orders-qa
+                dataKey: body.metadata.namespace
+              dest: spec.arguments.parameters.1.value
+
+            # orders-staging
+
+            - src:
+                dependencyName: orders-staging
+                dataKey: body.status.sync.revision
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-revision'
+            - src:
+                dependencyName: orders-staging
+                dataKey: body.metadata.name
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-name'
+            - src:
+                dependencyName: orders-staging
+                dataKey: body.metadata.namespace
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-namespace'
+            - src:
+                dependencyName: orders-staging
+                dataKey: body.metadata.name
+              dest: spec.arguments.parameters.0.value
+            - src:
+                dependencyName: orders-staging
+                dataKey: body.metadata.namespace
+              dest: spec.arguments.parameters.1.value
+
+            # orders-production
+
+            - src:
+                dependencyName: orders-production
+                dataKey: body.status.sync.revision
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-revision'
+            - src:
+                dependencyName: orders-production
+                dataKey: body.metadata.name
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-name'
+            - src:
+                dependencyName: orders-production
+                dataKey: body.metadata.namespace
+              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-namespace'
+            - src:
+                dependencyName: orders-production
+                dataKey: body.metadata.name
+              dest: spec.arguments.parameters.0.value
+            - src:
+                dependencyName: orders-production
+                dataKey: body.metadata.namespace
+              dest: spec.arguments.parameters.1.value

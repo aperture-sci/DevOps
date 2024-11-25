@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: EventSource
 metadata:
-  name: corpsite
+  name: demo-nov-22
 spec:
   eventBusName: codefresh-eventbus
   service:
@@ -10,17 +10,18 @@ spec:
   template:
     serviceAccountName: argo-server
   github:
-    github-75cdde07-b62a-42c0-b24a-a7c5a1f49cfa:
+    github-0560c405-ec74-4e8c-bcda-b3ef2cbcc23c:
       events:
         - push
       repositories:
         - owner: aperture-sci
           names:
-            - corpsite
+            - CorpSite
       webhook:
         port: '80'
         method: POST
-        endpoint: /webhooks/gitops/corpsite/github-75cdde07-b62a-42c0-b24a-a7c5a1f49cfa
+        endpoint: >-
+          /webhooks/gitops/demo-nov-22/github-0560c405-ec74-4e8c-bcda-b3ef2cbcc23c
         url: https://641dfab29939b208915c0d4e-gitops.tunnels.cf-cd.com
       active: true
       insecure: false

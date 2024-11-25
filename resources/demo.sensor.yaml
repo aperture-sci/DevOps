@@ -1,15 +1,15 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Sensor
 metadata:
-  name: corpsite
+  name: demo
 spec:
   template:
     serviceAccountName: argo-server
   eventBusName: codefresh-eventbus
   dependencies:
-    - name: github-75cdde07-b62a-42c0-b24a-a7c5a1f49cfa
-      eventName: github-75cdde07-b62a-42c0-b24a-a7c5a1f49cfa
-      eventSourceName: corpsite
+    - name: github-742b38ae-d7ee-40b3-9a0d-a2046a9e9161
+      eventName: github-742b38ae-d7ee-40b3-9a0d-a2046a9e9161
+      eventSourceName: demo
       filters:
         data:
           - path: body.X-GitHub-Event
@@ -21,16 +21,10 @@ spec:
             value:
               - heads
             type: string
-          - path: body.ref
-            comparator: '='
-            template: '{{ trimPrefix "refs/heads/" .Input }}'
-            type: string
-            value:
-              - master
   triggers:
     - template:
         name: ci
-        conditions: github-75cdde07-b62a-42c0-b24a-a7c5a1f49cfa
+        conditions: github-742b38ae-d7ee-40b3-9a0d-a2046a9e9161
         argoWorkflow:
           operation: submit
           source:
@@ -38,38 +32,35 @@ spec:
               apiVersion: argoproj.io/v1alpha1
               kind: WorkflowTemplate
               metadata:
-                generateName: corpsite-ci-
+                generateName: demo-ci-
               spec:
                 arguments:
                   parameters:
-                    - name: REPO
-                      value: ''
-                    - name: BRANCH
-                      value: ''
                     - name: GIT_COMMIT_URL
                       value: ''
                     - name: GIT_COMMIT_MESSAGE
                       value: ''
+                    - name: BRANCH
+                      value: ''
+                    - name: REPO
+                      value: ''
                 workflowTemplateRef:
                   name: globex-ci
           parameters:
-            # REPO (the repo URL)
             - dest: spec.arguments.parameters.0.value
               src:
-                dependencyName: github-75cdde07-b62a-42c0-b24a-a7c5a1f49cfa
-                dataTemplate: '{{ .Input.body.repository.clone_url }}'
-            # BRANCH
+                dependencyName: github-742b38ae-d7ee-40b3-9a0d-a2046a9e9161
+                dataTemplate: 'null'
             - dest: spec.arguments.parameters.1.value
               src:
-                dependencyName: github-75cdde07-b62a-42c0-b24a-a7c5a1f49cfa
-                dataTemplate: '{{ trimPrefix "refs/heads/" .Input.body.ref }}'
-            # GIT_COMMIT_URL
+                dependencyName: github-742b38ae-d7ee-40b3-9a0d-a2046a9e9161
+                dataTemplate: 'null'
             - dest: spec.arguments.parameters.2.value
               src:
-                dependencyName: github-75cdde07-b62a-42c0-b24a-a7c5a1f49cfa
-                dataTemplate: '{{ .Input.body.head_commit.url }}'
-            # GIT_COMMIT_MESSSAGE
+                dependencyName: github-742b38ae-d7ee-40b3-9a0d-a2046a9e9161
+                dataTemplate: master
             - dest: spec.arguments.parameters.3.value
               src:
-                dependencyName: github-75cdde07-b62a-42c0-b24a-a7c5a1f49cfa
-                dataTemplate: '{{ .Input.body.head_commit.message }}'
+                dependencyName: github-742b38ae-d7ee-40b3-9a0d-a2046a9e9161
+                dataTemplate: >-
+                  https://github.com/codefresh-contrib/python-flask-sample-app.git

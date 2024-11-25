@@ -1,0 +1,337 @@
+# This Workflow Template is used to create your first CI pipeline in CSDP
+# This CI pipeline builds a docker image using Kaniko, uploads image metadata to CSDP, and tests the image
+
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: globex-ci
+spec:
+  # podGC:
+  #   strategy: OnWorkflowCompletion
+  #   deleteDelayDuration: 1800
+
+  # ttlStrategy:
+  #   secondsAfterFailure: 1800
+  arguments:
+    parameters:
+      - name: REPO
+        value: https://github.com/aperture-sci/CorpSite
+      - name: BRANCH
+        default: master
+      - name: GIT_COMMIT_URL
+      - name: GIT_COMMIT_MESSAGE
+  entrypoint: ci-pipeline
+  templates:
+    - name: ci-pipeline
+      inputs:
+        parameters:
+          - name: REPO
+            value: https://github.com/aperture-sci/CorpSite
+          - name: BRANCH
+          - name: GIT_COMMIT_URL
+            value: ''
+          - name: GIT_COMMIT_MESSAGE
+            value: ''
+          # - name: CREATE_CR
+          #   value: false
+
+      dag:
+        tasks:
+
+        - name: clone
+          templateRef:
+            name: argo-hub.git.0.0.3
+            template: clone
+          arguments:
+            parameters:
+            - name: REPO_URL
+              value: "{{inputs.parameters.REPO}}"
+            - name: REVISION
+              value: "{{inputs.parameters.BRANCH}}"
+            - name: GIT_TOKEN_SECRET
+              value: github-token
+            - name: GIT_USER_NAME
+              value: lrochette
+          outputs:
+            - artifacts:
+              - name: repo
+                path: /tmp/CorpSite
+
+        - name: clone-config
+          # depends: build-image
+          templateRef:
+            name: argo-hub.git.0.0.3
+            template: clone
+          arguments:
+            parameters:
+            - name: REPO_URL
+              value: "https://github.com/aperture-sci/gitops_applications.git"
+            - name: REVISION
+              value: "main"
+            - name: GIT_TOKEN_SECRET
+              value: github-token
+            - name: GIT_USER_NAME
+              value: lrochette
+          outputs:
+            - artifacts:
+              - name: repo
+                path: /tmp/CorpSite_gitops
+
+        - name: get-version
+          depends: clone
+          template: get-version
+          arguments:
+            artifacts:
+              - name: repo
+                from: '{{ tasks.clone.outputs.artifacts.repo }}'
+
+        - name: maven-build
+          template: maven
+          arguments:
+            parameters:
+            - name: target
+              value: "package"
+            artifacts:
+              - name: builddir
+                from: '{{ tasks.clone.outputs.artifacts.repo }}'
+          outputs:
+            - artifacts:
+              - name: builddir
+                path: /tmp/build
+          depends: clone
+
+        # - name: maven-test
+        #   template: maven
+        #   arguments:
+        #     parameters:
+        #     - name: target
+        #       value: "test"
+        #     artifacts:
+        #       - name: builddir
+        #         from: '{{ tasks.maven-build.outputs.artifacts.builddir }}'
+        #   outputs:
+        #     - artifacts:
+        #       - name: builddir
+        #         path: /tmp/build
+        #   depends: maven-build
+
+        - name: build-image
+          template: kaniko-build
+          arguments:
+            artifacts:
+              - name: contextdir
+                from: '{{ tasks.maven-build.outputs.artifacts.builddir }}'
+            parameters:
+            - name: image
+              value: "aperturesci/globex"
+            - name: tag
+              value: "{{ tasks.get-version.outputs.parameters.VERSION }}"
+          depends: get-version && maven-build
+
+        - name: report-image-info
+          depends: build-image
+          templateRef:
+            name: argo-hub.codefresh-csdp.1.1.9
+            template: report-image-info
+          arguments:
+            parameters:
+              - name: IMAGE_NAME
+                value: 'docker.io/aperturesci/globex:{{ tasks.get-version.outputs.parameters.VERSION }}'
+              - name: CF_API_KEY
+                value: codefresh-token # this secret is created as part of the runtime installation
+
+              - name: WORKFLOW_NAME
+                value: globex-ci
+              - name: WORKFLOW_URL
+                value: "https://g.codefresh.io/2.0/workflows/{{ workflow.name}}"
+                #value: "https://g.codefresh.io/2.0/workflows/corpsite-ci-xwqch"
+              - name: DOCKERHUB_USERNAME
+                value: dockerhub-aperture-creds
+              - name: DOCKERHUB_PASSWORD
+                value: dockerhub-aperture-creds
+
+        - name: enrich-git
+          depends: report-image-info
+          templateRef:
+            name: argo-hub.codefresh-csdp.1.1.9
+            template: image-enricher-git-info
+          arguments:
+            parameters:
+              - name: IMAGE_NAME
+                value: '{{ tasks.report-image-info.outputs.parameters.image-name}}'
+              - name: IMAGE_SHA
+                value: '{{ tasks.report-image-info.outputs.parameters.image-sha }}'
+              - name: GIT_PROVIDER
+                value: github
+              - name: CF_API_KEY
+                value: codefresh-token # this secret is created as part of the runtime installation
+              - name: REPO
+                value: aperture-sci/CorpSite
+              - name: BRANCH
+                value: '{{ inputs.parameters.BRANCH }}'
+              - name: GITHUB_TOKEN_SECRET_NAME
+                value: github-token
+
+        - name: enrich-image-jira
+          #depends: report-image-info
+          depends: build-image
+          templateRef:
+            name: argo-hub.codefresh-csdp.1.1.9
+            template: image-enricher-jira-info
+          arguments:
+            parameters:
+            - name: IMAGE_NAME
+              value: 'docker.io/aperturesci/globex:{{ tasks.get-version.outputs.parameters.VERSION }}'
+            - name: CF_API_KEY
+              value: "codefresh-user-token"
+            - name: JIRA_PROJECT_PREFIX
+              value: 'FT'
+            - name: JIRA_MESSAGE
+              value: "[FT-50] Change location"
+              #value: '{{ inputs.parameters.GIT_COMMIT_MESSAGE}}'
+            - name: JIRA_HOST_URL
+              value: 'https://codefresh-io.atlassian.net'
+            - name: JIRA_API_TOKEN_SECRET
+              value: 'jira-token'
+
+
+
+        - name: update-manifest
+          depends: clone-config && build-image
+          templateRef:
+            name: lr.generic
+            template: freestyle-with-artifact
+          arguments:
+            artifacts:
+              - name: dir
+                from: '{{ tasks.clone-config.outputs.artifacts.repo }}'
+            parameters:
+              - name: image
+                value: "mikefarah/yq:3.3.4"
+              - name: commands
+                value: |
+                  yq w -i kustomize/globex/overlays/dev/deployment.yaml 'spec.template.spec.containers[0].image' "aperturesci/globex:{{tasks.get-version.outputs.parameters.VERSION}}"
+
+        - name: commit-config-change
+          depends: update-manifest
+          templateRef:
+            name: argo-hub.git.0.0.3
+            template: commit
+          arguments:
+            artifacts:
+              - name: repo
+                from: "{{tasks.update-manifest.outputs.artifacts.dir}}"
+            parameters:
+              - name: GIT_USER_NAME
+                value: "lrochette"
+              - name: GIT_USER_EMAIL
+                value: "laurent.rochette@codefresh.io"
+              - name: MESSAGE
+                value: "Committing new version {{ tasks.get-version.outputs.parameters.VERSION }} for globex for aperture/gitops_applications built in {{ workflow.name }}"
+          when: " '{{workflow.name}}' =~ '^corpsite-ci'"
+
+        - name: deploy
+          depends: commit-config-change
+          template: approve
+          when: " '{{workflow.name}}' =~ '^corpsite-ci'"
+
+        - name: promote-to-prod
+          depends: deploy
+          templateRef:
+            name: argo-hub.gitops-promotion.0.0.1
+            template: promote-from-src-to-dest-env
+          arguments:
+            parameters:
+            # Git
+            - name: git-repo-url
+              value: "https://github.com/aperture-sci/gitops_applications.git"
+            - name: git-auth-secret
+              value: github-token
+            # Replacement Substrings
+            - name: env-src
+              value: dev
+            - name: env-dest
+              value: prod
+            - name: svc-name-list
+              value: "globex"
+            # Pattern Strings
+            - name: file-path-pattern
+              value: "kustomize/[[SVC_NAME]]/overlays/[[ENV]]/deployment.yaml"
+            - name: promotion-type
+              value: yaml-key
+            - name: yaml-key-pattern
+              value: ".spec.template.spec.containers.0.image"
+
+    # Additional templates
+    - name: approve
+      suspend: 
+        duration: "15m"
+
+    - name: maven
+      inputs:
+        artifacts:
+          - name: builddir
+            path: /tmp/build
+        parameters:
+        - name: target
+      script:
+        image: maven:3.3-jdk-8
+        workingDir: /tmp/build
+        command: [ bash ]
+        source: |
+          mvn -Dmaven.repo.local=/tmp/m2_repository {{inputs.parameters.target}}
+      outputs:
+        artifacts:
+          - name: builddir
+            path: /tmp/build
+
+    - name: get-version
+      inputs:
+        artifacts:
+          - name: repo
+            path: /tmp/repo
+      outputs:
+        parameters:
+          - name: VERSION
+            valueFrom:
+              path: /tmp/repo/version.txt
+      script:
+        image: alpine:3.7
+        workingDir: /tmp/repo
+        command: [ sh ]
+        source: |
+          cat version.txt
+
+    - name: kaniko-build
+      inputs:
+        parameters:
+          - name: image
+          - name: tag
+        artifacts:
+          - name: contextdir
+            path: /tmp/build
+      volumes:
+        - name: docker-config
+          secret:
+            items:
+            - key: .dockerconfigjson
+              path: config.json
+            secretName: dockerhub-aperture-config
+      container:
+        image: gcr.io/kaniko-project/executor:v1.6.0
+        # workingDir: /codefresh/volume/CorpSite
+        volumeMounts:
+          - name: docker-config
+            mountPath: /kaniko/.docker
+        command:
+          - /kaniko/executor
+        args:
+          - "--dockerfile=Dockerfile"
+          - "--context=dir:///tmp/build"
+          - "--destination={{inputs.parameters.image}}:{{inputs.parameters.tag}}"
+          - "--destination={{inputs.parameters.image}}:latest"
+          - "--image-name-with-digest-file=/tmp/build/image_name_digest.txt"
+          - "--image-name-tag-with-digest-file=/tmp/build/image_name_tag.txt"
+        env:
+          - name: DOCKER_CONFIG
+            value: /kaniko/.docker
