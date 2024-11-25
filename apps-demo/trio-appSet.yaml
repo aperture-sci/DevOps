@@ -7,22 +7,22 @@ spec:
   generators:
     - list:
         elements:
-          - cluster: kc-v-dev
+          - cluster: demo-dev
             short: dev
             ns: dev
-          - cluster: kc-v-qa
+          - cluster: demo-qa
             short: qa
             ns: qa
-          # - cluster: kc-v-staging
-          #   short: staging
-          #   ns: staging
-          - cluster: kc-v-prod
+          - cluster: demo-staging
+            short: staging
+            ns: staging
+          - cluster: prod-east
             short: prod-us
             ns: prod
-          - cluster: target-asia
+          - cluster: prod-asia
             short: prod-asia
             ns: prod
-          - cluster: target-eu
+          - cluster: prod-eu
             short: prod-eu
             ns: prod
 
