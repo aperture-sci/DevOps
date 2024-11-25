@@ -1,0 +1,174 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: express-microservice-adv
+spec:
+  template:
+    serviceAccountName: argo-server
+  eventBusName: codefresh-eventbus
+  dependencies:
+    - name: github-exp-micro
+      eventName: github-exp-micro
+      eventSourceName: express-microservice-adv
+      filters:
+        data:
+          - path: body.X-GitHub-Event
+            value:
+              - push
+            type: string
+          - path: body.ref
+            template: '{{ (split "/" .Input)._1 }}'
+            value:
+              - heads
+            type: string
+          - path: body.ref
+            type: string
+            template: "{{ trimPrefix \"refs/heads/\" .Input }}"
+            value:
+              - develop
+  triggers:
+    - template:
+        name: ci
+        conditions: github-exp-micro
+        argoWorkflow:
+          operation: submit
+          source:
+            resource:
+              apiVersion: argoproj.io/v1alpha1
+              kind: WorkflowTemplate
+              metadata:
+                generateName: express-microservice-adv-ci-
+              spec:
+                arguments:
+                  parameters:
+                    - name: GIT_REPO_URL
+                      value: ''
+                    - name: IMAGE_NAME
+                      value: ''
+                    - name: IMAGE_TAG
+                      value: ''
+                    - name: GIT_AUTHOR
+                      value: ''
+                    - name: GIT_REVISION
+                      value: ''
+                    - name: GIT_BRANCH
+                      value: ''
+                    - name: GIT_COMMIT_URL
+                      value: ''
+                    - name: GIT_COMMIT_MESSAGE
+                      value: ''
+                    - name: DOCKERFILE
+                      value: ''
+                    - name: GIT_TOKEN_SECRET
+                      value: ''
+                    - name: CONTEXT
+                      value: ''
+                    - name: REGISTRY_CREDS_SECRET
+                      value: ''
+                    - name: DOCKER_CONFIG_SECRET
+                      value: ''
+                    - name: PROMOTE_TO
+                      value: 'dev'
+                    - name: APP_PATH_PREFIX
+                      value: ''
+                    - name: REPO_SLUG
+                      value: ''
+                workflowTemplateRef:
+                  name: ci-advanced
+          parameters:
+            # GIT_REPO_URL
+            - dest: spec.arguments.parameters.0.value
+              src:
+                dependencyName: github-exp-micro
+                dataTemplate: '{{ .Input.body.repository.clone_url }}'
+
+            # IMAGE_NAME
+            - dest: spec.arguments.parameters.1.value
+              src:
+                dependencyName: github-exp-micro
+                dataTemplate: quay.io/lrochette/express-microservice
+
+            # IMAGE_TAG
+            - dest: spec.arguments.parameters.2.value
+              src:
+                dependencyName: github-exp-micro
+                dataTemplate: '{{ trunc 7 .Input.body.after }}'
+
+            # GIT_AUTHOR
+            - dest: spec.arguments.parameters.3.value
+              src:
+                dependencyName: github-exp-micro
+                dataTemplate: '{{ .Input.body.sender.login }}'
+
+            # GIT_REVISION
+            - dest: spec.arguments.parameters.4.value
+              src:
+                dependencyName: github-exp-micro
+                dataTemplate: '{{ .Input.body.after }}'
+
+            # GIT_BRANCH
+            - dest: spec.arguments.parameters.5.value
+              src:
+                dependencyName: github-exp-micro
+                dataTemplate: '{{ trimPrefix "refs/heads/" .Input.body.ref }}'
+
+            # GIT_COMMIT_URL
+            - dest: spec.arguments.parameters.6.value
+              src:
+                dependencyName: github-exp-micro
+                dataTemplate: '{{ .Input.body.head_commit.url }}'
+
+            # GIT_COMMIT_MESSAGE
+            - dest: spec.arguments.parameters.7.value
+              src:
+                dependencyName: github-exp-micro
+                dataTemplate: '{{ .Input.body.head_commit.message }}'
+
+            # DOCKERFILE
+            - dest: spec.arguments.parameters.8.value
+              src:
+                dependencyName: github-exp-micro
+                dataTemplate: Dockerfile
+
+            # GIT_TOKEN_SECRET
+            - dest: spec.arguments.parameters.9.value
+              src:
+                dependencyName: github-exp-micro
+                dataTemplate: github-token
+
+            # CONTEXT
+            - dest: spec.arguments.parameters.10.value
+              src:
+                dependencyName: github-exp-micro
+                dataTemplate: .
+
+            # REGISTRY_CREDS_SECRET
+            - dest: spec.arguments.parameters.11.value
+              src:
+                dependencyName: github-exp-micro
+                dataTemplate: quay-creds
+
+            # DOCKER_CONFIG_SECRET
+            - dest: spec.arguments.parameters.12.value
+              src:
+                dependencyName: github-exp-micro
+                dataTemplate: quay-config
+
+            - dest: spec.arguments.parameters.13.value
+              src:
+                dependencyName: github-exp-micro
+                dataTemplate: dev
+
+            # PROMOTE_TO
+            - dest: spec.arguments.parameters.14.value
+              src:
+                dependencyName: github-exp-micro
+                dataTemplate: kustomize/express/overlays
+
+            # APP_PATH_PREFIX
+            - dest: spec.arguments.parameters.15.value
+              src:
+                dependencyName: github-exp-micro
+                dataTemplate: >-
+                  {{ regexReplaceAll "https?://github.com/(.*).git"
+                  .Input.body.repository.clone_url "${1}" | trim }}

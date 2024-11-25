@@ -1,0 +1,89 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: codecov-test
+spec:
+  arguments:
+    parameters:
+      - name: GIT_REPO_URL
+        default: https://github.com/lrochette/CorpSite
+      - name: GIT_BRANCH
+        default: master
+  entrypoint: pipeline
+  templates:
+    - name: pipeline
+      inputs:
+        parameters:
+          - name: GIT_REPO_URL
+            value: https://github.com/lrochette/CorpSite
+          - name: GIT_BRANCH
+            value: master
+      dag:
+        tasks:
+        - name: clone
+          templateRef:
+            name: argo-hub.git.0.0.3
+            template: clone
+          arguments:
+            parameters:
+              - name: REPO_URL
+                value: "{{inputs.parameters.GIT_REPO_URL}}"
+              - name: REVISION
+                value: "{{inputs.parameters.GIT_BRANCH}}"
+              - name: GIT_TOKEN_SECRET
+                value: github-token
+          outputs:
+            - artifacts:
+              - name: repo
+                path: /tmp/CorpSite
+
+        - name: maven-test
+          depends: clone
+          template: maven
+          arguments:
+            parameters:
+            - name: target
+              value: "test"
+            artifacts:
+              - name: builddir
+                from: '{{ tasks.clone.outputs.artifacts.repo }}'
+          outputs:
+            - artifacts:
+              - name: builddir
+                path: /tmp/build
+
+        - name: codecov-report
+          depends: maven-test
+          templateRef:
+            name: argo-hub.codecov.0.0.1
+            template: codecov-report
+          arguments:
+            artifacts:
+              - name: REPO
+                from: "{{tasks.maven-test.outputs.artifacts.builddir}}"
+            parameters:
+              - name: CODECOV_API_KEY
+                value: codecov-token
+              # - name: CODECOV_URL
+              #   value: https://codecov.io
+
+    #
+    # Additional templates
+    #
+    - name: maven
+      inputs:
+        artifacts:
+          - name: builddir
+            path: /tmp/build
+        parameters:
+        - name: target
+      script:
+        image: maven:3.3-jdk-8
+        workingDir: /tmp/build
+        command: [ bash ]
+        source: |
+          mvn -Dmaven.repo.local=/tmp/m2_repository {{inputs.parameters.target}}
+      outputs:
+        artifacts:
+          - name: builddir
+            path: /tmp/build

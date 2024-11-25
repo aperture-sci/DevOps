@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: aqua
+spec:
+  template:
+    serviceAccountName: argo-server
+  eventBusName: codefresh-eventbus
+  dependencies:
+    - name: github-a715bb11-d202-45d4-b191-8a89817f8e65
+      eventName: github-a715bb11-d202-45d4-b191-8a89817f8e65
+      eventSourceName: aqua
+      filters:
+        data:
+          - path: body.X-GitHub-Event
+            value:
+              - push
+            type: string
+          - path: body.ref
+            template: '{{ (split "/" .Input)._1 }}'
+            value:
+              - heads
+            type: string
+          - path: body.ref
+            comparator: '='
+            template: '{{ trimPrefix "refs/heads/" .Input }}'
+            type: string
+            value:
+              - master
+  triggers:
+    - template:
+        name: test
+        conditions: github-a715bb11-d202-45d4-b191-8a89817f8e65
+        argoWorkflow:
+          operation: submit
+          source:
+            resource:
+              apiVersion: argoproj.io/v1alpha1
+              kind: WorkflowTemplate
+              metadata:
+                generateName: aqua-test-
+              spec:
+                workflowTemplateRef:
+                  name: aqua-test
+          parameters: []

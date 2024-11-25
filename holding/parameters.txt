@@ -1,0 +1,4 @@
+BRANCH: master
+GIT_COMMIT_URL: 'https://github.com/lrochette/CorpSite/commit/583df7753bce556e3d40f581782bff9dfa812712'
+GIT_COMMIT_MESSAGE: 'FT-50: 1.7.10 switch to Paris'
+CREATE_CR: false

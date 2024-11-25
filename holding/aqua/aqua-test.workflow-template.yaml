@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: aqua-test
+
+spec:
+  entrypoint: pipeline
+  templates:
+    - name: pipeline
+      dag:
+            tasks:
+            -   name: aqua-security-scan
+                templateRef:
+                    name: argo-hub.aqua.0.0.1
+                    template: aqua-security-scan
+                arguments:
+                    parameters:
+                    - name: AQUA_HOST
+                      value: 'https://cloud.aquasec.com/'
+                    - name: AQUA_SECRET
+                      value: 'aqua-secret'
+                    - name: IMAGE
+                      value: 'lrochette/globex'
+                    - name: TAG
+                      value: 1.7.2
+                    -   name: REGISTRY
+                        value: 'docker.io'
+

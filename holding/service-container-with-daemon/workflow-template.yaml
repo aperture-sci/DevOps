@@ -1,0 +1,155 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: voting-app-pipeline
+  annotations: {}
+
+spec:
+  volumes:
+    - name: docker-config
+      secret:
+        items:
+          - key: .dockerconfigjson
+            path: config.json
+        secretName: quay-config
+        #secretName: dockerhub-config
+  entrypoint: pipeline
+  templates:
+    - name: pipeline
+      inputs:
+        parameters:
+          - name: GIT_REPO_URL
+            default: https://github.com/lrochette/example-voting-app
+          - name: IMAGE_TAG
+            default: latest
+          - name: GIT_REVISION
+            default: master
+
+      dag:
+        tasks:
+          # https://codefresh.io/argohub/workflow-template/kaniko
+          - name: build-vote-image
+            templateRef:
+              name: argo-hub.kaniko.0.0.1
+              template: build
+            arguments:
+              parameters:
+                - name: REPO
+                  value: '{{ inputs.parameters.GIT_REPO_URL }}'
+                - name: REVISION
+                  value: '{{ inputs.parameters.GIT_REVISION }}'
+                - name: IMAGE_NAME
+                  value: quay.io/lrochette/vote
+                - name: GIT_TOKEN_SECRET
+                  value: 'github-token'
+                - name: TAG
+                  value: '{{ inputs.parameters.IMAGE_TAG }}'
+                - name: CONTEXT
+                  value: vote
+          - name: build-worker-image
+            templateRef:
+              name: argo-hub.kaniko.0.0.1
+              template: build
+            arguments:
+              parameters:
+                - name: REPO
+                  value: '{{ inputs.parameters.GIT_REPO_URL }}'
+                - name: REVISION
+                  value: '{{ inputs.parameters.GIT_REVISION }}'
+                - name: IMAGE_NAME
+                  value: quay.io/lrochette/worker
+                - name: GIT_TOKEN_SECRET
+                  value: 'github-token'
+                - name: TAG
+                  value: '{{ inputs.parameters.IMAGE_TAG }}'
+                - name: CONTEXT
+                  value: worker
+          - name: build-result-image
+            templateRef:
+              name: argo-hub.kaniko.0.0.1
+              template: build
+            arguments:
+              parameters:
+                - name: REPO
+                  value: '{{ inputs.parameters.GIT_REPO_URL }}'
+                - name: REVISION
+                  value: '{{ inputs.parameters.GIT_REVISION }}'
+                - name: IMAGE_NAME
+                  value: quay.io/lrochette/result
+                - name: GIT_TOKEN_SECRET
+                  value: 'github-token'
+                - name: TAG
+                  value: '{{ inputs.parameters.IMAGE_TAG }}'
+                - name: CONTEXT
+                  value: result
+          - name: test-image
+            template: test
+            depends: "build-vote-image" # && build-worker-image && build-result-image"
+            arguments:
+              parameters:
+                - name: IMAGE_TAG
+                  value: '{{ inputs.parameters.IMAGE_TAG }}'
+
+    # service container equivalent
+    # using daemon: true
+    - name: vote-service
+      inputs:
+        parameters:
+          - name: IMAGE_TAG
+            default: latest
+      daemon: true
+      script:
+        command: ["/bin/sh"]
+        source: |
+          echo starting voting service
+          gunicorn app:app -b 0.0.0.0:80 --log-file - --access-logfile  - --workers 4 --keep-alive 0
+        image: 'quay.io/lrochette/vote:{{ inputs.parameters.IMAGE_TAG }}'
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+    - name: test
+      inputs:
+        parameters:
+          - name: IMAGE_TAG
+            default: latest
+      dag:
+        tasks:
+        - name: vote
+          template: vote-service
+          arguments:
+            parameters:
+              - name: IMAGE_TAG
+                value: '{{ inputs.parameters.IMAGE_TAG }}'
+        - name: s1
+          template: freestyle
+          depends: vote
+          arguments:
+            parameters:
+              - name: CMD
+                value: |
+                   curl "http://{{tasks.vote.ip}}"
+                   sleep 60
+
+        - name: s2
+          template: freestyle
+          depends: vote
+          arguments:
+            parameters:
+              - name: CMD
+                value: |
+                  sleep 30
+                  curl 'http://{{tasks.vote.ip}}'
+                  sleep 45
+
+    - name: freestyle
+      inputs:
+        parameters:
+          - name: CMD
+      script:
+        image: codefresh/curl # ubuntu
+        command: [/bin/sh]
+        source: |
+          {{inputs.parameters.CMD}}

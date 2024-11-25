@@ -1,0 +1,59 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: codecov
+spec:
+  template:
+    serviceAccountName: argo-server
+  eventBusName: codefresh-eventbus
+  dependencies:
+    - name: github-9dddd1d2-f582-44ae-97b7-a8c109c914b0
+      eventName: github-9dddd1d2-f582-44ae-97b7-a8c109c914b0
+      eventSourceName: codecov
+      filters:
+        data:
+          - path: body.X-GitHub-Event
+            value:
+              - push
+            type: string
+          - path: body.ref
+            template: '{{ (split "/" .Input)._1 }}'
+            value:
+              - heads
+            type: string
+          - path: body.ref
+            comparator: '='
+            template: '{{ trimPrefix "refs/heads/" .Input }}'
+            type: string
+            value:
+              - master
+  triggers:
+    - template:
+        name: test
+        conditions: github-9dddd1d2-f582-44ae-97b7-a8c109c914b0
+        argoWorkflow:
+          operation: submit
+          source:
+            resource:
+              apiVersion: argoproj.io/v1alpha1
+              kind: WorkflowTemplate
+              metadata:
+                generateName: codecov-test-
+              spec:
+                arguments:
+                  parameters:
+                    - name: GIT_REPO_URL
+                      value: ''
+                    - name: GIT_BRANCH
+                      value: ''
+                workflowTemplateRef:
+                  name: codecov-test
+          parameters:
+            - dest: spec.arguments.parameters.0.value
+              src:
+                dependencyName: github-9dddd1d2-f582-44ae-97b7-a8c109c914b0
+                dataTemplate: '{{ .Input.body.repository.clone_url }}'
+            - dest: spec.arguments.parameters.1.value
+              src:
+                dependencyName: github-9dddd1d2-f582-44ae-97b7-a8c109c914b0
+                dataTemplate: '{{ trimPrefix "refs/heads/" .Input.body.ref }}'

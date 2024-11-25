@@ -1,0 +1,59 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: datree
+spec:
+  template:
+    serviceAccountName: argo-server
+  eventBusName: codefresh-eventbus
+  dependencies:
+    - name: github-ffff4596-64d1-43f3-b606-14f595fd82d9
+      eventName: github-ffff4596-64d1-43f3-b606-14f595fd82d9
+      eventSourceName: datree
+      filters:
+        data:
+          - path: body.X-GitHub-Event
+            value:
+              - push
+            type: string
+          - path: body.ref
+            template: '{{ (split "/" .Input)._1 }}'
+            value:
+              - heads
+            type: string
+          - path: body.ref
+            comparator: '='
+            template: '{{ trimPrefix "refs/heads/" .Input }}'
+            type: string
+            value:
+              - SHOULD_NOT_EXIST_HOPEFULLY
+  triggers:
+    - template:
+        name: test
+        conditions: github-ffff4596-64d1-43f3-b606-14f595fd82d9
+        argoWorkflow:
+          operation: submit
+          source:
+            resource:
+              apiVersion: argoproj.io/v1alpha1
+              kind: WorkflowTemplate
+              metadata:
+                generateName: datree-test-
+              spec:
+                arguments:
+                  parameters:
+                    - name: GIT_REPO_URL
+                      value: ''
+                    - name: GIT_BRANCH
+                      value: ''
+                workflowTemplateRef:
+                  name: datree-test
+          parameters:
+            - dest: spec.arguments.parameters.0.value
+              src:
+                dependencyName: github-ffff4596-64d1-43f3-b606-14f595fd82d9
+                dataTemplate: '{{ .Input.body.repository.clone_url }}'
+            - dest: spec.arguments.parameters.1.value
+              src:
+                dependencyName: github-ffff4596-64d1-43f3-b606-14f595fd82d9
+                dataTemplate: '{{ trimPrefix "refs/heads/" .Input.body.ref }}'

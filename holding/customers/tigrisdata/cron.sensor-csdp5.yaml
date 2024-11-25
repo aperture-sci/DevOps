@@ -1,0 +1,34 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: cron
+spec:
+  template:
+    serviceAccountName: argo-server
+  eventBusName: codefresh-eventbus
+  dependencies:
+    - name: calendar-98f136fa-2488-461a-bfbb-f3bc64b0cd1f
+      eventName: calendar-98f136fa-2488-461a-bfbb-f3bc64b0cd1f
+      eventSourceName: cron-nw
+  triggers:
+    - template:
+        name: upgrade
+        conditions: calendar-98f136fa-2488-461a-bfbb-f3bc64b0cd1f
+        argoWorkflow:
+          operation: submit
+          source:
+            resource:
+              apiVersion: argoproj.io/v1alpha1
+              kind: WorkflowTemplate
+              metadata:
+                generateName: cron-upgrade-
+              spec:
+                arguments:
+                  parameters:
+                    - name: RUNTIME_NAME
+                      value: csdp5
+                    - name: CF_API_SECRET
+                      value: codefresh-v1-token
+                workflowTemplateRef:
+                  name: argo-hub.upgrade-cluster.0.0.1
+          parameters: []

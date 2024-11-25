@@ -1,0 +1,53 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: heroku-test
+spec:
+  arguments:
+    parameters:
+      - name: GIT_REPO_URL
+        default: https://github.com/lrochette/CorpSite
+      - name: GIT_BRANCH
+        default: master
+  entrypoint: pipeline
+  templates:
+    - name: pipeline
+      inputs:
+        parameters:
+          - name: GIT_REPO_URL
+            value: https://github.com/lrochette/CorpSite
+          - name: GIT_BRANCH
+            value: main
+      dag:
+        tasks:
+        - name: clone
+          templateRef:
+            name: argo-hub.git.0.0.3
+            template: clone
+          arguments:
+            parameters:
+            - name: REPO_URL
+              value: "{{inputs.parameters.GIT_REPO_URL}}"
+            - name: REVISION
+              value: "{{inputs.parameters.GIT_BRANCH}}"
+            - name: GIT_TOKEN_SECRET
+              value: github-token
+          outputs:
+            - artifacts:
+              - name: repo
+                path: /tmp/CorpSite
+
+        - name: heroku-deployer
+          depends: clone
+          templateRef:
+            name: argo-hub.heroku.0.0.1
+            template: heroku-deployer
+          arguments:
+            artifacts:
+            - name: REPO
+              from: "{{tasks.clone.outputs.artifacts.repo}}"
+            parameters:
+            - name: HEROKU_SECRET
+              value: heroku-secret
+            - name: APP_NAME
+              value: corpsite

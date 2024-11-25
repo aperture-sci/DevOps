@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: EventSource
+metadata:
+  name: codecov
+spec:
+  eventBusName: codefresh-eventbus
+  service:
+    ports:
+      - port: 80
+  template:
+    serviceAccountName: argo-server
+  github:
+    github-9dddd1d2-f582-44ae-97b7-a8c109c914b0:
+      events:
+        - push
+      repositories:
+        - owner: lrochette
+          names:
+            - CorpSite
+      webhook:
+        port: '80'
+        method: POST
+        endpoint: /webhooks/csdp/codecov/github-9dddd1d2-f582-44ae-97b7-a8c109c914b0
+        url: https://lrcsdp.support.cf-cd.com
+      active: true
+      insecure: false
+      contentType: json
+      deleteHookOnFinish: true
+      apiToken:
+        name: github-token
+        key: token

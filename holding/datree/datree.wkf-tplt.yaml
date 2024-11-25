@@ -1,0 +1,66 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: datree-test
+spec:
+  arguments:
+    parameters:
+      - name: GIT_REPO_URL
+        default: https://github.com/datreeio/datree
+      - name: GIT_BRANCH
+        default: main
+  entrypoint: pipeline
+  templates:
+    - name: pipeline
+      inputs:
+        parameters:
+          - name: GIT_REPO_URL
+            value: https://github.com/datreeio/datree
+          - name: GIT_BRANCH
+            value: main
+      dag:
+        tasks:
+        - name: clone
+          templateRef:
+            name: argo-hub.git.0.0.3
+            template: clone
+          arguments:
+            parameters:
+              - name: REPO_URL
+                value: "{{inputs.parameters.GIT_REPO_URL}}"
+              - name: REVISION
+                value: "{{inputs.parameters.GIT_BRANCH}}"
+              - name: GIT_TOKEN_SECRET
+                value: github-token
+          outputs:
+            - artifacts:
+              - name: repo
+                path: /tmp/datree
+        - name: datree-policy-check-pass
+          depends: clone
+          templateRef:
+            name: argo-hub.datree.0.0.1
+            template: datree-policy-check
+          arguments:
+            artifacts:
+              - name: REPO
+                from: "{{tasks.clone.outputs.artifacts.repo}}"
+            parameters:
+              - name: DATREE_TOKEN
+                value: datree-token
+              - name: INPUT_PATH
+                value: internal/fixtures/kube/pass-all.yaml
+        - name: datree-policy-check-fail
+          depends: clone
+          templateRef:
+            name: argo-hub.datree.0.0.1
+            template: datree-policy-check
+          arguments:
+            artifacts:
+              - name: REPO
+                from: "{{tasks.clone.outputs.artifacts.repo}}"
+            parameters:
+              - name: DATREE_TOKEN
+                value: datree-token
+              - name: INPUT_PATH
+                value: internal/fixtures/kube/k8s-demo.yaml

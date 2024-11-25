@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: voting-git-source
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /webhooks/voting
+            backend:
+              service:
+                name: voting-eventsource-svc
+                port:
+                  number: 80
+            pathType: Prefix
+      host: lrcsdp.support.cf-cd.com

@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: workflow-resume
+spec:
+  entrypoint: pipeline
+  templates:
+    - name: pipeline
+      metadata:
+      dag:
+        tasks:
+        - name: test1
+          template: test
+          arguments:
+            parameters:
+            - name: IMAGE
+              value: bash
+        - name: wait
+          depends: test1
+          template: approve
+        - name: test2
+          template: test
+          arguments:
+            parameters:
+            - name: IMAGE
+              value: bash
+          depends: wait
+
+    # Additional templates
+    - name: approve
+      suspend: {}
+
+    # Test template
+    - name: test
+      metadata:
+      inputs:
+        parameters:
+          - name: IMAGE
+      container:
+        image: '{{ inputs.parameters.IMAGE }}'
+        command: [sh, -c]
+        args: ["ls"]

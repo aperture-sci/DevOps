@@ -1,0 +1,12 @@
+apiVersion: argoproj.io/v1alpha1
+kind: EventSource
+metadata:
+  name: cron-nw
+spec:
+  eventBusName: codefresh-eventbus
+  template:
+    serviceAccountName: argo-server
+  calendar:
+    calendar-98f136fa-2488-461a-bfbb-f3bc64b0cd1f:
+      schedule: 0 6 * * 1-5
+      timezone: America/Phoenix

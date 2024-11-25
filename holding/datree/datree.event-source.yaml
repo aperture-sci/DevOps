@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: EventSource
+metadata:
+  name: datree
+spec:
+  eventBusName: codefresh-eventbus
+  service:
+    ports:
+      - port: 80
+  template:
+    serviceAccountName: argo-server
+  github:
+    github-ffff4596-64d1-43f3-b606-14f595fd82d9:
+      events:
+        - push
+      repositories:
+        - owner: datreeio
+          names:
+            - datree
+      webhook:
+        port: '80'
+        method: POST
+        endpoint: /webhooks/csdp/datree/github-ffff4596-64d1-43f3-b606-14f595fd82d9
+        url: https://lrcsdp.support.cf-cd.com
+      active: true
+      insecure: false
+      contentType: json
+      deleteHookOnFinish: true
+      apiToken:
+        name: github-token
+        key: token

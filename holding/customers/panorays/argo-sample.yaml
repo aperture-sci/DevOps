@@ -1,0 +1,75 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: argo-panorays
+spec:
+  workflowMetadata:
+    labels:
+      label1: "VALUE1"
+  arguments:
+    # List here all the arguments to pass as variables to the Workflow from the Sensor
+    # Use this syntax to pass them into the Workflow Templates: "{{workflow.parameters.REPO}}"
+    # Forcing refresh
+    parameters:
+      - name: ARGOCD_SERVER
+        value: argocd-server.csdp.svc.cluster.local
+  entrypoint: pipeline
+  templates:
+    - name: pipeline
+      metadata:
+      dag:
+        tasks:
+        - name: test1
+          template: test
+          arguments:
+            parameters:
+            - name: IMAGE
+              value: bash
+        - name: sync
+          depends: test1
+          templateRef:
+            name: argo-hub.argocd.0.0.1
+            template: sync
+          arguments:
+            parameters:
+            - name: app
+              value: 'color-dev'
+            - name: serverUrl
+              value: '{{workflow.parameters.ARGOCD_SERVER}}'
+            - name: opts
+              value: '--insecure --plaintext'
+        - name: wait
+          depends: sync
+          templateRef:
+            name: argo-hub.argocd.0.0.1
+            template: wait
+          arguments:
+            parameters:
+            - name: app
+              value: 'color-dev'
+            - name: flags
+              value: '--health'
+            - name: serverUrl
+              value: '{{workflow.parameters.ARGOCD_SERVER}}'
+            - name: opts
+              value: '--insecure --plaintext'
+
+        - name: test2
+          template: test
+          arguments:
+            parameters:
+            - name: IMAGE
+              value: bash
+          depends: wait
+
+
+    # Test template
+    - name: test
+      metadata:
+      inputs:
+        parameters:
+          - name: IMAGE
+      container:
+        image: '{{ inputs.parameters.IMAGE }}'
+        command: [sh, -c]
+        args: ["ls"]
