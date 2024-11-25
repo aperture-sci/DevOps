@@ -69,10 +69,10 @@ steps:
       working_directory: ${{clone}}
       commands:
         - cf_export APPVERSION=${{steps.bumpVersion.output.SEMVERSIONER_RESULT}}
-        - yq w -i manifests/$SERVICE/$APPNAME/$APPENV/values.yaml 'loans.image.tag' "${{TAG}}"
-        - cat manifests/$SERVICE/$APPNAME/$APPENV/values.yaml
-        - yq w -i manifests/$SERVICE/$APPNAME/$APPENV/Chart.yaml 'appVersion' "${{steps.bumpVersion.output.SEMVERSIONER_RESULT}}"
-        - cat manifests/$SERVICE/$APPNAME/$APPENV/Chart.yaml
+        - yq w -i manifests/$APPNAME/$SERVICE/$APPENV/values.yaml 'loans.image.tag' "${{TAG}}"
+        - cat manifests/$APPNAME/$SERVICE/$APPENV/values.yaml
+        - yq w -i manifests/$APPNAME/$SERVICE/$APPENV/Chart.yaml 'appVersion' "${{steps.bumpVersion.output.SEMVERSIONER_RESULT}}"
+        - cat manifests/$APPNAME/$SERVICE/$APPENV/Chart.yaml
 
   commit_and_push:
       title: Commit changes and push
@@ -88,8 +88,8 @@ steps:
         allow_empty: true
         force_push: true
         add:
-          - manifests/$SERVICE/${{APPNAME}}/$APPENV/values.yaml
-          - manifests/$SERVICE/${{APPNAME}}/$APPENV/Chart.yaml
+          - manifests/$APPNAME/$SERVICE/$APPENV/values.yaml
+          - manifests/$APPNAME/$SERVICE/$APPENV/Chart.yaml
       on_success:
         annotations:
           set:
