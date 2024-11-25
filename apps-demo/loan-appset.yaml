@@ -1,0 +1,57 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: loan
+
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+  - matrix:
+      generators:
+      - git:
+          repoURL: https://github.com/aperture-sci/DevOps.git
+          revision: HEAD
+          directories:
+            - path: manifests/loan/*
+      - list:
+          elements:
+          - cluster: demo-dev
+            short: dev
+          - cluster: demo-qa
+            short: qa
+          - cluster: demo-staging
+            short: staging
+          - cluster: prod-east
+            short: prod
+  template:
+    metadata:
+      name: '{{.path.basename}}-{{.short}}'
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io/foreground
+      annotations:
+        argocd.argoproj.io/manifest-generate-paths: '.'
+        codefresh.io/product: '{{.path.basename}}'
+        codefresh.io/app-group: loan
+      labels:
+        codefresh.io/product: '{{.path.basename}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/aperture-sci/DevOps.git
+        targetRevision: main
+        path: '{{.path.path}}/{{.short}}'
+      destination:
+        name: '{{.cluster}}'
+        namespace: '{{.short}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - PrunePropagationPolicy=foreground
+          - Replace=false
+          - PruneLast=false
+          - Validate=true
+          - CreateNamespace=true
+          - ApplyOutOfSyncOnly=false
