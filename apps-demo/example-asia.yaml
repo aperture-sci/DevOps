@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: example-europe
+  name: example-asia
   finalizers:
     - resources-finalizer.argocd.argoproj.io/foreground
   annotations:
@@ -14,7 +14,7 @@ spec:
     repoURL: https://github.com/aperture-sci/DevOps.git
     targetRevision: HEAD
   destination:
-    name: kc-v-qa
+    name: demo-staging
     namespace: region-example
   syncPolicy:
     automated:

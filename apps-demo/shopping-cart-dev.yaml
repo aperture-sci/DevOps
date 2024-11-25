@@ -1,21 +1,18 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: example-usa
+  name: shopping-cart-dev
   finalizers:
     - resources-finalizer.argocd.argoproj.io/foreground
-  annotations:
-    codefresh.io/app-group: three-regions
-    codefresh.io/product: multi-region-app
 spec:
   project: default
   source:
-    path: manifests/simple-app
-    repoURL: https://github.com/aperture-sci/DevOps.git
-    targetRevision: HEAD
+    repoURL: https://h.cfcr.io/aperture-sci/public
+    targetRevision: 1.0.0
+    chart: minichart
   destination:
-    name: kc-v-prod
-    namespace: region-example
+    name: demo-qa
+    namespace: default
   syncPolicy:
     automated:
       prune: false
@@ -26,7 +23,7 @@ spec:
       - Replace=false
       - PruneLast=false
       - Validate=true
-      - CreateNamespace=true
+      - CreateNamespace=false
       - ApplyOutOfSyncOnly=false
       # - ServerSideApply=false
       - RespectIgnoreDifferences=false
