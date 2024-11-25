@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: EventSource
+metadata:
+  name: corpsite
+spec:
+  eventBusName: codefresh-eventbus
+  service:
+    ports:
+      - port: 80
+  template:
+    serviceAccountName: argo-server
+  github:
+    github-corpsite:
+      events:
+        - push
+      repositories:
+        - owner: lrochette
+          names:
+            - CorpSite
+      webhook:
+        port: '80'
+        method: POST
+        endpoint: /webhooks/corpsite/github-corpsite
+        url: https://lrcsdp.support.cf-cd.com
+      active: true
+      insecure: false
+      contentType: json
+      deleteHookOnFinish: true
+      apiToken:
+        name: github-token
+        key: token

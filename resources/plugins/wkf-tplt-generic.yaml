@@ -1,0 +1,55 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: lr.generic
+spec:
+  templates:
+    - name: freestyle-with-codefresh-volume
+      inputs:
+        parameters:
+          - name: image
+          - name: commands
+          - name: working_directory
+            value: ./
+          - name: shell
+            value: sh
+          - name: volumeName
+            value: codefresh-volume # Default value
+      script:
+        image: "{{ inputs.parameters.image }}"
+        workingDir: /codefresh/volume
+        command: ["{{ inputs.parameters.shell }}"]
+        source: |
+          cd {{ inputs.parameters.working_directory }}
+          echo Executing commands:
+          {{inputs.parameters.commands}}
+        volumeMounts:
+          - name: "{{inputs.parameters.volumeName}}"
+            mountPath: /codefresh/volume
+
+    - name: freestyle-with-artifact
+      inputs:
+        artifacts:
+          - name: dir
+            path: /tmp/freestyle
+        parameters:
+          - name: image
+          - name: commands
+          - name: working_directory
+            value: ./
+          - name: shell
+            value: sh
+          - name: volumeName
+            value: codefresh-volume # Default value
+      outputs:
+        artifacts:
+          - name: dir
+            path: /tmp/freestyle
+      script:
+        image: "{{ inputs.parameters.image }}"
+        workingDir: /tmp/freestyle
+        command: ["{{ inputs.parameters.shell }}"]
+        source: |
+          cd {{ inputs.parameters.working_directory }}
+          echo Executing commands:
+          {{inputs.parameters.commands}}

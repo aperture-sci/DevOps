@@ -1,0 +1,75 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: corpsite
+spec:
+  template:
+    serviceAccountName: argo-server
+  eventBusName: codefresh-eventbus
+  dependencies:
+    - name: github-corpsite
+      eventName: github-corpsite
+      eventSourceName: corpsite
+      filters:
+        data:
+          - path: body.X-GitHub-Event
+            value:
+              - push
+            type: string
+          - path: body.ref
+            template: '{{ (split "/" .Input)._1 }}'
+            value:
+              - heads
+            type: string
+          - path: body.ref
+            comparator: '='
+            template: '{{ trimPrefix "refs/heads/" .Input }}'
+            type: string
+            value:
+              - gitops
+  triggers:
+    - template:
+        name: ci
+        conditions: github-corpsite
+        argoWorkflow:
+          operation: submit
+          source:
+            resource:
+              apiVersion: argoproj.io/v1alpha1
+              kind: WorkflowTemplate
+              metadata:
+                generateName: corpsite-ci-
+              spec:
+                arguments:
+                  parameters:
+                    - name: REPO
+                      value: ''
+                    - name: BRANCH
+                      value: ''
+                    - name: GIT_COMMIT_URL
+                      value: ''
+                    - name: GIT_COMMIT_MESSAGE
+                      value: ''
+                workflowTemplateRef:
+                  name: globex-ci
+          parameters:
+            # REPO (the repo URL)
+            - dest: spec.arguments.parameters.0.value
+              src:
+                dependencyName: github-corpsite
+                dataTemplate: '{{ .Input.body.repository.clone_url }}'
+            # BRANCH
+            - dest: spec.arguments.parameters.1.value
+              src:
+                dependencyName: github-corpsite
+                dataTemplate: '{{ trimPrefix "refs/heads/" .Input.body.ref }}'
+            # GIT_COMMIT_URL
+            - dest: spec.arguments.parameters.2.value
+              src:
+                dependencyName: github-corpsite
+                dataTemplate: '{{ .Input.body.head_commit.url }}'
+            # GIT_COMMIT_MESSSAGE
+            - dest: spec.arguments.parameters.3.value
+              src:
+                dependencyName: github-corpsite
+                dataTemplate: '{{ .Input.body.head_commit.message }}'

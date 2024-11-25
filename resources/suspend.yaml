@@ -1,0 +1,65 @@
+# This Workflow Template is used to create your first CI pipeline in CSDP
+# This CI pipeline builds a docker image using Kaniko, uploads image metadata to CSDP, and tests the image
+
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: suspend
+spec:
+
+  entrypoint: pipeline
+  templates:
+    - name: pipeline
+      dag:
+        tasks:
+
+        - name: sleep1
+          template: sleep
+          arguments:
+            parameters:
+              - name: DURATION
+                value: 5
+        - name: wait1
+          template: approve
+          depends: sleep1
+
+        - name: sleep2
+          template: sleep
+          depends: wait1
+          arguments:
+            parameters:
+              - name: DURATION
+                value: 5
+
+        - name: wait2
+          template: approve
+          depends: sleep2
+
+        - name: sleep3
+          template: sleep
+          depends: wait2
+          arguments:
+            parameters:
+              - name: DURATION
+                value: 5
+
+        - name: wait3
+          template: approve
+          depends: sleep3
+
+    # Additional templates
+    - name: approve
+      suspend: {}
+#        duration: "5m"
+
+
+    - name: sleep
+      inputs:
+        parameters:
+          - name: DURATION
+            value: 60
+      script:
+        image: alpine:3.7
+        command: [ sh ]
+        source : |
+         sleep {{inputs.parameters.DURATION}}
