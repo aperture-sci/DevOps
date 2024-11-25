@@ -18,7 +18,7 @@ steps:
   clone:
     title: "Cloning repository"
     type: "git-clone"
-    repo: "aperture-sci/promotions-demo"
+    repo: "aperture-sci/DevOps"
     depth: 1
     revision: "main"
     git: github-app
@@ -31,7 +31,7 @@ steps:
     working_directory: ${{clone}}
     commands:
       - |
-        CVERSION=$(yq  r manifests/$APPNAME/$APPENV/Chart.yaml 'appVersion')
+        CVERSION=$(yq  r manifests/$APPNAME/$SERVICE/$APPENV/Chart.yaml 'appVersion')
         cf_export CVERSION=$CVERSION
         export RND=$(( ( RANDOM % 100 )  + 1 ))
         cf_export RND=$RND
@@ -51,7 +51,7 @@ steps:
       annotations:
         set:
          - annotations:
-           - image: ${{APPNAME}}:${{TAG}}
+           - image: ${{SERVICE}}:${{TAG}}
            display: image
 
   bumpVersion:
@@ -69,27 +69,27 @@ steps:
       working_directory: ${{clone}}
       commands:
         - cf_export APPVERSION=${{steps.bumpVersion.output.SEMVERSIONER_RESULT}}
-        - yq w -i manifests/$APPNAME/$APPENV/values.yaml 'loans.image.tag' "${{TAG}}"
-        - cat manifests/$APPNAME/$APPENV/values.yaml
-        - yq w -i manifests/$APPNAME/$APPENV/Chart.yaml 'appVersion' "${{steps.bumpVersion.output.SEMVERSIONER_RESULT}}"
-        - cat manifests/$APPNAME/$APPENV/Chart.yaml
+        - yq w -i manifests/$SERVICE/$APPNAME/$APPENV/values.yaml 'loans.image.tag' "${{TAG}}"
+        - cat manifests/$SERVICE/$APPNAME/$APPENV/values.yaml
+        - yq w -i manifests/$SERVICE/$APPNAME/$APPENV/Chart.yaml 'appVersion' "${{steps.bumpVersion.output.SEMVERSIONER_RESULT}}"
+        - cat manifests/$SERVICE/$APPNAME/$APPENV/Chart.yaml
 
   commit_and_push:
       title: Commit changes and push
       type: git-commit:0.1.3
       stage: deploy
       arguments:
-        repo: aperture-sci/promotions-demo
+        repo: aperture-sci/DevOps
         git: github-app
-        working_directory: '/codefresh/volume/promotions-demo'
-        commit_message: "[promotion:sequential-${{APPNAME}}] Update image tag for ${{APPNAME}} and bump Chart version"
+        working_directory: '/codefresh/volume/DevOps'
+        commit_message: "[promotion:sequential-${{SERVICE}}] Update image tag for ${{SERVICE}} and bump Chart version"
         git_user_name: lrochette
         git_user_email: laurent.rochette@codefresh.io
         allow_empty: true
         force_push: true
         add:
-          - manifests/${{APPNAME}}/$APPENV/values.yaml
-          - manifests/${{APPNAME}}/$APPENV/Chart.yaml
+          - manifests/$SERVICE/${{APPNAME}}/$APPENV/values.yaml
+          - manifests/$SERVICE/${{APPNAME}}/$APPENV/Chart.yaml
       on_success:
         annotations:
           set:

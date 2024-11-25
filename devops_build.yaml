@@ -201,7 +201,8 @@ steps:
     arguments:
       PIPELINE_ID: DevOps/deployLoan
       VARIABLE:
-        - APPNAME="${{BUILDNAME}}"
+        - APPNAME="loan"
+        - SERVICE="${{BUILDNAME}}"
         - APPENV="dev"
         - TAG="${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}"
     when:
@@ -211,7 +212,7 @@ steps:
           onmaster: "'${{CF_BRANCH_TAG_NORMALIZED}}' == 'main'"
 
   deployTrioToDev:
-    title: Trigger deployment to DEV for Loan services
+    title: Trigger deployment to DEV for Trio services
     type: codefresh-run:1.5.3
     stage: "deploy"
     arguments:
