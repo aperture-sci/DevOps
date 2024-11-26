@@ -89,7 +89,7 @@ steps:
     title: Reporting
     type: parallel
     stage: "metadata"
-    #fail_fast: false
+    fail_fast: false
     steps:
       enrich-image:
         stage: build
@@ -110,18 +110,19 @@ steps:
           CF_JIRA_INTEGRATION: jira-intg
           CF_JIRA_MESSAGE: "${{CF_COMMIT_MESSAGE_ESCAPED}}"
           CF_JIRA_PROJECT_PREFIX: AP
-        on_fail:
-          steps:
-            exec:
-              type: slack-post-channel:0.0.7
-              arguments:
-                SLACK_TOKEN: ${{LR_SLACK_TOKEN}}
-                SLACK_CHANNEL: "laurent.rochette@octopus.com"
-                SLACK_MESSAGE: "Enrichment for color failed. See ${{CF_BUILD_URL}}"
-              when:
-                condition:
-                  all:
-                    alert: "'${{SLACK_ALERT}}' == 'true'"
+        hooks:
+          on_fail:
+            steps:
+              exec:
+                type: slack-post-channel:0.0.7
+                arguments:
+                  SLACK_TOKEN: ${{LR_SLACK_TOKEN}}
+                  SLACK_CHANNEL: "laurent.rochette@octopus.com"
+                  SLACK_MESSAGE: "Enrichment for color failed. See ${{CF_BUILD_URL}}"
+                when:
+                  condition:
+                    all:
+                      alert: "'${{SLACK_ALERT}}' == 'true'"
 
       # cosign:
       #   title: Cosign Image
