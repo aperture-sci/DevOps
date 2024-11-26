@@ -23,7 +23,7 @@ spec:
             type: "prod"
   template:
     metadata:
-      name: '{{.path.basename}}-{{metadata.labels.shortname}}'
+      name: '{{.path.basename}}-{{.metadata.labels.shortname}}'
       finalizers:
         - resources-finalizer.argocd.argoproj.io/foreground
       annotations:
@@ -37,10 +37,10 @@ spec:
       source:
         repoURL: https://github.com/aperture-sci/DevOps.git
         targetRevision: main
-        path: '{{.path.path}}/{{metadata.labels.shortname}}'
+        path: '{{.path.path}}/{{.metadata.labels.shortname}}'
       destination:
-        name: '{{name}}'
-        namespace: '{{metadata.labels.shortname}}'
+        name: '{{.name}}'
+        namespace: '{{.metadata.labels.shortname}}'
       syncPolicy:
         automated:
           prune: true
