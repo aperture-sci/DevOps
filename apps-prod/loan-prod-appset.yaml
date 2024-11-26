@@ -15,12 +15,12 @@ spec:
           directories:
             - path: manifests/loan/*
       - clusters:
-        selector:
-          matchExpressions:
-            - key: shortname
-              operator: Exists
-          matchLabels:
-            type: "prod"
+          selector:
+            matchExpressions:
+              - key: shortname
+                operator: Exists
+            matchLabels:
+              type: "prod"
   template:
     metadata:
       name: '{{.path.basename}}-{{.metadata.labels.shortname}}'
