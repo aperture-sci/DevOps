@@ -1,20 +1,24 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: trio
+  name: trio-prod
 spec:
   generators:
     - list:
         elements:
-          - cluster: demo-dev
-            short: dev
-            ns: dev
-          - cluster: demo-qa
-            short: qa
-            ns: qa
-          - cluster: demo-staging
-            short: staging
-            ns: staging
+          - cluster: prod-west
+            short: prod-west
+            ns: prod
+          - cluster: prod-east
+            short: prod-us
+            ns: prod
+          - cluster: prod-asia
+            short: prod-asia
+            ns: prod
+          - cluster: prod-eu
+            short: prod-eu
+            ns: prod
+
 
   template:
     metadata:
