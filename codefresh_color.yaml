@@ -116,7 +116,7 @@ steps:
               type: slack-post-channel:0.0.7
               arguments:
                 SLACK_TOKEN: ${{LR_SLACK_TOKEN}}
-                SLACK_CHANNEL: "laurent.rochette@octopus.com
+                SLACK_CHANNEL: "laurent.rochette@octopus.com"
                 SLACK_MESSAGE: "Enrichment for color failed. See ${{CF_BUILD_URL}}"
               when:
                 condition:
