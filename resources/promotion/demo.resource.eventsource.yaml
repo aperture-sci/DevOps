@@ -23,7 +23,7 @@ spec:
             operation: ==
             value: OutOfSync
       group: argoproj.io
-      namespace: gitops
+      namespace: demo
       resource: applications
       version: v1alpha1
     loans-staging:
@@ -38,7 +38,7 @@ spec:
             operation: ==
             value: OutOfSync
       group: argoproj.io
-      namespace: gitops
+      namespace: demo
       resource: applications
       version: v1alpha1
     loans-production:
@@ -53,7 +53,7 @@ spec:
             operation: ==
             value: OutOfSync
       group: argoproj.io
-      namespace: gitops
+      namespace: demo
       resource: applications
       version: v1alpha1
 
@@ -73,7 +73,7 @@ spec:
             operation: ==
             value: OutOfSync
       group: argoproj.io
-      namespace: gitops
+      namespace: demo
       resource: applications
       version: v1alpha1
     accounts-staging:
@@ -88,7 +88,7 @@ spec:
             operation: ==
             value: OutOfSync
       group: argoproj.io
-      namespace: gitops
+      namespace: demo
       resource: applications
       version: v1alpha1
     accounts-production:
@@ -103,7 +103,7 @@ spec:
             operation: ==
             value: OutOfSync
       group: argoproj.io
-      namespace: gitops
+      namespace: demo
       resource: applications
       version: v1alpha1
 
@@ -123,7 +123,7 @@ spec:
             operation: ==
             value: OutOfSync
       group: argoproj.io
-      namespace: gitops
+      namespace: demo
       resource: applications
       version: v1alpha1
     membership-staging:
@@ -138,7 +138,7 @@ spec:
             operation: ==
             value: OutOfSync
       group: argoproj.io
-      namespace: gitops
+      namespace: demo
       resource: applications
       version: v1alpha1
     membership-production:
@@ -153,7 +153,7 @@ spec:
             operation: ==
             value: OutOfSync
       group: argoproj.io
-      namespace: gitops
+      namespace: demo
       resource: applications
       version: v1alpha1
 
@@ -173,7 +173,7 @@ spec:
             operation: ==
             value: OutOfSync
       group: argoproj.io
-      namespace: gitops
+      namespace: demo
       resource: applications
       version: v1alpha1
     orders-staging:
@@ -188,7 +188,7 @@ spec:
             operation: ==
             value: OutOfSync
       group: argoproj.io
-      namespace: gitops
+      namespace: demo
       resource: applications
       version: v1alpha1
     orders-production:
@@ -203,7 +203,7 @@ spec:
             operation: ==
             value: OutOfSync
       group: argoproj.io
-      namespace: gitops
+      namespace: demo
       resource: applications
       version: v1alpha1
 
