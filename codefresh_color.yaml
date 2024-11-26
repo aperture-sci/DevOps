@@ -96,7 +96,7 @@ steps:
         title: Report image to Codefresh CD
         type: codefresh-report-image:1.0.10
         working_directory: /code
-        #fail_fast: false
+        fail_fast: false
         arguments:
           CF_API_KEY: ${{CF_API_KEY}}
           CF_IMAGE: "docker.io/aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
@@ -110,6 +110,18 @@ steps:
           CF_JIRA_INTEGRATION: jira-intg
           CF_JIRA_MESSAGE: "${{CF_COMMIT_MESSAGE_ESCAPED}}"
           CF_JIRA_PROJECT_PREFIX: AP
+        on_fail:
+          steps:
+            exec:
+              type: slack-post-channel:0.0.7
+              arguments:
+                SLACK_TOKEN: ${{LR_SLACK_TOKEN}}
+                SLACK_CHANNEL: "laurent.rochette@octopus.com
+                SLACK_MESSAGE: "Enrichment for color failed. See ${{CF_BUILD_URL}}"
+              when:
+                condition:
+                  all:
+                    alert: "'${{SLACK_ALERT}}' == 'true'"
 
       # cosign:
       #   title: Cosign Image
