@@ -4,13 +4,13 @@ metadata:
   name: argocd
   namespace: demo
   annotations:
-    kubernetes.io/ingress.class: "nginx"
+    kubernetes.io/ingress.class: "nginx-public"
     alb.ingress.kubernetes.io/ssl-passthrough: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
 spec:
   rules:
-    - host: gitops.sa.cf-cd.com
+    - host: argocd.cs.sanbox.codefresh.io
       http:
         paths:
         - pathType: Prefix

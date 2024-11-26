@@ -12,7 +12,7 @@ spec:
     namespace: mysql
   source:
     path: manifests/mysql
-    repoURL: 'https://github.com/aperture-sci/gitops_applications'
+    repoURL: 'https://github.com/aperture-sci/DevOps'
     targetRevision: main
   project: default
   syncPolicy:

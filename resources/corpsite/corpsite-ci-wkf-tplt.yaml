@@ -65,7 +65,7 @@ spec:
           arguments:
             parameters:
             - name: REPO_URL
-              value: "https://github.com/aperture-sci/gitops_applications.git"
+              value: "https://github.com/aperture-sci/DevOps.git"
             - name: REVISION
               value: "main"
             - name: GIT_TOKEN_SECRET
@@ -244,7 +244,7 @@ spec:
             parameters:
             # Git
             - name: git-repo-url
-              value: "https://github.com/aperture-sci/gitops_applications.git"
+              value: "https://github.com/aperture-sci/DevOps.git"
             - name: git-auth-secret
               value: github-token
             # Replacement Substrings
@@ -264,7 +264,7 @@ spec:
 
     # Additional templates
     - name: approve
-      suspend: 
+      suspend:
         duration: "15m"
 
     - name: maven

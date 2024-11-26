@@ -20,7 +20,7 @@ spec:
       releaseName: kubescape
       valueFiles:
         - $values/helm/kubescape/values.yaml
-  - repoURL: https://github.com/aperture-sci/gitops_applications
+  - repoURL: https://github.com/aperture-sci/DevOps
     targetRevision: main
     ref: values
   syncPolicy:
