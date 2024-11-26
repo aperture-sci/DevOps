@@ -1,0 +1,14 @@
+loans:
+  image:
+    repository: docker.io/aperturesci/membership
+    tag: main-54b7ed0
+    pullPolicy: Always
+
+  resources:
+    limits:
+      cpu: 50m
+      memory: 64Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+  replicaCount: 1
