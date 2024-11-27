@@ -174,7 +174,7 @@ steps:
         working_directory: /code
         arguments:
           CF_API_KEY: '${{CF_API_KEY}}'
-          CF_RUNTIME_NAME: demo
+          CF_RUNTIME_NAME: demoprod
           CF_GITHUB_TOKEN: '${{GITHUB_TOKEN}}'
           CF_GIT_PROVIDER: github
           CF_GIT_REPO: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
