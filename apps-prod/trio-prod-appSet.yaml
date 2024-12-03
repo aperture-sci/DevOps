@@ -10,7 +10,7 @@ spec:
             short: prod-west
             ns: prod
           - cluster: prod-east
-            short: prod-us
+            short: prod-east
             ns: prod
           - cluster: prod-asia
             short: prod-asia
