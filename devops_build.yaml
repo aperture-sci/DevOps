@@ -164,6 +164,7 @@ steps:
     title: Reporting
     type: parallel
     stage: "metadata"
+    fail_fast: false
     when:
       condition:
         all:
@@ -172,6 +173,7 @@ steps:
       ReportImageMetadataAll:
         type: codefresh-report-image:1.0.10
         working_directory: /code
+        fail_fast: false
         arguments:
           CF_API_KEY: '${{CF_API_KEY}}'
           CF_RUNTIME_NAME: demoprod
