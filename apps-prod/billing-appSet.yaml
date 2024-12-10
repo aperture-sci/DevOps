@@ -1,0 +1,47 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: billing
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+  - clusters:
+      selector:
+        matchExpressions:
+          - key: shortname
+            operator: Exists
+        matchLabels:
+          type: "prod"
+
+  template:
+    metadata:
+      name: 'billing-{{.metadata.labels.shortname}}'
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io/foreground
+      annotations:
+        argocd.argoproj.io/manifest-generate-paths: '.'
+        codefresh.io/product: billing
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/aperture-sci/DevOps.git
+        targetRevision: main
+        path: manifests/simple-app-helm
+      destination:
+        name: '{{.name}}'
+        namespace: billing
+      syncPolicy:
+        automated:
+          prune: false
+          selfHeal: false
+          allowEmpty: false
+        syncOptions:
+          - PrunePropagationPolicy=foreground
+          - Replace=false
+          - PruneLast=false
+          - Validate=true
+          - CreateNamespace=true
+          - ApplyOutOfSyncOnly=false
+          # - ServerSideApply=false
+          - RespectIgnoreDifferences=false
