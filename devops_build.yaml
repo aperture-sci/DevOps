@@ -1,8 +1,4 @@
-# More examples of Codefresh YAML can be found at
-# https://codefresh.io/docs/docs/yaml-examples/examples/
-
 version: "1.0"
-# Stages can help you organize your steps in stages
 stages:
   - "build"
   - "test"
@@ -164,7 +160,6 @@ steps:
     title: Reporting
     type: parallel
     stage: "metadata"
-    fail_fast: false
     when:
       condition:
         all:
@@ -173,7 +168,6 @@ steps:
       ReportImageMetadataAll:
         type: codefresh-report-image:1.0.10
         working_directory: /code
-        fail_fast: false
         arguments:
           CF_API_KEY: '${{CF_API_KEY}}'
           CF_RUNTIME_NAME: demo
@@ -187,18 +181,6 @@ steps:
           CF_IMAGE: 'docker.io/aperturesci/${{BUILDNAME}}:${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}'
           CF_CONTAINER_REGISTRY_INTEGRATION: docker-intg
           CF_DOCKERFILE_CONTENT: '${{DOCKERFILE_CONTENT}}'
-        on_fail:
-          steps:
-            exec:
-              type: slack-post-channel:0.0.7
-              arguments:
-                SLACK_TOKEN: ${{LR_SLACK_TOKEN}}
-                SLACK_CHANNEL: "laurent.rochette@octopus.com"
-                SLACK_MESSAGE: "Enrichment for ${BUILDPATH} failed. See ${{CF_BUILD_URL}}"
-              when:
-                condition:
-                  all:
-                    alert: "'${{SLACK_ALERT}}' == 'true'"
       cosign:
         title: Cosign Image
         image: bitnami/cosign:2
