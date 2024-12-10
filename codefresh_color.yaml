@@ -101,7 +101,7 @@ steps:
         arguments:
           CF_API_KEY: ${{CF_API_KEY}}
           CF_IMAGE: "docker.io/aperturesci/rollouts-demo:${{CF_SHORT_REVISION}}"
-          CF_RUNTIME_NAME: demoprod
+          CF_RUNTIME_NAME: demo
           CF_CONTAINER_REGISTRY_INTEGRATION: docker-intg
           CF_GITHUB_TOKEN: "${{GITHUB_TOKEN}}"
           CF_GIT_PROVIDER: github
