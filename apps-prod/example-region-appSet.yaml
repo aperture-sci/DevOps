@@ -1,0 +1,46 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: example-region
+spec:
+  generators:
+  - clusters:
+      selector:
+        matchExpressions:
+          - key: shortname
+            operator: Exists
+        matchLabels:
+          type: "prod"
+
+  template:
+    metadata:
+      name: 'example-{{.metadata.labels.shortname}}'
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io/foreground
+      annotations:
+        argocd.argoproj.io/manifest-generate-paths: '.'
+        codefresh.io/product: multi-region-app
+        codefresh.io/app-group: four-regions
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/aperture-sci/DevOps.git
+        targetRevision: main
+        path: manifests/simple-app
+      destination:
+        name: '{{.name}}'
+        namespace: region-example
+      syncPolicy:
+        automated:
+          prune: false
+          selfHeal: false
+          allowEmpty: false
+        syncOptions:
+          - PrunePropagationPolicy=foreground
+          - Replace=false
+          - PruneLast=false
+          - Validate=true
+          - CreateNamespace=true
+          - ApplyOutOfSyncOnly=false
+          # - ServerSideApply=false
+          - RespectIgnoreDifferences=false
