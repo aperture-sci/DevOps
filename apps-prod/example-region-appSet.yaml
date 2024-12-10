@@ -16,7 +16,7 @@ spec:
 
   template:
     metadata:
-      name: 'example-region-{{.metadata.labels.shortname}}'
+      name: 'example-{{.metadata.labels.shortname}}'
       finalizers:
         - resources-finalizer.argocd.argoproj.io/foreground
       annotations:
