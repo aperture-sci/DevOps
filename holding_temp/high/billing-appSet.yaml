@@ -22,6 +22,7 @@ spec:
       annotations:
         argocd.argoproj.io/manifest-generate-paths: '.'
         codefresh.io/product: billing
+        codefresh.io/app-group: billing
     spec:
       project: default
       source:
