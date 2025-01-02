@@ -10,7 +10,7 @@ metadata:
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
 spec:
   rules:
-    - host: argocd.cs.sanbox.codefresh.io
+    - host: argocd.cs.sandbox.codefresh.io
       http:
         paths:
         - pathType: Prefix
