@@ -14,7 +14,7 @@ spec:
       http:
         paths:
         - pathType: Prefix
-          path: /
+          path: /argocd
           backend:
             service:
               name: argo-cd-server
