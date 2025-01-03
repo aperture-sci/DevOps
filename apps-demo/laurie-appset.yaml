@@ -33,8 +33,8 @@ spec:
         helm:
           valueFiles:
             - "values.yaml"
-            - "./apps/{{index .path.segments 4}}/values.yml"
-            - "./apps/{{index .path.segments 4}}/{{index .path.segments 4}}/values.yml"
+            - "./apps/{{index .path.segments 3}}/values.yml"
+            - "./apps/{{index .path.segments 3}}/{{index .path.segments 4}}/values.yml"
       destination:
         name: in-cluster
         namespace: 'laurie-{{index .path.segments 4}}'
