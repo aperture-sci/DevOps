@@ -1,0 +1,51 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: laurie
+
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+    - git:
+        repoURL: https://github.com/aperture-sci/DevOps.git
+        revision: HEAD
+        directories:
+          - path: manifests/laurie/*/*
+
+  template:
+    metadata:
+      name: 'laurie-{{index .path.segments 2}}-{{index .path.segments 3}}'
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io/foreground
+      annotations:
+      #   argocd.argoproj.io/manifest-generate-paths: '.'
+      #   codefresh.io/product: '{{.path.basename}}'
+        codefresh.io/app-group: laurie
+      # labels:
+      #   codefresh.io/product: '{{.path.basename}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/aperture-sci/DevOps.git
+        targetRevision: main
+        path: 'manifests/laurie'
+        helm:
+          valueFiles:
+            - "values.yaml"
+            - "./apps/{{index .path.segments 2}}/values.yml"
+            - "./apps/{{index .path.segments 2}}/{{index .path.segments 3}}/values.yml"
+      destination:
+        name: in-cluster
+        namespace: 'laurie-{{index .path.segments 2}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - PrunePropagationPolicy=foreground
+          - Replace=false
+          - PruneLast=false
+          - Validate=true
+          - CreateNamespace=true
+          - ApplyOutOfSyncOnly=false
