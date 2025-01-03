@@ -15,7 +15,7 @@ spec:
 
   template:
     metadata:
-      name: 'laurie-{{index .path.segments 2}}-{{index .path.segments 3}}'
+      name: 'laurie-{{index .path.segments 3}}-{{index .path.segments 4}}'
       finalizers:
         - resources-finalizer.argocd.argoproj.io/foreground
       annotations:
@@ -33,11 +33,11 @@ spec:
         helm:
           valueFiles:
             - "values.yaml"
-            - "./apps/{{index .path.segments 2}}/values.yml"
-            - "./apps/{{index .path.segments 2}}/{{index .path.segments 3}}/values.yml"
+            - "./apps/{{index .path.segments 4}}/values.yml"
+            - "./apps/{{index .path.segments 4}}/{{index .path.segments 4}}/values.yml"
       destination:
         name: in-cluster
-        namespace: 'laurie-{{index .path.segments 2}}'
+        namespace: 'laurie-{{index .path.segments 4}}'
       syncPolicy:
         automated:
           prune: true
