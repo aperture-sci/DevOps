@@ -11,7 +11,7 @@ spec:
         repoURL: https://github.com/aperture-sci/DevOps.git
         revision: HEAD
         directories:
-          - path: manifests/laurie/*/*
+          - path: manifests/laurie/apps/*/*
 
   template:
     metadata:
