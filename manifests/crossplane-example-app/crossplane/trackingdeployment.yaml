@@ -16,4 +16,4 @@ spec:
     spec:
       containers:
         - name: crosstracker
-          image: aperturesci/crosstracker:trioapp-prod
+          image: aperturesci/crosstracker:interest-qa
