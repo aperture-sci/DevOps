@@ -9,7 +9,7 @@ metadata:
 spec:
   destination:
     name: in-cluster
-    namespace: guestbook-staging-
+    namespace: guestbook-staging
   project: default
   source:
     path: manifests/guestbook/staging
