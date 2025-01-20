@@ -1,0 +1,5 @@
+guestbook:
+  image:
+    tag: "1.20-alpine"
+  rollout:
+    enabled: true

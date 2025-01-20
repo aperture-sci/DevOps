@@ -1,0 +1,9 @@
+apiVersion: v2
+appVersion: 1.0.0
+description: "DESCRIPTION"
+name: guestbook-staging
+version: 0.2.2-bg
+dependencies:
+  - name: guestbook
+    repository: oci://registry-1.docker.io/franciscocodefresh
+    version: 0.2.2-bg
