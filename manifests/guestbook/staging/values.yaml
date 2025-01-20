@@ -1,5 +1,5 @@
 guestbook:
   image:
-    tag: "1.21-alpine"
+    tag: "1.22-alpine"
   rollout:
     enabled: true
