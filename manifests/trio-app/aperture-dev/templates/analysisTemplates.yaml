@@ -43,4 +43,4 @@ spec:
                     command: [sh, -c]
                     args: [exit 0]
                 restartPolicy: Never
-                backoffLimit: 0
+            backoffLimit: 0
