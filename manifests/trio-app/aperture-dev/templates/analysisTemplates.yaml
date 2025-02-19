@@ -22,7 +22,7 @@ spec:
 kind: AnalysisTemplate
 apiVersion: argoproj.io/v1alpha1
 metadata:
-  name: conditional-tests-{{ include "guestbook.fullname" . }}
+  name: conditional-tests
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     app: {{ template "fullname" . }}
