@@ -1,0 +1,46 @@
+kind: AnalysisTemplate
+apiVersion: argoproj.io/v1alpha1
+metadata:
+  name: datadog-analysis
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app: {{ template "fullname" . }}
+spec:
+  metrics:
+    - name: datadog-metric-cpu
+      count: 4
+      initialDelay: "10s"
+      interval: 5s
+      failureCondition: default(result, 100) > 70
+      failureLimit: 1
+      provider:
+        datadog:
+          apiVersion: v1
+          interval: 5m
+          query: "{{ `max:system.cpu.user{kube_node:*}` }}"
+---
+kind: AnalysisTemplate
+apiVersion: argoproj.io/v1alpha1
+metadata:
+  name: conditional-tests
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app: {{ template "fullname" . }}
+spec:
+  metrics:
+    - name: conditional-test
+      count: 2
+      interval: 5s
+      failureLimit: 1
+      provider:
+        job:
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: sleep-pass
+                    image: alpine:3.8
+                    command: [sh, -c]
+                    args: [exit 0]
+                restartPolicy: Never
+                backoffLimit: 0
