@@ -1,0 +1,20 @@
+kind: AnalysisTemplate
+apiVersion: argoproj.io/v1alpha1
+metadata:
+  name: datadog-analysis-{{ template "fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app: {{ template "fullname" . }}
+spec:
+  metrics:
+    - name: datadog-metric-cpu
+      count: 4
+      initialDelay: "10s"
+      interval: 5s
+      failureCondition: default(result, 100) > 70
+      failureLimit: 1
+      provider:
+        datadog:
+          apiVersion: v1
+          interval: 5m
+          query: "{{ `max:system.cpu.user{kube_node:*}` }}"
