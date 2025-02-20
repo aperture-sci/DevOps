@@ -9,9 +9,9 @@ spec:
   metrics:
     - name: datadog-metric-cpu
       count: 4
-      initialDelay: "10s"
-      interval: 5s
-      failureCondition: default(result, 100) > 70
+      initialDelay: "5s"
+      interval: 10s
+      failureCondition: default(result, 100) > 25
       failureLimit: 1
       provider:
         datadog:
