@@ -11,7 +11,7 @@ spec:
       count: 4
       initialDelay: "5s"
       interval: 10s
-      failureCondition: default(result, 100) > 20
+      failureCondition: default(result, 100) > 200
       failureLimit: 1
       provider:
         datadog:
