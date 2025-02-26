@@ -16,4 +16,4 @@ spec:
     spec:
       containers:
         - name: crosstracker
-          image: aperturesci/crosstracker:interest-qa
+          image: aperturesci/crosstracker:accounts-qa
