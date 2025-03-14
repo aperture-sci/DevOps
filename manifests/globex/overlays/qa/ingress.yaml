@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: globex-prod
+  annotations:
+    annotations.kubernetes.io/ingress.class: nginx-public
+    ingress.kubernetes.io/app-root: /
+    link.argocd.argoproj.io/external-link: https://globex-prod.cs.sandbox.codefresh.io/
+
+
+spec:
+  ingressClassName: nginx-public
+  rules:
+    - host: globex-qa.cs.sandbox.codefresh.io
+      http:
+        paths:
+          - path: /
+            backend:
+              service:
+                name: globex
+                port:
+                  number: 80
+            pathType: Prefix
