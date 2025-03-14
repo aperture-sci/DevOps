@@ -4,20 +4,21 @@ metadata:
   name: globex
   namespace: cf-teama
 spec:
-    generators:
-      - list:
-        - short: dev
-        - short: qa
-    template:
-      metadata:
-        name: 'globex-{{short}}'
+  generators:
+    - list:
+        elements:
+          - short: dev
+          - short: qa
+  template:
+    metadata:
+      name: 'globex-{{short}}'
       labels:
         app: globex
       finalizers:
         - resources-finalizer.argocd.argoproj.io
       annotations:
         argocd.argoproj.io/manifest-generate-paths: ./manifests/globex
-      spec:
+    spec:
       destination:
         namespace: '{{short}}'
         server: 'demo-{{short}}'
