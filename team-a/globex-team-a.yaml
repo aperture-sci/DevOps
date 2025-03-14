@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: globex-dev
+  namespace: cf-teama
+  labels:
+    app: globex
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/manifest-generate-paths: /kustomize/globex
+spec:
+  destination:
+    namespace: dev
+    server: https://kubernetes.default.svc
+  project: dev
+  source:
+    path: ./manifests/globex/overlays/dev
+    repoURL: https://github.com/aperture-sci/DevOps.git
+    targetRevision: main
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
