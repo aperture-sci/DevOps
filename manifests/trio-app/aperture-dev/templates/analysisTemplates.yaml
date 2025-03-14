@@ -9,9 +9,9 @@ spec:
   metrics:
     - name: datadog-metric-cpu
       count: 4
-      initialDelay: "10s"
-      interval: 5s
-      failureCondition: default(result, 100) > 70
+      initialDelay: "5s"
+      interval: 10s
+      failureCondition: default(result, 100) > 20
       failureLimit: 1
       provider:
         datadog:
@@ -43,4 +43,4 @@ spec:
                     command: [sh, -c]
                     args: [exit 0]
                 restartPolicy: Never
-                backoffLimit: 0
+            backoffLimit: 0
