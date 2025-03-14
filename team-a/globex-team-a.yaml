@@ -13,7 +13,7 @@ spec:
   destination:
     namespace: dev
     server: https://kubernetes.default.svc
-  project: default
+  project: team-a
   source:
     path: ./manifests/globex/overlays/dev
     repoURL: https://github.com/aperture-sci/DevOps.git
