@@ -20,9 +20,9 @@ spec:
         argocd.argoproj.io/manifest-generate-paths: ./manifests/globex
     spec:
       destination:
-        namespace: '{{short}}'
+        namespace: 'team-a'
         server: 'demo-{{short}}'
-      project: default
+      project: team-a
       source:
         path: './manifests/globex/overlays/{{short}}'
         repoURL: https://github.com/aperture-sci/DevOps.git
