@@ -50,6 +50,10 @@ flask-ui:
           - setWeight: 20
           - pause:
               duration: 5s
+          - analysis:
+              templates:
+                - templateName: datadog-analysis
+                - templateName: conditional-tests
           - setWeight: 50
           - pause:
               duration: 5s
