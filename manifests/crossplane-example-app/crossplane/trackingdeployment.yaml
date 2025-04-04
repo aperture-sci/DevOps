@@ -16,4 +16,4 @@ spec:
     spec:
       containers:
         - name: crosstracker
-          image: aperturesci/crosstracker:membership-eu
+          image: aperturesci/crosstracker:orders-eu
