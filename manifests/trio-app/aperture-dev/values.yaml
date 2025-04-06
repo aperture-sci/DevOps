@@ -20,7 +20,7 @@ buslog:
           - setWeight: 100
 ctrlr:
   image:
-    tag: main-fe5c544
+    tag: main-08faeba
     repository: docker.io/aperturesci/ctrlr
   replicaCount: 3
   rollout:
