@@ -1,7 +1,7 @@
 loans:
   image:
     repository: docker.io/aperturesci/accounts
-    tag: main-bceb3a1
+    tag: main-eb0547e
     pullPolicy: Always
 
   resources:
