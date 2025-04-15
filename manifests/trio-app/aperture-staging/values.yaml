@@ -13,7 +13,7 @@ buslog:
           - setWeight: 100
 ctrlr:
   image:
-    tag: main-ecf4ab1
+    tag: main-2010dfd
     repository: docker.io/aperturesci/ctrlr
   replicaCount: 3
   rollout:
