@@ -12,7 +12,7 @@ hooks:
         type: slack-post-channel:0.0.7
         arguments:
           SLACK_TOKEN: ${{LR_SLACK_TOKEN}}
-          SLACK_CHANNEL: topic-codefresh-demo
+          SLACK_CHANNEL: feed-aperture-sci-promotions-failure
           SLACK_MESSAGE: "Deployment build for ${{APPNAME}} failed. See ${{CF_BUILD_URL}}"
 
 steps:
