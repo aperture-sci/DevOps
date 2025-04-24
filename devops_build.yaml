@@ -86,7 +86,7 @@ steps:
         title: Trivy Security Image Scan
         image: aquasec/trivy:0.39.1
         stage: test
-        enviornment:
+        environment:
           - CI = true
         commands:
           - trivy image aperturesci/${{BUILDNAME}}:${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}
