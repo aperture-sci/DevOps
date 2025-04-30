@@ -8,14 +8,14 @@ buslog:
       canary:
         steps:
         - setWeight: 0
-        - setCanaryScale:
-            replicas: 1
+        # - setCanaryScale:
+        #     replicas: 1
         - pause: {}
         - setCanaryScale:
             weight: 5
         - setWeight: 5
-        - setCanaryScale:
-            matchTrafficWeight: true
+        # - setCanaryScale:
+        #     matchTrafficWeight: true
         - pause:
             duration: 1h
         - setWeight: 10
