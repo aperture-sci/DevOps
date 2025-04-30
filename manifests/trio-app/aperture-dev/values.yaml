@@ -11,8 +11,8 @@ buslog:
         # - setCanaryScale:
         #     replicas: 1
         - pause: {}
-        - setCanaryScale:
-            weight: 5
+        # - setCanaryScale:
+        #     weight: 5
         - setWeight: 5
         # - setCanaryScale:
         #     matchTrafficWeight: true
