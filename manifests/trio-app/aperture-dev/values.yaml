@@ -7,44 +7,17 @@ buslog:
     strategy:
       canary:
         steps:
-        - setWeight: 0
-        # - setCanaryScale:
-        #     replicas: 1
-        - pause: {}
-        # - setCanaryScale:
-        #     weight: 5
-        - setWeight: 5
-        # - setCanaryScale:
-        #     matchTrafficWeight: true
-        - pause:
-            duration: 1h
-        - setWeight: 10
-        - pause:
-            duration: 2h
-        - setWeight: 20
-        - pause:
-            duration: 2h
-        - setWeight: 40
-        - pause:
-            duration: 4h
-        - setWeight: 60
-        - pause:
-            duration: 6h
-        - setWeight: 80
-        - pause:
-            duration: 9h
-        # steps:
-        #   - setWeight: 20
-        #   - pause:
-        #       duration: 5s
-        #   - analysis:
-        #       templates:
-        #         - templateName: datadog-analysis
-        #         - templateName: conditional-tests
-        #   - setWeight: 50
-        #   - pause:
-        #       duration: 5s
-        #   - setWeight: 100
+          - setWeight: 20
+          - pause:
+              duration: 5s
+          - analysis:
+              templates:
+                - templateName: datadog-analysis
+                - templateName: conditional-tests
+          - setWeight: 50
+          - pause:
+              duration: 5s
+          - setWeight: 100
 ctrlr:
   image:
     tag: main-45c8e23
