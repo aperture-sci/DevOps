@@ -14,7 +14,7 @@ spec:
   project: default
   destination:
     namespace: monitoring
-    name: in-cluster
+    name: prod-eu
   source:
     repoURL: https://github.com/aperture-sci/DevOps.git
     path: manifests/prometheus

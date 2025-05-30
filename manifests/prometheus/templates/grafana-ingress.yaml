@@ -11,7 +11,7 @@ metadata:
 spec:
   ingressClassName: nginx-public
   rules:
-    - host: grafana-prod.cs.sandbox.codefresh.io
+    - host: grafana-prod-eu.cs.sandbox.codefresh.io
       http:
         paths:
           - path: /
