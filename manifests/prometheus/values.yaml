@@ -1,0 +1,26 @@
+kube-prometheus-stack:
+  nodeExporter:
+    enabled: false
+  kubeStateMetrics:
+    enabled: false
+  windowsMonitoring:
+    enabled: false
+  # adding permanent volume
+  grafana:
+    persistence:
+      enabled: true
+
+  defaultRules:
+    create: false
+    rules:
+      alertmanager: false
+      grafana: false
+      kubeApiServer: false
+      kubelet: false
+      kubeControllerManager: false
+      coreDns: false
+      kubeEtcd: false
+      kubeScheduler: false
+      kubeStateMetrics: false
+      nodeExporter: false
+      prometheus: false
