@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: prometheus-stack-eu
+  name: prometheus-stack
   namespace: high
   finalizers:
     - resources-finalizer.argocd.argoproj.io/foreground
@@ -14,7 +14,7 @@ spec:
   project: default
   destination:
     namespace: monitoring
-    name: prod-eu
+    name: high-rt
   source:
     repoURL: https://github.com/aperture-sci/DevOps.git
     path: manifests/prometheus

@@ -11,13 +11,13 @@ metadata:
 spec:
   ingressClassName: nginx-public
   rules:
-    - host: grafana-eu.cs.sandbox.codefresh.io
+    - host: grafana-prod.cs.sandbox.codefresh.io
       http:
         paths:
           - path: /
             pathType: ImplementationSpecific
             backend:
               service:
-                name: prometheus-stack-eu-grafana
+                name: prometheus-stack-grafana
                 port:
                   number: 80
