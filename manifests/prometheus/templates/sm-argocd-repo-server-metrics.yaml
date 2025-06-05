@@ -2,7 +2,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: argocd-repo-server-metrics
-  namespace: monitoring
+  namespace: high     # Need to match ArgoCD (Runtime) namsepace
   labels:
     release: prometheus-stack
 spec:
