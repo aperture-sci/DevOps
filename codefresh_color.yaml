@@ -193,7 +193,7 @@ steps:
       finalState: approved
 
   sync_dev:
-    type: gitops-argocd-sync:1.4.5
+    type: gitops-argocd-sync:1.5.0
     title: Sync ArgoCD app in DEV and wait
     stage: dev
     arguments:
@@ -243,7 +243,7 @@ steps:
         - manifests/color/qa/kustomization.yaml
 
   sync_qa:
-    type: gitops-argocd-sync:1.4.5
+    type: gitops-argocd-sync:1.5.0
     title: Sync ArgoCD app in QA and  wait
     stage: qa
     arguments:
@@ -294,7 +294,7 @@ steps:
 
   sync_staging:
     title: Sync ArgoCD app in staging and  wait
-    type: gitops-argocd-sync:1.4.5
+    type: gitops-argocd-sync:1.5.0
     stage: staging
     arguments:
       RUNTIME: demo
@@ -344,7 +344,7 @@ steps:
   #
   # sync_prod:
   #   title: Sync ArgoCD app in prod and  wait
-  #   type: gitops-argocd-sync:1.4.5
+  #   type: gitops-argocd-sync:1.5.0
   #   stage: prod
   #   arguments:
   #     RUNTIME: demo
