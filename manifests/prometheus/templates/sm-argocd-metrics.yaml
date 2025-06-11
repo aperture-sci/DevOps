@@ -1,14 +1,14 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: argocd-metrics
+  name: argo-cd-metrics
   namespace: high     # Need to match ArgoCD (Runtime) namsepace
   labels:
     release: prometheus-stack
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: argocd-metrics
+      app.kubernetes.io/name: argo-cd-metrics
   namespaceSelector:
     matchNames:
       - high
