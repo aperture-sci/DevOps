@@ -14,7 +14,7 @@ spec:
     matchNames:
       - high
   endpoints:
-  - port: metrics
+  - port: http-metrics
     relabelings:
     - targetLabel: job
       replacement: argocd-applicationset-controller-metrics
