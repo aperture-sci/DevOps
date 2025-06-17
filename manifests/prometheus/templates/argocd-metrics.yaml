@@ -6,9 +6,9 @@ metadata:
 spec:
   ports:
   - name: metrics
-    port: 8082
+    port: 8083
     protocol: TCP
-    targetPort: 8082
+    targetPort: 8083
   selector:
     app.kubernetes.io/name: argocd-server
   type: ClusterIP
