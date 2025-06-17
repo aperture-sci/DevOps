@@ -8,8 +8,8 @@ metadata:
 spec:
   selector:
     matchLabels:
-    app.kubernetes.io/component: application-controller
-    app.kubernetes.io/name: argocd-metrics
+      app.kubernetes.io/component: application-controller
+      app.kubernetes.io/name: argocd-metrics
   namespaceSelector:
     matchNames:
       - high
