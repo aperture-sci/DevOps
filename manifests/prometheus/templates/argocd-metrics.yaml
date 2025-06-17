@@ -10,5 +10,5 @@ spec:
     protocol: TCP
     targetPort: 8082
   selector:
-    app.kubernetes.io/name: argo-cd-server
+    app.kubernetes.io/name: argocd-server
   type: ClusterIP
