@@ -1,4 +1,8 @@
 argocdUrl: https://argo-cd-server.high:8080
+cm:
+  create: true
+  name: argocd-notifications-cm
+  
 metrics:
   enabled: true
 notifiers:
