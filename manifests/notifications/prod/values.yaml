@@ -2,13 +2,15 @@ argocdUrl: https://argo-cd-server.high:8080
 cm:
   create: true
   name: argocd-notifications-cm
-  
+
 metrics:
   enabled: true
 notifiers:
   service.grafana: |
     apiURL: https://grafana-prod.cs.sandbox.codefresh.io/api
     apiKey: $grafana-api-key
+  service.slack: |
+    token: $slack-token
 subscriptions: {}
 templates: {}
 triggers:
