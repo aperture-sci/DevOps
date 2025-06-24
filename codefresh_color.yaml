@@ -300,52 +300,52 @@ steps:
       RUNTIME: demo
       APPLICATION: color-staging
 
-  # approve_prod:
-  #   stage: prod
-  #   type: pending-approval
-  #   timeout:
-  #     timeUnit: minutes
-  #     duration: 5
-  #     finalState: approved
-  #
-  # clone_prod:
-  #   title: "Cloning repository for PROD"
-  #   type: "git-clone"
-  #   git: "github"
-  #   repo: aperture-sci/DevOps
-  #   revision: "main"
-  #   depth: 1
-  #   exclude_blobs: true
-  #   stage: prod
-  #
-  # update_prod_manifest:
-  #   description: update the image version for prod
-  #   image: codefresh/cli
-  #   working_directory: "/codefresh/volume/DevOps"
-  #   stage: prod
-  #   commands:
-  #     - yq -i -y '.images[0].newTag="${{CF_SHORT_REVISION}}"' manifests/color/prod/kustomization.yaml
-  #
-  # commit_and_push_prod:
-  #   title: Commit changes and push
-  #   type: git-commit:0.1.4
-  #   stage: prod
-  #   arguments:
-  #     repo: aperture-sci/DevOps
-  #     git: github-lr
-  #     working_directory: "/codefresh/volume/DevOps"
-  #     commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
-  #     git_user_name: lrochette
-  #     git_user_email: laurent.rochette@codefresh.io
-  #     allow_empty: true
-  #     force_push: true
-  #     add:
-  #       - manifests/color/prod/kustomization.yaml
-  #
-  # sync_prod:
-  #   title: Sync ArgoCD app in prod and  wait
-  #   type: gitops-argocd-sync:1.5.0
-  #   stage: prod
-  #   arguments:
-  #     RUNTIME: demo
-  #     APPLICATION: color-prod
+  approve_prod-eu:
+    stage: prod
+    type: pending-approval
+    timeout:
+      timeUnit: minutes
+      duration: 5
+      finalState: approved
+
+  clone_prod-eu:
+    title: "Cloning repository for PROD"
+    type: "git-clone"
+    git: "github"
+    repo: aperture-sci/DevOps
+    revision: "main"
+    depth: 1
+    exclude_blobs: true
+    stage: prod
+
+  update_prod_manifest:
+    description: update the image version for prod
+    image: codefresh/cli
+    working_directory: "/codefresh/volume/DevOps"
+    stage: prod
+    commands:
+      - yq -i -y '.images[0].newTag="${{CF_SHORT_REVISION}}"' manifests/color/eu/kustomization.yaml
+
+  commit_and_push_prod-eu:
+    title: Commit changes and push
+    type: git-commit:0.1.4
+    stage: prod
+    arguments:
+      repo: aperture-sci/DevOps
+      git: github-lr
+      working_directory: "/codefresh/volume/DevOps"
+      commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
+      git_user_name: lrochette
+      git_user_email: laurent.rochette@codefresh.io
+      allow_empty: true
+      force_push: true
+      add:
+        - manifests/color/eu/kustomization.yaml
+
+  sync_prod-eu:
+    title: Sync ArgoCD app in prod and  wait
+    type: gitops-argocd-sync:1.5.0
+    stage: prod
+    arguments:
+      RUNTIME: demo
+      APPLICATION: color-eu
