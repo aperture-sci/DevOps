@@ -1,16 +1,19 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
+  name: argocd-notifications
+  namespace: high
   annotations:
     argocd.argoproj.io/manifest-generate-paths: '.'
   finalizers:
   - resources-finalizer.argocd.argoproj.io
-  name: argocd-notifications
+
 spec:
+  project: default
   destination:
     name: in-cluster
     namespace: high
-  project: default
+
   source:
     path: manifests/notifications/prod
     repoURL: https://github.com/aperture-sci/DevOps
@@ -20,5 +23,11 @@ spec:
       prune: true
       selfHeal: true
     syncOptions:
-    - CreateNamespace=true
-    - PruneLast=true
+      - PrunePropagationPolicy=foreground
+      - Replace=false
+      - PruneLast=false
+      - Validate=true
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=false
+      - ServerSideApply=true
+      - RespectIgnoreDifferences=false
