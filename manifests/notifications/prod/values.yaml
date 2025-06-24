@@ -8,7 +8,7 @@ cm:
 # secret is created by Laurent manually so they are not exposed
 secret:
   create: false
-
+  
 metrics:
   enabled: true
 notifiers:
