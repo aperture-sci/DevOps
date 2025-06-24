@@ -3,6 +3,7 @@ appVersion: 1.0.0
 name: argocd-notifications
 description: A Helm chart for Argocd Notifications
 version: 1.8.1
+type: application
 dependencies:
   - name: argocd-notifications
     version: 1.8.1
