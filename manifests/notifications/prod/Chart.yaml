@@ -1,6 +1,6 @@
 apiVersion: v2
 name: argocd-notifications
-description: A Helm chart for Prometheus
+description: A Helm chart for Argocd Notifications
 type: application
 version: 1.8.1
 appVersion: 1.8.1
