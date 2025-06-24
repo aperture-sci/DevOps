@@ -5,7 +5,7 @@ metadata:
     argocd.argoproj.io/manifest-generate-paths: '.'
   finalizers:
   - resources-finalizer.argocd.argoproj.io
-  name: argocd-notifcations
+  name: argocd-notifications
 spec:
   destination:
     name: in-cluster
