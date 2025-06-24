@@ -3,11 +3,13 @@ kind: Application
 metadata:
   name: argocd-notifications
   namespace: high
-  annotations:
-    argocd.argoproj.io/manifest-generate-paths: '.'
   finalizers:
   - resources-finalizer.argocd.argoproj.io
-
+  annotations:
+    argocd.argoproj.io/manifest-generate-paths: '.'
+    argocd.argoproj.io/sync-wave: "0"
+  labels:
+    app-type: "infra"
 spec:
   project: default
   destination:
@@ -15,8 +17,8 @@ spec:
     namespace: high
 
   source:
-    path: manifests/notifications/prod
     repoURL: https://github.com/aperture-sci/DevOps
+    path: manifests/notifications/prod
     targetRevision: main
   syncPolicy:
     automated:
