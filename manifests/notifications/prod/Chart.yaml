@@ -1,9 +1,8 @@
 apiVersion: v2
+appVersion: 1.0.0
 name: argocd-notifications
 description: A Helm chart for Argocd Notifications
-type: application
 version: 1.8.1
-appVersion: 1.8.1
 dependencies:
   - name: argocd-notifications
     version: 1.8.1

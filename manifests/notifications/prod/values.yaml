@@ -1,5 +1,6 @@
 argocdUrl: https://argo-cd-server.high:8080
 nameOverride: ""
+fullnameOverride: ""
 
 cm:
   create: true
@@ -8,7 +9,7 @@ cm:
 # secret is created by Laurent manually so they are not exposed
 secret:
   create: false
-  
+
 metrics:
   enabled: true
 notifiers:
