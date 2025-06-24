@@ -304,7 +304,7 @@ steps:
 #
 # Europe
 #
-  approve_prod-eu:
+  approve-eu:
     stage: europe
     type: pending-approval
     timeout:
@@ -312,8 +312,8 @@ steps:
       duration: 5
       finalState: approved
 
-  clone_prod-eu:
-    title: "Cloning repository for PROD"
+  clone-eu:
+    title: "Cloning repository for Europe"
     type: "git-clone"
     git: "github"
     repo: aperture-sci/DevOps
@@ -322,16 +322,16 @@ steps:
     exclude_blobs: true
     stage: europe
 
-  update_prod_manifest:
-    description: update the image version for prod
+  update_europe_manifest:
+    description: update the image version for Europe
     image: codefresh/cli
     working_directory: "/codefresh/volume/DevOps"
     stage: europe
     commands:
       - yq -i -y '.images[0].newTag="${{CF_SHORT_REVISION}}"' manifests/color/eu/kustomization.yaml
 
-  commit_and_push_prod-eu:
-    title: Commit changes and push
+  commit_and_push_eu:
+    title: Commit changes and push to Europe
     type: git-commit:0.1.4
     stage: europe
     arguments:
@@ -346,8 +346,8 @@ steps:
       add:
         - manifests/color/eu/kustomization.yaml
 
-  sync_prod-eu:
-    title: Sync ArgoCD app in prod and  wait
+  sync_eu:
+    title: Sync ArgoCD app in Europe and wait
     type: gitops-argocd-sync:1.5.0
     stage: europe
     arguments:
@@ -358,7 +358,7 @@ steps:
 # Asia
 #
 
-  approve_prod-asia:
+  approve_asia:
     stage: asia
     type: pending-approval
     timeout:
@@ -366,8 +366,8 @@ steps:
       duration: 5
       finalState: approved
 
-  clone_prod-asia:
-    title: "Cloning repository for PROD"
+  clone_asia:
+    title: "Cloning repository for Asia"
     type: "git-clone"
     git: "github"
     repo: aperture-sci/DevOps
@@ -376,15 +376,15 @@ steps:
     exclude_blobs: true
     stage: asia
 
-  update_prod_manifest:
-    description: update the image version for prod
+  update_asia_manifest:
+    description: update the image version for Asia
     image: codefresh/cli
     working_directory: "/codefresh/volume/DevOps"
     stage: asia
     commands:
       - yq -i -y '.images[0].newTag="${{CF_SHORT_REVISION}}"' manifests/color/asia/kustomization.yaml
 
-  commit_and_push_prod-asia:
+  commit_and_push_asia:
     title: Commit changes and push
     type: git-commit:0.1.4
     stage: asia
@@ -400,8 +400,8 @@ steps:
       add:
         - manifests/color/asia/kustomization.yaml
 
-  sync_prod-asia:
-    title: Sync ArgoCD app in prod and  wait
+  sync_asia:
+    title: Sync ArgoCD app in Asia and wait
     type: gitops-argocd-sync:1.5.0
     stage: asia
     arguments:
