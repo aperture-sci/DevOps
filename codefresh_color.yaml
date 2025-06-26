@@ -8,6 +8,7 @@ stages:
   - staging
   - europe
   - asia
+  - us
 
 hooks:
   on_fail:
@@ -407,3 +408,123 @@ steps:
     arguments:
       RUNTIME: demo
       APPLICATION: color-asia
+
+
+#
+# Asia
+#
+
+  approve_asia:
+    stage: asia
+    type: pending-approval
+    timeout:
+      timeUnit: minutes
+      duration: 5
+      finalState: approved
+
+  clone_asia:
+    title: "Cloning repository for Asia"
+    type: "git-clone"
+    git: "github"
+    repo: aperture-sci/DevOps
+    revision: "main"
+    depth: 1
+    exclude_blobs: true
+    stage: asia
+
+  update_asia_manifest:
+    description: update the image version for Asia
+    image: codefresh/cli
+    working_directory: "/codefresh/volume/DevOps"
+    stage: asia
+    commands:
+      - yq -i -y '.images[0].newTag="${{CF_SHORT_REVISION}}"' manifests/color/asia/kustomization.yaml
+
+  commit_and_push_asia:
+    title: Commit changes and push
+    type: git-commit:0.1.4
+    stage: asia
+    arguments:
+      repo: aperture-sci/DevOps
+      git: github-lr
+      working_directory: "/codefresh/volume/DevOps"
+      commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
+      git_user_name: lrochette
+      git_user_email: laurent.rochette@codefresh.io
+      allow_empty: true
+      force_push: true
+      add:
+        - manifests/color/asia/kustomization.yaml
+
+  sync_asia:
+    title: Sync ArgoCD app in Asia and wait
+    type: gitops-argocd-sync:1.5.0
+    stage: asia
+    arguments:
+      RUNTIME: demo
+      APPLICATION: color-asia
+
+
+#
+# Prod US West and East
+#
+
+  approve_us:
+    stage: us
+    type: pending-approval
+    timeout:
+      timeUnit: minutes
+      duration: 5
+      finalState: approved
+
+  clone_asia:
+    title: "Cloning repository for US"
+    type: "git-clone"
+    git: "github"
+    repo: aperture-sci/DevOps
+    revision: "main"
+    depth: 1
+    exclude_blobs: true
+    stage: asia
+
+  update_us_manifest:
+    description: update the image version for US East and West
+    image: codefresh/cli
+    working_directory: "/codefresh/volume/DevOps"
+    stage: asia
+    commands:
+      - yq -i -y '.images[0].newTag="${{CF_SHORT_REVISION}}"' manifests/color/east/kustomization.yaml
+      - yq -i -y '.images[0].newTag="${{CF_SHORT_REVISION}}"' manifests/color/west/kustomization.yaml
+
+  commit_and_push_us:
+    title: Commit changes and push for US
+    type: git-commit:0.1.4
+    stage: asia
+    arguments:
+      repo: aperture-sci/DevOps
+      git: github-lr
+      working_directory: "/codefresh/volume/DevOps"
+      commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
+      git_user_name: lrochette
+      git_user_email: laurent.rochette@codefresh.io
+      allow_empty: true
+      force_push: true
+      add:
+        - manifests/color/east/kustomization.yaml
+        - manifests/color/west/kustomization.yaml
+
+  sync_east:
+    title: Sync ArgoCD app in US East and wait
+    type: gitops-argocd-sync:1.5.0
+    stage: asia
+    arguments:
+      RUNTIME: demo
+      APPLICATION: color-east
+
+  sync_west:
+    title: Sync ArgoCD app in US West and wait
+    type: gitops-argocd-sync:1.5.0
+    stage: asia
+    arguments:
+      RUNTIME: demo
+      APPLICATION: color-west
