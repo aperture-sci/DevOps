@@ -185,7 +185,9 @@ steps:
       add:
         - manifests/color/dev/kustomization.yaml
 
-  # to be sure to get OutOfSync for Argo Notifications
+  #
+  # DEV
+  #
   approve_dev:
     stage: dev
     type: pending-approval
@@ -202,6 +204,9 @@ steps:
       RUNTIME: demo
       APPLICATION: color-dev
 
+  #
+  # QA
+  #
   approve_qa:
     stage: qa
     type: pending-approval
@@ -252,6 +257,9 @@ steps:
       RUNTIME: demo
       APPLICATION: color-qa
 
+  #
+  # STAGING
+  #
   approve_staging:
     stage: staging
     type: pending-approval
@@ -302,9 +310,9 @@ steps:
       RUNTIME: demo
       APPLICATION: color-staging
 
-#
-# Europe
-#
+  #
+  # Europe
+  #
   approve-eu:
     stage: europe
     type: pending-approval
@@ -355,10 +363,9 @@ steps:
       RUNTIME: demo
       APPLICATION: color-eu
 
-#
-# Asia
-#
-
+  #
+  # Asia
+  #
   approve_asia:
     stage: asia
     type: pending-approval
@@ -409,66 +416,9 @@ steps:
       RUNTIME: demo
       APPLICATION: color-asia
 
-
-#
-# Asia
-#
-
-  approve_asia:
-    stage: asia
-    type: pending-approval
-    timeout:
-      timeUnit: minutes
-      duration: 5
-      finalState: approved
-
-  clone_asia:
-    title: "Cloning repository for Asia"
-    type: "git-clone"
-    git: "github"
-    repo: aperture-sci/DevOps
-    revision: "main"
-    depth: 1
-    exclude_blobs: true
-    stage: asia
-
-  update_asia_manifest:
-    description: update the image version for Asia
-    image: codefresh/cli
-    working_directory: "/codefresh/volume/DevOps"
-    stage: asia
-    commands:
-      - yq -i -y '.images[0].newTag="${{CF_SHORT_REVISION}}"' manifests/color/asia/kustomization.yaml
-
-  commit_and_push_asia:
-    title: Commit changes and push
-    type: git-commit:0.1.4
-    stage: asia
-    arguments:
-      repo: aperture-sci/DevOps
-      git: github-lr
-      working_directory: "/codefresh/volume/DevOps"
-      commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
-      git_user_name: lrochette
-      git_user_email: laurent.rochette@codefresh.io
-      allow_empty: true
-      force_push: true
-      add:
-        - manifests/color/asia/kustomization.yaml
-
-  sync_asia:
-    title: Sync ArgoCD app in Asia and wait
-    type: gitops-argocd-sync:1.5.0
-    stage: asia
-    arguments:
-      RUNTIME: demo
-      APPLICATION: color-asia
-
-
-#
-# Prod US West and East
-#
-
+  #
+  # Prod US West and East
+  #
   approve_us:
     stage: us
     type: pending-approval
@@ -477,7 +427,7 @@ steps:
       duration: 5
       finalState: approved
 
-  clone_asia:
+  clone_us:
     title: "Cloning repository for US"
     type: "git-clone"
     git: "github"
@@ -485,13 +435,13 @@ steps:
     revision: "main"
     depth: 1
     exclude_blobs: true
-    stage: asia
+    stage: us
 
   update_us_manifest:
     description: update the image version for US East and West
     image: codefresh/cli
     working_directory: "/codefresh/volume/DevOps"
-    stage: asia
+    stage: us
     commands:
       - yq -i -y '.images[0].newTag="${{CF_SHORT_REVISION}}"' manifests/color/east/kustomization.yaml
       - yq -i -y '.images[0].newTag="${{CF_SHORT_REVISION}}"' manifests/color/west/kustomization.yaml
@@ -499,7 +449,7 @@ steps:
   commit_and_push_us:
     title: Commit changes and push for US
     type: git-commit:0.1.4
-    stage: asia
+    stage: us
     arguments:
       repo: aperture-sci/DevOps
       git: github-lr
@@ -513,18 +463,20 @@ steps:
         - manifests/color/east/kustomization.yaml
         - manifests/color/west/kustomization.yaml
 
-  sync_east:
-    title: Sync ArgoCD app in US East and wait
-    type: gitops-argocd-sync:1.5.0
-    stage: asia
-    arguments:
-      RUNTIME: demo
-      APPLICATION: color-east
+  sync_us:
+    type: parallel
+    stage: us
+    steps:
+      sync_east:
+        title: Sync ArgoCD app in US East and wait
+        type: gitops-argocd-sync:1.5.0
+        arguments:
+          RUNTIME: demo
+          APPLICATION: color-east
 
-  sync_west:
-    title: Sync ArgoCD app in US West and wait
-    type: gitops-argocd-sync:1.5.0
-    stage: asia
-    arguments:
-      RUNTIME: demo
-      APPLICATION: color-west
+      sync_west:
+        title: Sync ArgoCD app in US West and wait
+        type: gitops-argocd-sync:1.5.0
+        arguments:
+          RUNTIME: demo
+          APPLICATION: color-west
