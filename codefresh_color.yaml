@@ -360,7 +360,7 @@ steps:
     type: gitops-argocd-sync:1.5.0
     stage: europe
     arguments:
-      RUNTIME: demo
+      RUNTIME: high
       APPLICATION: color-eu
 
   #
@@ -413,7 +413,7 @@ steps:
     type: gitops-argocd-sync:1.5.0
     stage: asia
     arguments:
-      RUNTIME: demo
+      RUNTIME: high
       APPLICATION: color-asia
 
   #
@@ -471,12 +471,12 @@ steps:
         title: Sync ArgoCD app in US East and wait
         type: gitops-argocd-sync:1.5.0
         arguments:
-          RUNTIME: demo
+          RUNTIME: high
           APPLICATION: color-east
 
       sync_west:
         title: Sync ArgoCD app in US West and wait
         type: gitops-argocd-sync:1.5.0
         arguments:
-          RUNTIME: demo
+          RUNTIME: high
           APPLICATION: color-west
