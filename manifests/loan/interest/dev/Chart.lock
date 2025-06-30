@@ -1,6 +1,0 @@
-dependencies:
-- name: loans
-  repository: oci://quay.io/codefresh/promotions-demo/charts
-  version: 1.0.0
-digest: sha256:b48b80f20b0e67fa1d14f6dfee9b00d18406798690ec24dbcfb514a8e3417232
-generated: "2024-06-25T15:49:48.587254-07:00"
