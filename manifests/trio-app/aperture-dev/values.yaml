@@ -42,7 +42,7 @@ flask-ui:
   image:
     tag: main-955d557
     repository: docker.io/aperturesci/flask-ui
-  replicaCount: 3
+  replicaCount: 2
   rollout:
     strategy:
       canary:
