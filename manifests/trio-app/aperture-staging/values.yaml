@@ -2,7 +2,7 @@ buslog:
   image:
     tag: main-e0cbdc4
     repository: docker.io/aperturesci/buslog
-  replicaCount: 3
+  replicaCount: 2
   rollout:
     strategy:
       canary:
@@ -15,7 +15,7 @@ ctrlr:
   image:
     tag: main-1392c04
     repository: docker.io/aperturesci/ctrlr
-  replicaCount: 3
+  replicaCount: 2
   rollout:
     strategy:
       canary:
@@ -31,7 +31,7 @@ flask-ui:
   image:
     tag: main-955d557
     repository: docker.io/aperturesci/flask-ui
-  replicaCount: 3
+  replicaCount: 2
   rollout:
     strategy:
       canary:
