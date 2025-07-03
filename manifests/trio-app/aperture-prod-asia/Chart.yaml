@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 1.255.6
+appVersion: 1.255.7
 name: trio-app
 description: A Helm chart for Kubernetes
 type: application
@@ -11,9 +11,9 @@ dependencies:
     repository: "https://h.cfcr.io/aperture-sci/public"
   - name: ctrlr
     #version: 1.3.5 # Rollout
-    version: 1.3.3  # No Rollout
+    version: 1.3.3 # No Rollout
     repository: "https://h.cfcr.io/aperture-sci/public"
   - name: flask-ui
     # version: 1.2.8 # Rollout
-    version: 1.2.6  ## No Rollout
+    version: 1.2.6 ## No Rollout
     repository: "https://h.cfcr.io/aperture-sci/public"
