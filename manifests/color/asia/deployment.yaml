@@ -6,7 +6,7 @@ metadata:
   name: color
 spec:
   revisionHistoryLimit: 1
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: color
