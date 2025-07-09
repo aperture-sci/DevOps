@@ -8,11 +8,11 @@ metadata:
 spec:
   metrics:
     - name: datadog-metric-cpu
-      count: 4
+      count: 5
       initialDelay: "5s"
       interval: 10s
-      failureCondition: default(result, 100) > 40
-      failureLimit: 1
+      failureCondition: default(result, 100) > 60
+      failureLimit: 2
       provider:
         datadog:
           apiVersion: v1
