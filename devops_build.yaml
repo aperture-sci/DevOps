@@ -190,7 +190,7 @@ steps:
           - rm ${{CF_VOLUME_PATH}}/cosign.key
 
   deployLoanToDev:
-    title: Trigger deployment to DEV for Loan services
+    title: Loan deployment
     type: codefresh-run:1.5.3
     stage: "deploy"
     arguments:
@@ -207,7 +207,7 @@ steps:
           onmaster: "'${{CF_BRANCH_TAG_NORMALIZED}}' == 'main'"
 
   deployTrioToDev:
-    title: Trigger deployment to DEV for Trio services
+    title: Trio deployment
     type: codefresh-run:1.5.3
     stage: "deploy"
     arguments:
