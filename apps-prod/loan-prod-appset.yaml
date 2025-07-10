@@ -33,6 +33,7 @@ spec:
         codefresh.io/app-group: loan
       labels:
         codefresh.io/product: '{{.path.basename}}'
+        application: loan
     spec:
       project: default
       source:
