@@ -181,7 +181,7 @@ steps:
       git_user_name: lrochette
       git_user_email: laurent.rochette@codefresh.io
       allow_empty: true
-      force_push: true
+      force_push: false
       add:
         - manifests/color/dev/kustomization.yaml
 
@@ -245,7 +245,7 @@ steps:
       git_user_name: lrochette
       git_user_email: laurent.rochette@codefresh.io
       allow_empty: true
-      force_push: true
+      force_push: false
       add:
         - manifests/color/qa/kustomization.yaml
 
@@ -298,7 +298,7 @@ steps:
       git_user_name: lrochette
       git_user_email: laurent.rochette@codefresh.io
       allow_empty: true
-      force_push: true
+      force_push: false
       add:
         - manifests/color/staging/kustomization.yaml
 
@@ -351,7 +351,7 @@ steps:
       git_user_name: lrochette
       git_user_email: laurent.rochette@codefresh.io
       allow_empty: true
-      force_push: true
+      force_push: false
       add:
         - manifests/color/eu/kustomization.yaml
 
@@ -404,7 +404,7 @@ steps:
       git_user_name: lrochette
       git_user_email: laurent.rochette@codefresh.io
       allow_empty: true
-      force_push: true
+      force_push: false
       add:
         - manifests/color/asia/kustomization.yaml
 
@@ -458,7 +458,7 @@ steps:
       git_user_name: lrochette
       git_user_email: laurent.rochette@codefresh.io
       allow_empty: true
-      force_push: true
+      force_push: false
       add:
         - manifests/color/east/kustomization.yaml
         - manifests/color/west/kustomization.yaml
