@@ -91,7 +91,7 @@ steps:
       git_user_name: todaywasawesome
       git_user_email: dan@codefresh.io
       allow_empty: true
-      force_push: true
+      force_push: false
       add:
         - manifests/$APPNAME/$APPENV/values.yaml
         - manifests/$APPNAME/$APPENV/Chart.yaml

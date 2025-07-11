@@ -86,7 +86,7 @@ steps:
         git_user_name: lrochette
         git_user_email: laurent.rochette@codefresh.io
         allow_empty: true
-        force_push: true
+        force_push: false
         add:
           - manifests/$APPNAME/$SERVICE/$APPENV/values.yaml
           - manifests/$APPNAME/$SERVICE/$APPENV/Chart.yaml
