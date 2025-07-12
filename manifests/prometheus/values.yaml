@@ -9,7 +9,8 @@ kube-prometheus-stack:
   grafana:
     persistence:
       enabled: true
-
+      accessModes:
+      - ReadWriteMany
   defaultRules:
     create: false
     rules:
