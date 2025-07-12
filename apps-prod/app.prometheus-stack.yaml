@@ -20,9 +20,9 @@ spec:
     path: manifests/prometheus
     targetRevision: main
   syncPolicy:
-    # automated:
-    #   prune: true
-    #   selfHeal: true
+    automated:
+      prune: true
+      selfHeal: true
     syncOptions:
       - PrunePropagationPolicy=foreground
       - Replace=false
