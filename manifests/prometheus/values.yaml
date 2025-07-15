@@ -9,7 +9,7 @@ kube-prometheus-stack:
   grafana:
     persistence:
       enabled: true
-      storageClassName: ebs-csi
+      # storageClassName: grafana-ebs
       accessModes:
       - ReadWriteMany
   defaultRules:

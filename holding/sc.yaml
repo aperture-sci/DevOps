@@ -4,4 +4,8 @@ metadata:
   name: grafana-ebs
   annotations:
     storageclass.kubernetes.io/is-default-class: "false"
+parameters:
+  # AvailabilityZone: us-east-1a
+  volumeBackend: ebs
+
 provisioner: ebs.csi.aws.com
