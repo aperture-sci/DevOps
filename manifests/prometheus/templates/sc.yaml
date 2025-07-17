@@ -9,4 +9,4 @@ parameters:
   volumeBackend: ebs
 
 provisioner: ebs.csi.aws.com
-volumeBindingMode: WaitForFirstConsumer
+volumeBindingMode: Immediate
