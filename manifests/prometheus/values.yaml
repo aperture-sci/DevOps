@@ -12,7 +12,7 @@ kube-prometheus-stack:
       type: sts
       storageClassName: grafana-ebs
       accessModes:
-      - ReadWriteMany
+      - ReadWriteOnce
       size: 10Gi
   defaultRules:
     create: false
