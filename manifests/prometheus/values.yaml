@@ -7,10 +7,11 @@ kube-prometheus-stack:
     enabled: false
   # adding permanent volume
   grafana:
+    replicas: 1
     persistence:
       enabled: true
-      accessModes:
-      - ReadWriteMany
+      # accessModes:
+      # - ReadWriteMany
 
   defaultRules:
     create: false
