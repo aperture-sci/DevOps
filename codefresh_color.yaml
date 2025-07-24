@@ -154,7 +154,7 @@ steps:
   clone_dev:
     title: "Cloning repository for DEV"
     type: "git-clone"
-    git: "github"
+    git: "github-lr"
     repo: aperture-sci/DevOps
     revision: "main"
     depth: 1
@@ -165,6 +165,7 @@ steps:
     title: "Create temp branch"
     image: maniator/gh
     working_directory: "/codefresh/volume/DevOps"
+    stage: dev
     commands:
       - |
         export BRANCH="dev-temp-$(date +%s)"
@@ -183,11 +184,13 @@ steps:
     title: "Create Dev PR"
     image: maniator/gh
     working_directory: "/codefresh/volume/DevOps"
+    stage: dev
     commands:
       - |
-        export BRANCH="dev-temp-$(date +%s)"
+        git config --global user.email "laurent.rochette@octopus.com"
+        git config --global user.name "Laurent Rochette"
         git add manifests/color/dev/kustomization.yaml
-        git commit -m Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
+        git commit -m "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
         git push -u origin "$TEMP_BRANCH"
         gh pr create --base "$CF_BRANCH" \
           --head "$TEMP_BRANCH" \
