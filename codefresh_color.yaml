@@ -161,6 +161,16 @@ steps:
     exclude_blobs: true
     stage: dev
 
+  create_dev_branch:
+    title: "Create temp branch"
+    image: maniator/gh
+    working_directory: "/codefresh/volume/DevOps"
+    commands:
+      - |
+        export BRANCH="dev-temp-$(date +%s)"
+        cf_export TEMP_BRANCH=$BRANCH
+        git checkout -b $BRANCH
+
   update_dev_manifest:
     description: update the image version for Dev
     image: codefresh/cli
@@ -169,23 +179,38 @@ steps:
     commands:
       - yq -i -y '.images[0].newTag="${{CF_SHORT_REVISION}}"' manifests/color/dev/kustomization.yaml
 
-  commit_and_push_dev:
-    title: Commit Dev changes and push
-    type: git-commit:0.1.4
-    stage: dev
-    arguments:
-      repo: aperture-sci/DevOps
-      git: github-lr
-      working_directory: /codefresh/volume/DevOps
-      commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
-      git_user_name: lrochette
-      git_user_email: laurent.rochette@codefresh.io
-      allow_empty: true
-      force_push: false
-      rebase: true
-      base_branch: main
-      add:
-        - manifests/color/dev/kustomization.yaml
+  create_dev_pr:
+    title: "Create Dev PR"
+    image: maniator/gh
+    working_directory: "/codefresh/volume/DevOps"
+    commands:
+      - |
+        export BRANCH="dev-temp-$(date +%s)"
+        git add manifests/color/dev/kustomization.yaml
+        git commit -m Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
+        git push -u origin "$TEMP_BRANCH"
+        gh pr create --base "$CF_BRANCH" \
+          --head "$TEMP_BRANCH" \
+          --title "Automated PR to push Dev tag ${{CF_SHORT_REVISION}}" \
+          --body "This PR updates the content of the file as part of an automated workflow."
+        gh pr merge "$TEMP_BRANCH" --merge --delete-branch
+  # commit_and_push_dev:
+  #   title: Commit Dev changes and push
+  #   type: git-commit:0.1.4
+  #   stage: dev
+  #   arguments:
+  #     repo: aperture-sci/DevOps
+  #     git: github-lr
+  #     working_directory: /codefresh/volume/DevOps
+  #     commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
+  #     git_user_name: lrochette
+  #     git_user_email: laurent.rochette@codefresh.io
+  #     allow_empty: true
+  #     force_push: false
+  #     rebase: true
+  #     base_branch: main
+  #     add:
+  #       - manifests/color/dev/kustomization.yaml
 
   # retry_push_dev:
   #   description: Retry push if it failed
