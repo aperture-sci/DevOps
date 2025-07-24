@@ -6,6 +6,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io/foreground
   annotations:
+    codefresh.io/product: prometheus
     argocd.argoproj.io/manifest-generate-paths: .
     argocd.argoproj.io/sync-wave: "0"
   labels:

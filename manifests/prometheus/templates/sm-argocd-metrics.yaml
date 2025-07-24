@@ -16,4 +16,5 @@ spec:
   - port: metrics
     relabelings:
     - targetLabel: job
-      replacement: argocd-server-metrics
+      replacement: argocd-metrics
+      # replacement: argocd-server-metrics
