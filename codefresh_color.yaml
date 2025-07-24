@@ -72,6 +72,10 @@ steps:
     description: "Tasks to get credentials for signing images"
     type: parallel
     stage: "metadata"
+    when:
+      condition:
+        all:
+          alert: "'${{QUICK_EXECUTION}}' == 'false'"
     steps:
       prepcosign:
         title: Fetch Cosign and Docker Keys
@@ -93,6 +97,10 @@ steps:
     type: parallel
     stage: "metadata"
     fail_fast: false
+    when:
+      condition:
+        all:
+          alert: "'${{QUICK_EXECUTION}}' == 'false'"
     steps:
       enrich-image:
         stage: build
