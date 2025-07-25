@@ -199,8 +199,8 @@ steps:
     commands:
       - |
         mkdir -p ~/.ssh
-        echo "${SSH_KEY}" | tr \'"${SPLIT_CHAR}"\' '\n' > ~/.ssh/id_rsa
-        chmod 0600 ~/.ssh/id_rsa
+        echo "${SSH_KEY}" | tr \'"${SPLIT_CHAR}"\' '\n' > ~/.ssh/id_ed25519
+        chmod 0600 ~/.ssh/id_ed25519
         chmod 0700 ~/.ssh
         ssh-keygen -R github.com 2>/dev/null
         ssh-keyscan -H github.com >> ~/.ssh/known_hosts 2> >(grep -v '^#' >&2)
