@@ -172,7 +172,7 @@ steps:
   create_dev_branch:
     title: "Create temp branch"
     image: maniator/gh
-    working_directory: ${{clone_dev}}
+    working_directory: "/codefresh/volume/DevOps"
     stage: dev
     commands:
       - |
@@ -186,7 +186,7 @@ steps:
   update_dev_manifest:
     description: update the image version for Dev
     image: codefresh/cli
-    working_directory: ${{clone_dev}}
+    working_directory: "/codefresh/volume/DevOps"
     stage: dev
     commands:
       - yq -i -y '.images[0].newTag="${{CF_SHORT_REVISION}}"' manifests/color/dev/kustomization.yaml
@@ -194,7 +194,7 @@ steps:
   create_dev_pr:
     title: "Create Dev PR"
     image: lrochette/ghyq:0.0.1
-    working_directory: ${{clone_dev}}
+    working_directory: "/codefresh/volume/DevOps"
     stage: dev
     commands:
       - |
@@ -227,7 +227,7 @@ steps:
     arguments:
       repo: aperture-sci/DevOps
       git: github-lr
-      working_directory: ${{clone_dev}}
+      working_directory: "/codefresh/volume/DevOps"
       commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
       git_user_name: lrochette
       git_user_email: laurent.rochette@codefresh.io
