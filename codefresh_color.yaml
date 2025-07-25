@@ -210,7 +210,7 @@ steps:
         git add manifests/color/dev/kustomization.yaml
         git commit -m "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
         git push -u origin "$TEMP_BRANCH"
-        gh pr create --base "$CF_BRANCH" \
+        gh pr create --base main \
           --head "$TEMP_BRANCH" \
           --title "Automated PR to push Dev tag ${{CF_SHORT_REVISION}}" \
           --body "This PR updates the content of the file as part of an automated workflow."
