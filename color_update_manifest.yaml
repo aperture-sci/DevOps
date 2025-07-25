@@ -31,7 +31,6 @@ steps:
     title: "Create ENV PR"
     image: lrochette/ghssh:0.0.4
     working_directory: ${{clone}}
-    stage: dev
     commands:
       - |
         mkdir -p ~/.ssh
