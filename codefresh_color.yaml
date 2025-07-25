@@ -235,6 +235,7 @@ steps:
       force_push: false
       rebase: true
       base_branch: main
+      use_ssh: true
       add:
         - manifests/color/dev/kustomization.yaml
     when:
@@ -323,6 +324,7 @@ steps:
       git_user_email: laurent.rochette@codefresh.io
       allow_empty: true
       force_push: false
+      use_ssh: true
       add:
         - manifests/color/qa/kustomization.yaml
 
@@ -376,6 +378,7 @@ steps:
       git_user_email: laurent.rochette@codefresh.io
       allow_empty: true
       force_push: false
+      use_ssh: true
       add:
         - manifests/color/staging/kustomization.yaml
 
@@ -429,6 +432,7 @@ steps:
       git_user_email: laurent.rochette@codefresh.io
       allow_empty: true
       force_push: false
+      use_ssh: true
       add:
         - manifests/color/eu/kustomization.yaml
 
@@ -482,6 +486,7 @@ steps:
       git_user_email: laurent.rochette@codefresh.io
       allow_empty: true
       force_push: false
+      use_ssh: true
       add:
         - manifests/color/asia/kustomization.yaml
 
@@ -536,6 +541,7 @@ steps:
       git_user_email: laurent.rochette@codefresh.io
       allow_empty: true
       force_push: false
+      use_ssh: true
       add:
         - manifests/color/east/kustomization.yaml
         - manifests/color/west/kustomization.yaml
