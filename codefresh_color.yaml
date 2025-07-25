@@ -190,7 +190,7 @@ steps:
 
   create_dev_pr:
     title: "Create Dev PR"
-    image: maniator/gh
+    image: lrochette/ghyq:0.0.1
     working_directory: "/codefresh/volume/DevOps"
     stage: dev
     commands:
