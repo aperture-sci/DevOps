@@ -201,6 +201,8 @@ steps:
         mkdir -p ~/.ssh
         echo "${SSH_KEY}" | tr \'"${SPLIT_CHAR}"\' '\n' > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+        ls -ail ~/.ssh
         git config --global user.email "laurent.rochette@octopus.com"
         git config --global user.name "Laurent Rochette"
         git add manifests/color/dev/kustomization.yaml
