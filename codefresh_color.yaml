@@ -173,6 +173,7 @@ steps:
     title: "Create temp branch"
     image: maniator/gh
     working_directory: ${{clone_dev}}
+    stage: dev
     commands:
       - |
         export BRANCH="dev-temp-$(date +%s)"
@@ -194,6 +195,7 @@ steps:
     title: "Create Dev PR"
     image: lrochette/ghyq:0.0.1
     working_directory: ${{clone_dev}}
+    stage: dev
     commands:
       - |
         mkdir -p ~/.ssh
