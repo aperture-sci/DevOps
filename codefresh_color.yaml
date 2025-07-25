@@ -193,7 +193,7 @@ steps:
 
   create_dev_pr:
     title: "Create Dev PR"
-    image: lrochette/ghyq:0.0.1
+    image: lrochette/ghssh:0.0.2
     working_directory: "/codefresh/volume/DevOps"
     stage: dev
     commands:
