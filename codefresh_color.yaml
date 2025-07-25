@@ -182,7 +182,7 @@ steps:
     when:
       condition:
         all:
-          alert: "'${{MERGE}}' == 'true'"
+          merge: "'${{MERGE}}' == 'true'"
   update_dev_manifest:
     description: update the image version for Dev
     image: codefresh/cli
@@ -202,7 +202,6 @@ steps:
         echo "${SSH_KEY}" | tr \'"${SPLIT_CHAR}"\' '\n' > ~/.ssh/id_rsa
         chmod 0600 ~/.ssh/id_rsa
         chmod 0700 ~/.ssh
-        # removes all keys belonging to hostname from a known_hosts file
         ssh-keygen -R github.com 2>/dev/null
         ssh-keyscan -H github.com >> ~/.ssh/known_hosts 2> >(grep -v '^#' >&2)
         ls -ail ~/.ssh
@@ -219,7 +218,7 @@ steps:
     when:
       condition:
         all:
-          alert: "'${{MERGE}}' == 'true'"
+          merge: "'${{MERGE}}' == 'true'"
 
   commit_and_push_dev:
     title: Commit Dev changes and push
@@ -241,7 +240,7 @@ steps:
     when:
       condition:
         all:
-          alert: "'${{MERGE}}' == 'false'"
+          merge: "'${{MERGE}}' == 'false'"
   # retry_push_dev:
   #   description: Retry push if it failed
   #   image: alpine:3.6
