@@ -35,10 +35,11 @@ steps:
       - echo "Setup ssh"
       - mkdir -p ~/.ssh
       - echo "${SSH_KEY}" | tr ',' '\n' > ~/.ssh/id_ed25519
-      - chmod 0600 ~/.ssh/id_ed25519
+      - touch ~/.ssh/known_hosts
+      - chmod 0600 ~/.ssh/*
       - chmod 0700 ~/.ssh
       - |-
-        ssh-keygen -R github.com 
+        ssh-keygen -R github.com
       - |-
         ssh-keyscan -H github.com >> ~/.ssh/known_hosts 2> >(grep -v '^#' >&2)
       - cat ~/.ssh/known_hosts
