@@ -25,7 +25,7 @@ steps:
     image: codefresh/cli
     working_directory: ${{clone}}
     commands:
-      - yq -i -y '.images[0].newTag="${TAG}"' manifests/color/$ENV/kustomization.yaml
+      - yq -i -y '.images[0].newTag="${{TAG}}"' manifests/color/$ENV/kustomization.yaml
 
   create_pr:
     title: "Create ENV PR"
@@ -51,7 +51,7 @@ steps:
       - echo "Create PR"
       - |
         gh pr create -B main -H "$BRANCH" \
-          -t "Automated PR to push Dev tag ${TAG}" \
+          -t "Automated PR to push Dev tag $TAG" \
           -b "This PR updates the content of the file as part of an automated workflow."
       - echo "merge PR"
       - gh pr merge "$BRANCH" --merge --delete-branch
