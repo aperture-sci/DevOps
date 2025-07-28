@@ -159,6 +159,9 @@ steps:
           ACTION: "comment_create"
           COMMENT_BODY: "Color update to ${{COLOR}} in Codefresh build [${{CF_BUILD_ID}}|${{CF_BUILD_URL}}] finished in Codefresh."
 
+  #
+  # DEV
+  #
   update_dev:
     title: Update dev env
     type: codefresh-run:1.5.3
@@ -168,114 +171,7 @@ steps:
       VARIABLE:
         - ENV=dev
         - TAG=${{CF_SHORT_REVISION}}
-  # clone_dev:
-  #   title: "Cloning repository for DEV"
-  #   type: "git-clone"
-  #   git: "github-lr"
-  #   repo: aperture-sci/DevOps
-  #   revision: "main"
-  #   depth: 1
-  #   exclude_blobs: true
-  #   stage: dev
 
-  # create_dev_branch:
-  #   title: "Create temp branch"
-  #   image: maniator/gh
-  #   working_directory: "/codefresh/volume/DevOps"
-  #   stage: dev
-  #   commands:
-  #     - |
-  #       export BRANCH="dev-temp-$(date +%s)"
-  #       cf_export TEMP_BRANCH=$BRANCH
-  #       git checkout -b $BRANCH
-  #   when:
-  #     condition:
-  #       all:
-  #         merge: "'${{MERGE}}' == 'true'"
-  # update_dev_manifest:
-  #   description: update the image version for Dev
-  #   image: codefresh/cli
-  #   working_directory: "/codefresh/volume/DevOps"
-  #   stage: dev
-  #   commands:
-  #     - yq -i -y '.images[0].newTag="${{CF_SHORT_REVISION}}"' manifests/color/dev/kustomization.yaml
-
-  # create_dev_pr:
-  #   title: "Create Dev PR"
-  #   image: lrochette/ghssh:0.0.4
-  #   working_directory: "/codefresh/volume/DevOps"
-  #   stage: dev
-  #   commands:
-  #     - |
-  #       mkdir -p ~/.ssh
-  #       echo "${SSH_KEY}" | tr ',' '\n' > ~/.ssh/id_ed25519
-  #       chmod 0600 ~/.ssh/id_ed25519
-  #       chmod 0700 ~/.ssh
-  #       ssh-keygen -R github.com 2>/dev/null
-  #       ssh-keyscan -H github.com >> ~/.ssh/known_hosts 2> >(grep -v '^#' >&2)
-  #       ls -ail ~/.ssh
-  #     - |
-  #       git config --global user.email "laurent.rochette@octopus.com"
-  #       git config --global user.name "Laurent Rochette"
-  #       git add manifests/color/dev/kustomization.yaml
-  #       git commit -m "Update image to deploy to ${COLOR} (${CF_SHORT_REVISION})"
-  #       git push -u origin "$TEMP_BRANCH"
-  #     - gh pr create -B main -H "$TEMP_BRANCH" \
-  #         -t "Automated PR to push Dev tag ${CF_SHORT_REVISION}" \
-  #         -b "This PR updates the content of the file as part of an automated workflow."
-  #     - gh pr merge "$TEMP_BRANCH" --merge --delete-branch
-  #   when:
-  #     condition:
-  #       all:
-  #         merge: "'${{MERGE}}' == 'true'"
-  #
-  # commit_and_push_dev:
-  #   title: Commit Dev changes and push
-  #   type: git-commit:0.1.4
-  #   stage: dev
-  #   arguments:
-  #     repo: aperture-sci/DevOps
-  #     git: github-lr
-  #     working_directory: "/codefresh/volume/DevOps"
-  #     commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
-  #     git_user_name: lrochette
-  #     git_user_email: laurent.rochette@codefresh.io
-  #     allow_empty: true
-  #     force_push: false
-  #     rebase: true
-  #     base_branch: main
-  #     use_ssh: true
-  #     add:
-  #       - manifests/color/dev/kustomization.yaml
-  #   when:
-  #     condition:
-  #       all:
-  #         merge: "'${{MERGE}}' == 'false'"
-
-  # retry_push_dev:
-  #   description: Retry push if it failed
-  #   image: alpine:3.6
-  #   working_directory: /codefresh/volume/DevOps
-  #   environment:
-  #     GIT_INTEGRATION_NAME=github
-  #   commands:
-  #     - |
-  #       export GIT_ACCESS_TOKEN=$(codefresh get context $GIT_INTEGRATION_NAME --decrypt --prepare -o yaml | yq -r -c .spec.data.auth.password)
-  #       # echo GIT_ACCESS_TOKEN=$GIT_ACCESS_TOKEN >> /meta/env_vars_to_export
-  #       export GIT_ACCESS_TOKEN_USER=$(codefresh get context $GIT_INTEGRATION_NAME --decrypt --prepare -o yaml | yq -r -c .spec.data.auth.username)
-  #       export PRIVATE_KEY=$(codefresh get context $GIT_INTEGRATION_NAME --decrypt --prepare -o yaml | yq .spec.data.auth.sshPrivateKey)
-  #       # echo PRIVATE_KEY=$PRIVATE_KEY >> /meta/env_vars_to_export
-  #       git config --global user.name "lrochette"
-  #       git config --global user.email "laurent.rochette@codefresh.io"
-  #       git pull
-  #       git add manifests/color/dev/kustomization.yaml
-  #       git commit --allow-empty -m "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
-  #       git push
-
-
-  #
-  # DEV
-  #
   approve_dev:
     stage: dev
     type: pending-approval
@@ -303,40 +199,15 @@ steps:
       duration: 5
       finalState: approved
 
-  clone_qa:
-    title: "Cloning repository for QA"
-    type: "git-clone"
-    git: "github"
-    repo: aperture-sci/DevOps
-    revision: "main"
-    depth: 1
-    exclude_blobs: true
-    stage: qa
-
-  update_qa_manifest:
-    description: update the image version for qa
-    image: codefresh/cli
-    working_directory: "/codefresh/volume/DevOps"
-    stage: qa
-    commands:
-      - yq -i -y '.images[0].newTag="${{CF_SHORT_REVISION}}"' manifests/color/qa/kustomization.yaml
-
-  commit_and_push_qa:
-    title: Commit changes and push
-    type: git-commit:0.1.4
+  update_qa:
+    title: Update qa env
+    type: codefresh-run:1.5.3
     stage: qa
     arguments:
-      repo: aperture-sci/DevOps
-      git: github-lr
-      working_directory: "/codefresh/volume/DevOps"
-      commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
-      git_user_name: lrochette
-      git_user_email: laurent.rochette@codefresh.io
-      allow_empty: true
-      force_push: false
-      use_ssh: true
-      add:
-        - manifests/color/qa/kustomization.yaml
+      PIPELINE_ID: DevOps/color_update_manifest
+      VARIABLE:
+        - ENV=qa
+        - TAG=${{CF_SHORT_REVISION}}
 
   sync_qa:
     type: gitops-argocd-sync:1.5.0
@@ -357,40 +228,15 @@ steps:
       duration: 5
       finalState: approved
 
-  clone_staging:
-    title: "Cloning repository for staging"
-    type: "git-clone"
-    git: "github"
-    repo: aperture-sci/DevOps
-    revision: "main"
-    depth: 1
-    exclude_blobs: true
-    stage: staging
-
-  update_staging_manifest:
-    description: update the image version for staging
-    image: codefresh/cli
-    working_directory: "/codefresh/volume/DevOps"
-    stage: staging
-    commands:
-      - yq -i -y '.images[0].newTag="${{CF_SHORT_REVISION}}"' manifests/color/staging/kustomization.yaml
-
-  commit_and_push_staging:
-    title: Commit changes and push
-    type: git-commit:0.1.4
+  update_staging:
+    title: Update staging env
+    type: codefresh-run:1.5.3
     stage: staging
     arguments:
-      repo: aperture-sci/DevOps
-      git: github-lr
-      working_directory: "/codefresh/volume/DevOps"
-      commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
-      git_user_name: lrochette
-      git_user_email: laurent.rochette@codefresh.io
-      allow_empty: true
-      force_push: false
-      use_ssh: true
-      add:
-        - manifests/color/staging/kustomization.yaml
+      PIPELINE_ID: DevOps/color_update_manifest
+      VARIABLE:
+        - ENV=staging
+        - TAG=${{CF_SHORT_REVISION}}
 
   sync_staging:
     title: Sync ArgoCD app in staging and  wait
@@ -411,40 +257,15 @@ steps:
       duration: 5
       finalState: approved
 
-  clone-eu:
-    title: "Cloning repository for Europe"
-    type: "git-clone"
-    git: "github"
-    repo: aperture-sci/DevOps
-    revision: "main"
-    depth: 1
-    exclude_blobs: true
-    stage: europe
-
-  update_europe_manifest:
-    description: update the image version for Europe
-    image: codefresh/cli
-    working_directory: "/codefresh/volume/DevOps"
-    stage: europe
-    commands:
-      - yq -i -y '.images[0].newTag="${{CF_SHORT_REVISION}}"' manifests/color/eu/kustomization.yaml
-
-  commit_and_push_eu:
-    title: Commit changes and push to Europe
-    type: git-commit:0.1.4
+  update_europe:
+    title: Update europe env
+    type: codefresh-run:1.5.3
     stage: europe
     arguments:
-      repo: aperture-sci/DevOps
-      git: github-lr
-      working_directory: "/codefresh/volume/DevOps"
-      commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
-      git_user_name: lrochette
-      git_user_email: laurent.rochette@codefresh.io
-      allow_empty: true
-      force_push: false
-      use_ssh: true
-      add:
-        - manifests/color/eu/kustomization.yaml
+      PIPELINE_ID: DevOps/color_update_manifest
+      VARIABLE:
+        - ENV=eu
+        - TAG=${{CF_SHORT_REVISION}}
 
   sync_eu:
     title: Sync ArgoCD app in Europe and wait
@@ -465,40 +286,15 @@ steps:
       duration: 5
       finalState: approved
 
-  clone_asia:
-    title: "Cloning repository for Asia"
-    type: "git-clone"
-    git: "github"
-    repo: aperture-sci/DevOps
-    revision: "main"
-    depth: 1
-    exclude_blobs: true
-    stage: asia
-
-  update_asia_manifest:
-    description: update the image version for Asia
-    image: codefresh/cli
-    working_directory: "/codefresh/volume/DevOps"
-    stage: asia
-    commands:
-      - yq -i -y '.images[0].newTag="${{CF_SHORT_REVISION}}"' manifests/color/asia/kustomization.yaml
-
-  commit_and_push_asia:
-    title: Commit changes and push
-    type: git-commit:0.1.4
+  update_asia:
+    title: Update asia env
+    type: codefresh-run:1.5.3
     stage: asia
     arguments:
-      repo: aperture-sci/DevOps
-      git: github-lr
-      working_directory: "/codefresh/volume/DevOps"
-      commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
-      git_user_name: lrochette
-      git_user_email: laurent.rochette@codefresh.io
-      allow_empty: true
-      force_push: false
-      use_ssh: true
-      add:
-        - manifests/color/asia/kustomization.yaml
+      PIPELINE_ID: DevOps/color_update_manifest
+      VARIABLE:
+        - ENV=asia
+        - TAG=${{CF_SHORT_REVISION}}
 
   sync_asia:
     title: Sync ArgoCD app in Asia and wait
@@ -519,42 +315,25 @@ steps:
       duration: 5
       finalState: approved
 
-  clone_us:
-    title: "Cloning repository for US"
-    type: "git-clone"
-    git: "github"
-    repo: aperture-sci/DevOps
-    revision: "main"
-    depth: 1
-    exclude_blobs: true
-    stage: us
-
-  update_us_manifest:
-    description: update the image version for US East and West
-    image: codefresh/cli
-    working_directory: "/codefresh/volume/DevOps"
-    stage: us
-    commands:
-      - yq -i -y '.images[0].newTag="${{CF_SHORT_REVISION}}"' manifests/color/east/kustomization.yaml
-      - yq -i -y '.images[0].newTag="${{CF_SHORT_REVISION}}"' manifests/color/west/kustomization.yaml
-
-  commit_and_push_us:
-    title: Commit changes and push for US
-    type: git-commit:0.1.4
+  update_staging:
+    title: Update staging env
+    type: codefresh-run:1.5.3
     stage: us
     arguments:
-      repo: aperture-sci/DevOps
-      git: github-lr
-      working_directory: "/codefresh/volume/DevOps"
-      commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
-      git_user_name: lrochette
-      git_user_email: laurent.rochette@codefresh.io
-      allow_empty: true
-      force_push: false
-      use_ssh: true
-      add:
-        - manifests/color/east/kustomization.yaml
-        - manifests/color/west/kustomization.yaml
+      PIPELINE_ID: DevOps/color_update_manifest
+      VARIABLE:
+        - ENV=east
+        - TAG=${{CF_SHORT_REVISION}}
+
+  update_staging:
+    title: Update staging env
+    type: codefresh-run:1.5.3
+    stage: us
+    arguments:
+      PIPELINE_ID: DevOps/color_update_manifest
+      VARIABLE:
+        - ENV=west
+        - TAG=${{CF_SHORT_REVISION}}
 
   sync_us:
     type: parallel
