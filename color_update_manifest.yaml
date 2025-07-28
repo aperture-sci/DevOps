@@ -29,7 +29,7 @@ steps:
 
   create_pr:
     title: "Create ENV PR"
-    image: maniator/gh  # lrochette/ghssh:0.0.4
+    image: lrochette/ghssh:0.0.4
     working_directory: ${{clone}}
     commands:
       - |-
