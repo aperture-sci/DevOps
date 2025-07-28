@@ -48,10 +48,11 @@ steps:
         git add manifests/color/$ENV/kustomization.yaml
         git commit -m "Update image to deploy ${TAG}"
         git push -u origin "$BRANCH"
-      - echo "Create PR"
-      - |
+      - |-
+        echo "Create PR"
         gh pr create -B main -H "$BRANCH" \
           -t "Automated PR to push Dev tag $TAG" \
           -b "This PR updates the content of the file as part of an automated workflow."
-      - echo "merge PR"
-      - gh pr merge "$BRANCH" --merge --delete-branch
+      - |-
+        echo "merge PR"
+        gh pr merge "$BRANCH" --merge --delete-branch
