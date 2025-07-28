@@ -4,7 +4,7 @@ steps:
   clone:
     title: "Cloning repository for Environment"
     type: git-clone
-    git: github
+    git: github-lr
     repo: aperture-sci/DevOps
     revision: main
     depth: 1
@@ -32,15 +32,15 @@ steps:
     image: maniator/gh  # lrochette/ghssh:0.0.4
     working_directory: ${{clone}}
     commands:
-      # - |-
-      #   echo "Setup ssh"
-      #   mkdir -p ~/.ssh
-      #   echo "${SSH_KEY}" | tr ',' '\n' > ~/.ssh/id_ed25519
-      #   touch ~/.ssh/known_hosts
-      #   chmod 0600 ~/.ssh/*
-      #   chmod 0700 ~/.ssh
-      #   ssh-keygen -R github.com
-      #   ssh-keyscan -H github.com >> ~/.ssh/known_hosts 2> >(grep -v '^#' >&2)
+      - |-
+        echo "Setup ssh"
+        mkdir -p ~/.ssh
+        echo "${SSH_KEY}" | tr ',' '\n' > ~/.ssh/id_ed25519
+        touch ~/.ssh/known_hosts
+        chmod 0600 ~/.ssh/*
+        chmod 0700 ~/.ssh
+        ssh-keygen -R github.com
+        ssh-keyscan -H github.com >> ~/.ssh/known_hosts 2> >(grep -v '^#' >&2)
       - |-
         echo "Setup git"
         git config --global user.email "laurent.rochette@octopus.com"
