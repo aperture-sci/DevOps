@@ -21,7 +21,7 @@ steps:
     repo: "aperture-sci/DevOps"
     depth: 1
     revision: "main"
-    git: github-app
+    git: github-lr
     stage: clone
 
   get_chart_version:
@@ -41,12 +41,16 @@ steps:
         else
           cf_export PART="patch"
         fi
-  wait:
-    description: buffer for var to be exported properly
-    image: mikefarah/yq:3.3.4
-    stage: prep
+
+  create_branch:
+    title: "Create temp branch"
+    image: maniator/gh
+    working_directory: ${{clone}}
     commands:
-      - sleep 1
+      - |
+        export BRANCH="${ENV}-temp-$(date +%s)"
+        cf_export BRANCH=$BRANCH
+        git checkout -b $BRANCH
     on_success:
       annotations:
         set:
@@ -74,24 +78,40 @@ steps:
         - yq w -i manifests/$APPNAME/$SERVICE/$APPENV/Chart.yaml 'appVersion' "${{steps.bumpVersion.output.SEMVERSIONER_RESULT}}"
         - cat manifests/$APPNAME/$SERVICE/$APPENV/Chart.yaml
 
-  commit_and_push:
-      title: Commit changes and push
-      type: git-commit:0.1.3
-      stage: deploy
-      arguments:
-        repo: aperture-sci/DevOps
-        git: github-app
-        working_directory: '/codefresh/volume/DevOps'
-        commit_message: "[promotion:sequential-${{SERVICE}}] Update image tag for ${{SERVICE}} and bump Chart version"
-        git_user_name: lrochette
-        git_user_email: laurent.rochette@codefresh.io
-        allow_empty: true
-        force_push: false
-        add:
-          - manifests/$APPNAME/$SERVICE/$APPENV/values.yaml
-          - manifests/$APPNAME/$SERVICE/$APPENV/Chart.yaml
-      on_success:
-        annotations:
-          set:
-           - annotations:
-             - appVersion: ${{APPVERSION}}
+  create_pr:
+    title: "Create ENV PR"
+    image: lrochette/ghssh:0.0.4
+    working_directory: ${{clone}}
+    commands:
+      - |-
+        echo "Setup ssh"
+        mkdir -p ~/.ssh
+        echo "${SSH_KEY}" | tr ',' '\n' > ~/.ssh/id_ed25519
+        touch ~/.ssh/known_hosts
+        chmod 0600 ~/.ssh/*
+        chmod 0700 ~/.ssh
+        ssh-keygen -R github.com
+        ssh-keyscan -H github.com >> ~/.ssh/known_hosts 2> >(grep -v '^#' >&2)
+      - |-
+        echo "Setup git"
+        git config --global user.email "laurent.rochette@octopus.com"
+        git config --global user.name "Laurent Rochette"
+        git add \
+          manifests/$APPNAME/$SERVICE/$APPENV/values.yaml \
+          manifests/$APPNAME/$SERVICE/$APPENV/Chart.yaml
+
+        git commit -m "[promotion:sequential-${{SERVICE}}] Update image tag for ${{SERVICE}} and bump Chart version"
+        git push -u origin "$BRANCH"
+      - |-
+        echo "Create PR"
+        gh pr create -B main -H "$BRANCH" \
+          -t "Automated PR to push Dev tag $TAG" \
+          -b "This PR updates the content of the file as part of an automated workflow."
+      - |-
+        echo "merge PR"
+        gh pr merge "$BRANCH" --merge --delete-branch
+    on_success:
+      annotations:
+        set:
+         - annotations:
+           - appVersion: ${{APPVERSION}}
