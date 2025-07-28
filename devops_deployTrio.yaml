@@ -54,12 +54,6 @@ steps:
         export BRANCH="trio-dev-temp-$(date +%s)"
         cf_export BRANCH=$BRANCH
         git checkout -b $BRANCH
-    on_success:
-      annotations:
-        set:
-         - annotations:
-           - image: ${{SERVICE}}:${{TAG}}
-           display: image
 
   bumpVersion:
     type: semversioner:0.1.6
@@ -104,10 +98,10 @@ steps:
         git config --global user.email "laurent.rochette@octopus.com"
         git config --global user.name "Laurent Rochette"
         git add \
-          manifests/$APPNAME/$SERVICE/$APPENV/values.yaml \
-          manifests/$APPNAME/$SERVICE/$APPENV/Chart.yaml
+          manifests/$APPNAME/$APPENV/values.yaml \
+          manifests/$APPNAME/$APPENV/Chart.yaml
 
-        git commit -m "[promotion:sequential-${{SERVICE}}] Update image tag for ${{SERVICE}} and bump Chart version"
+        git commit -m "[promotion:trio-flow] ${{COMMIT_MESSAGE}} for ${{APPENV}}"
         git push -u origin "$BRANCH"
       - |-
         echo "Create PR"
