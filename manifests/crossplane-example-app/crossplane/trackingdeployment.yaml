@@ -16,4 +16,4 @@ spec:
     spec:
       containers:
         - name: crosstracker
-          image: aperturesci/crosstracker:interest-asia
+          image: aperturesci/crosstracker:dev-temp-1753723432
