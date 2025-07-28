@@ -162,6 +162,14 @@ steps:
   #
   # DEV
   #
+  approve_dev:
+    stage: dev
+    type: pending-approval
+    timeout:
+      timeUnit: minutes
+      duration: 3
+      finalState: approved
+
   update_dev:
     title: Update dev env
     type: codefresh-run:1.5.3
@@ -171,14 +179,6 @@ steps:
       VARIABLE:
         - ENV=dev
         - TAG=${{CF_SHORT_REVISION}}
-
-  approve_dev:
-    stage: dev
-    type: pending-approval
-    timeout:
-      timeUnit: minutes
-      duration: 3
-      finalState: approved
 
   sync_dev:
     type: gitops-argocd-sync:1.5.0
