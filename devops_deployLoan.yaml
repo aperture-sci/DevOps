@@ -46,9 +46,10 @@ steps:
     title: "Create temp branch"
     image: maniator/gh
     working_directory: ${{clone}}
+    stage: prep
     commands:
       - |
-        export BRANCH="${ENV}-temp-$(date +%s)"
+        export BRANCH="loan-dev-temp-$(date +%s)"
         cf_export BRANCH=$BRANCH
         git checkout -b $BRANCH
     on_success:
@@ -82,6 +83,7 @@ steps:
     title: "Create ENV PR"
     image: lrochette/ghssh:0.0.4
     working_directory: ${{clone}}
+    stage: deploy
     commands:
       - |-
         echo "Setup ssh"
