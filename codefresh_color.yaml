@@ -165,8 +165,9 @@ steps:
     stage: dev
     arguments:
       PIPELINE_ID: DevOps/color_update_manifest
-      ENV: dev
-      TAG: ${{CF_SHORT_REVISION}}
+      VARIABLE:
+        - ENV=dev
+        - TAG=${{CF_SHORT_REVISION}}
   # clone_dev:
   #   title: "Cloning repository for DEV"
   #   type: "git-clone"
