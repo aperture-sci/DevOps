@@ -315,8 +315,8 @@ steps:
       duration: 5
       finalState: approved
 
-  update_staging:
-    title: Update staging env
+  east:
+    title: Update east env
     type: codefresh-run:1.5.3
     stage: us
     arguments:
@@ -325,8 +325,8 @@ steps:
         - ENV=east
         - TAG=${{CF_SHORT_REVISION}}
 
-  update_staging:
-    title: Update staging env
+  update_west:
+    title: Update west env
     type: codefresh-run:1.5.3
     stage: us
     arguments:
