@@ -32,7 +32,7 @@ steps:
     image_name: "aperturesci/${{BUILDNAME}}"
     working_directory: "${{clone}}/${{BUILDPATH}}"
     tags:
-    - "${{CF_BRANCH_TAG_NORMALIZED}}"
+    - "${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}"
     dockerfile: "Dockerfile"
     stage: "build"
     on_success:
@@ -42,27 +42,26 @@ steps:
            - service: ${{BUILDNAME}}
            display: service
 
-  tags:
-    title: "Adding additional tags"
-    type: push
-    candidate: ${{build}}
-    registry: dockerhub
-    stage: build
-    tags:
-    - "${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}"
-    - ${{CF_SHORT_REVISION}}
+  # tags:
+  #   title: "Adding additional tags"
+  #   type: push
+  #   candidate: ${{build}}
+  #   registry: dockerhub
+  #   stage: build
+  #   tags:
+  #   - "${{CF_BRANCH_TAG_NORMALIZED}}"
+  #   - ${{CF_SHORT_REVISION}}
 
   tests:
     title: Run Tests
     stage: test
     type: parallel
     fail_fast: false
-    # when:
-    #   condition:
-    #     all:
-    #       onmaster: "'${{CF_BRANCH_TAG_NORMALIZED}}' == 'main'"
+    when:
+      condition:
+        all:
+          quick: "'${{QUICK}}' == 'false'"
     steps:
-
       test-report-uploader:
         title: Unit Tests
         type: test-report-uploader:1.0.1
@@ -188,7 +187,10 @@ steps:
           - cp -r ${{CF_VOLUME_PATH}}/.docker /
           - cosign sign --key ${{CF_VOLUME_PATH}}/cosign.key aperturesci/${{BUILDNAME}}:${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}} -a CICD=Codefresh --yes
           - rm ${{CF_VOLUME_PATH}}/cosign.key
-
+        when:
+          condition:
+            all:
+              quick: "'${{QUICK}}' == 'false'"
   deployLoanToDev:
     title: Loan deployment
     type: codefresh-run:1.5.3
