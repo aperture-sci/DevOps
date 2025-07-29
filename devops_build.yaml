@@ -101,7 +101,7 @@ steps:
 
   get_pr_branch_from_commit:
     title: "Getting the related PR branch that introduced this commit, using GH CLI"
-    image: maniator/gh
+    image: maniator/gh:2.76.0
     fail_fast: false
     working_directory: '${{clone}}'
     commands:
