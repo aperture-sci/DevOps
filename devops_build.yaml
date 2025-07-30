@@ -215,10 +215,10 @@ steps:
     arguments:
       PIPELINE_ID: DevOps/deployTrio
       NO_CF_CACHE: true
-      TRIGGER_ID: 643d83f939be024edc4c04fa
-      BRANCH: main
+      #TRIGGER_ID: 643d83f939be024edc4c04fa
+      #BRANCH: main
       VARIABLE:
-        - CF_REPO_NAME=DevOps
+        #- CF_REPO_NAME=DevOps
         - COMMIT_MESSAGE="${{CF_COMMIT_MESSAGE_ESCAPED}}"
         - APPNAME="trio-app"
         - APPENV="aperture-dev"
