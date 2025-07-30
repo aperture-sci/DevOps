@@ -101,7 +101,7 @@ steps:
           manifests/$APPNAME/$APPENV/values.yaml \
           manifests/$APPNAME/$APPENV/Chart.yaml
 
-        git commit -m "[promotion:trio-flow] ${{COMMIT_MESSAGE}} for ${{APPENV}}"
+        git commit -m '[promotion:trio-flow] ${{COMMIT_MESSAGE}} for ${{APPENV}}'
         git push -u origin "$BRANCH"
       - |-
         echo "Create PR"
