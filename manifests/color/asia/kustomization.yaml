@@ -5,4 +5,4 @@ resources:
   - deployment.yaml
 images:
   - name: docker.io/aperturesci/rollouts-demo
-    newTag: 0731092
+    newTag: 03f20f0
