@@ -8,4 +8,4 @@ resources:
   - analysis-prometheus.yaml
 images:
   - name: docker.io/aperturesci/rollouts-demo
-    newTag: a381142
+    newTag: 77d90e1
