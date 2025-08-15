@@ -15,10 +15,10 @@ steps:
     image: maniator/gh
     working_directory: ${{clone}}
     commands:
-      - |
+      - |-
         export BRANCH="${ENV}-temp-$(date +%s)"
         cf_export BRANCH=$BRANCH
-        # trying to fix git clone beeing behind 'origin/main'
+        # trying to fix git clone beeing behind origin/main
         git pull
         git checkout -b $BRANCH
 
