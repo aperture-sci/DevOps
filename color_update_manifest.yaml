@@ -46,7 +46,7 @@ steps:
         git config --global user.email "laurent.rochette@octopus.com"
         git config --global user.name "Laurent Rochette"
         git add manifests/color/$ENV/kustomization.yaml
-        git commit -m "Update image to deploy ${TAG}"
+        git commit -m "Update image to deploy ${TAG}" --allow-empty
         git push -u origin "$BRANCH"
       - |-
         echo "Create PR"
