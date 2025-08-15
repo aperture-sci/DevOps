@@ -18,6 +18,8 @@ steps:
       - |
         export BRANCH="${ENV}-temp-$(date +%s)"
         cf_export BRANCH=$BRANCH
+        # trying to fix git clone beeing behind 'origin/main'
+        git pull
         git checkout -b $BRANCH
 
   update_manifest:
