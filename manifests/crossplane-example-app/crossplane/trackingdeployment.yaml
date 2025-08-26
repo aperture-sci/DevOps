@@ -16,4 +16,4 @@ spec:
     spec:
       containers:
         - name: crosstracker
-          image: aperturesci/crosstracker:interest-asia
+          image: aperturesci/crosstracker:interest-east-interest-east-1
