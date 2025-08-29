@@ -14,7 +14,7 @@ spec:
       - high
   endpoints:
   - port: metrics
-    relabelings:
-    - targetLabel: job
-      replacement: argocd-metrics
+    # relabelings:
+    # - targetLabel: job
+    #   replacement: argocd-metrics
       # replacement: argocd-server-metrics
