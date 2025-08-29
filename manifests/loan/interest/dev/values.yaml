@@ -1,7 +1,7 @@
 loans:
   image:
     repository: docker.io/aperturesci/interest
-    tag: main-77ee2c4
+    tag: main-421622c
     pullPolicy: Always
   replicaCount: 1
   resources:
