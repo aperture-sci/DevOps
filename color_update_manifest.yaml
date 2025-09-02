@@ -22,7 +22,7 @@ steps:
 
   update_manifest:
     description: update the image version for the Environment
-    image: codefresh/cli
+    image: 'codefresh/cli:0.89.3'
     working_directory: ${{clone}}
     commands:
       - yq -i -y '.images[0].newTag="${{TAG}}"' manifests/color/$ENV/kustomization.yaml

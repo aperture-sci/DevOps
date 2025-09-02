@@ -194,7 +194,7 @@ steps:
   #         merge: "'${{MERGE}}' == 'true'"
   # update_dev_manifest:
   #   description: update the image version for Dev
-  #   image: codefresh/cli
+  #   image: 'codefresh/cli:0.89.3'
   #   working_directory: "/codefresh/volume/DevOps"
   #   stage: dev
   #   commands:
@@ -315,7 +315,7 @@ steps:
 
   update_qa_manifest:
     description: update the image version for qa
-    image: codefresh/cli
+    image: 'codefresh/cli:0.89.3'
     working_directory: "/codefresh/volume/DevOps"
     stage: qa
     commands:
@@ -369,7 +369,7 @@ steps:
 
   update_staging_manifest:
     description: update the image version for staging
-    image: codefresh/cli
+    image: 'codefresh/cli:0.89.3'
     working_directory: "/codefresh/volume/DevOps"
     stage: staging
     commands:
@@ -423,7 +423,7 @@ steps:
 
   update_europe_manifest:
     description: update the image version for Europe
-    image: codefresh/cli
+    image: 'codefresh/cli:0.89.3'
     working_directory: "/codefresh/volume/DevOps"
     stage: europe
     commands:
@@ -477,7 +477,7 @@ steps:
 
   update_asia_manifest:
     description: update the image version for Asia
-    image: codefresh/cli
+    image: 'codefresh/cli:0.89.3'
     working_directory: "/codefresh/volume/DevOps"
     stage: asia
     commands:
@@ -531,7 +531,7 @@ steps:
 
   update_us_manifest:
     description: update the image version for US East and West
-    image: codefresh/cli
+    image: 'codefresh/cli:0.89.3'
     working_directory: "/codefresh/volume/DevOps"
     stage: us
     commands:

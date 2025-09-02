@@ -67,7 +67,7 @@ steps:
     title: "Get Latest Images for trio app"
     working_directory: ${{clone}}
     stage: "prep"
-    image: 'codefresh/cli'
+    image: 'codefresh/cli:0.89.3'
     commands:
       - cf_export APPVERSION=${{steps.bumpVersion.output.SEMVERSIONER_RESULT}}
       - echo "Get latest version of images"
