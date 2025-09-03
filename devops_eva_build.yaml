@@ -59,7 +59,7 @@ steps:
     working_directory: ${{clone_manifests}}
     commands:
       - |-
-        export BRANCH="${ENV}-temp-$(date +%s)"
+        export BRANCH="eva-dev-temp-$(date +%s)"
         cf_export BRANCH=$BRANCH
         git checkout -b $BRANCH
 
