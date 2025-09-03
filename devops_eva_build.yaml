@@ -71,7 +71,7 @@ steps:
         - yq -y --arg tag "${{CF_SHORT_REVISION}}" '.${{SERVICE}}.image.tag = $tag' manifests/eva/dev/values.yaml -i
 
   create_pr:
-    title: "Create ENV PR"
+    title: "Create DEV PR"
     image: lrochette/ghssh:0.0.4
     stage: "deploy"
     working_directory: ${{clone}}
