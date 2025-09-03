@@ -64,7 +64,7 @@ steps:
         git checkout -b $BRANCH
 
   update_image:
-    working_directory: ${{clone_app}}
+    working_directory: ${{clone_manifests}}
     stage: "deploy"
     image: 'codefresh/cli:0.89.3'
     commands:
@@ -74,7 +74,7 @@ steps:
     title: "Create DEV PR"
     image: lrochette/ghssh:0.0.4
     stage: "deploy"
-    working_directory: ${{clone}}
+    working_directory: ${{clone_manifests}}
     commands:
       - |-
         echo "Setup ssh"
