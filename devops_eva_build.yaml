@@ -1,0 +1,100 @@
+version: "1.0"
+stages:
+  - "clone"
+  - "build"
+  - deploy
+
+hooks:
+  on_fail:
+    steps:
+      exec:
+        type: slack-post-channel:0.0.7
+        arguments:
+          SLACK_TOKEN: ${{LR_SLACK_TOKEN}}
+          SLACK_CHANNEL: 'laurent.rochette@octopus.com'
+          SLACK_MESSAGE: "CI build for eva (${{SERVICE}}) failed. See ${{CF_BUILD_URL}}"
+
+steps:
+  clone:
+    title: "Cloning App repository"
+    type: "git-clone"
+    repo: "${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}"
+
+    revision: "${{CF_BRANCH}}"
+    git: "github"
+    depth: 1
+    stage: "clone"
+
+  build:
+    type: build
+    title: "Building Docker image for service"
+    image_name: "aperturesci/${{SERVICE}}"
+    working_directory: "${{clone}}/${{SERVICE}}"
+    tag: "${{CF_SHORT_REVISION}}"
+    dockerfile: "Dockerfile"
+    buildx: true
+    platform: 'linux/amd64,linux/arm64'
+    stage: "build"
+    on_success:
+      annotations:
+        set:
+         - annotations:
+           - service: ${{SERVICE}}
+           display: service
+
+  clone_manifests:
+    title: "Cloning Manifest repository"
+    stage: "deploy"
+    type: "git-clone"
+    repo: "aperture-sci/DevOps"
+    revision: "main"
+    git: github-lr
+    depth: 1
+    exclude_blobs: true
+
+  create_branch:
+    title: "Create temp branch"
+    image: maniator/gh
+    working_directory: ${{clone_manifests}}
+    commands:
+      - |-
+        export BRANCH="${ENV}-temp-$(date +%s)"
+        cf_export BRANCH=$BRANCH
+        git checkout -b $BRANCH
+
+  update_image:
+    working_directory: ${{clone_app}}
+    stage: "deploy"
+    image: 'codefresh/cli:0.89.3'
+    commands:
+        - yq -y --arg tag "${{CF_SHORT_REVISION}}" '.${{SERVICE}}.image.tag = $tag' manifests/eva/dev/values.yaml -i
+
+  create_pr:
+    title: "Create ENV PR"
+    image: lrochette/ghssh:0.0.4
+    working_directory: ${{clone}}
+    commands:
+      - |-
+        echo "Setup ssh"
+        mkdir -p ~/.ssh
+        echo "${SSH_KEY}" | tr ',' '\n' > ~/.ssh/id_ed25519
+        touch ~/.ssh/known_hosts
+        chmod 0600 ~/.ssh/*
+        chmod 0700 ~/.ssh
+        ssh-keygen -R github.com
+        ssh-keyscan -H github.com >> ~/.ssh/known_hosts 2> >(grep -v '^#' >&2)
+      - |-
+        echo "Setup git"
+        git config --global user.email "laurent.rochette@octopus.com"
+        git config --global user.name "Laurent Rochette"
+        git add manifests/eva/dev/values.yaml
+        git commit -m "Update image to deploy ${CF_SHORT_REVISION}" --allow-empty
+        git push -u origin "$BRANCH"
+      - |-
+        echo "Create PR"
+        gh pr create -B main -H "$BRANCH" \
+          -t "Automated PR to push Dev tag ${CF_SHORT_REVISION}" \
+          -b "This PR updates the content of the file as part of an automated workflow."
+      - |-
+        echo "merge PR"
+        gh pr merge "$BRANCH" --merge --delete-branch
