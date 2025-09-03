@@ -55,6 +55,7 @@ steps:
   create_branch:
     title: "Create temp branch"
     image: maniator/gh
+    stage: "deploy"
     working_directory: ${{clone_manifests}}
     commands:
       - |-
@@ -72,6 +73,7 @@ steps:
   create_pr:
     title: "Create ENV PR"
     image: lrochette/ghssh:0.0.4
+    stage: "deploy"
     working_directory: ${{clone}}
     commands:
       - |-
