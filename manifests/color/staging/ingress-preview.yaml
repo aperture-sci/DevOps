@@ -4,11 +4,11 @@ metadata:
   name: color-preview
   annotations:
     ingress.kubernetes.io/proxy-body-size: 100M
-    kubernetes.io/ingress.class: nginx-public
     ingress.kubernetes.io/app-root: /
     nginx.ingress.kubernetes.io/rewrite-target: /$2
     link.argocd.argoproj.io/external-link: https://color-staging.cs.sandbox.codefresh.io/color-preview/
 spec:
+  ingressClassName: nginx-public
   rules:
     - host: color-staging.cs.sandbox.codefresh.io
       http:
