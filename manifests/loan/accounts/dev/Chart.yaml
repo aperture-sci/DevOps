@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 1.42.4
+appVersion: 1.42.5
 description: Codefresh gitops runtime umbrella chart
 name: accounts-base
 version: 1.0.0
