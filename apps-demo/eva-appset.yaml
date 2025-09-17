@@ -15,7 +15,7 @@ spec:
     metadata:
       name: 'eva-{{short}}'
       annotations:
-        argocd.argoproj.io/manifest-generate-paths: '/manifests/eva/{{short}}'
+        argocd.argoproj.io/manifest-generate-paths: '/manifests/eva'
         codefresh.io/product: example-voting-app
         codefresh.io/app-group: eva
     spec:
