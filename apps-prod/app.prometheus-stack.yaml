@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: prometheus-stack
+  name: prometheus-stack-high
   namespace: high
   finalizers:
     - resources-finalizer.argocd.argoproj.io/foreground
@@ -18,7 +18,7 @@ spec:
     name: in-cluster
   source:
     repoURL: https://github.com/aperture-sci/DevOps.git
-    path: manifests/prometheus
+    path: manifests/prometheus/prod
     targetRevision: main
   syncPolicy:
     automated:
