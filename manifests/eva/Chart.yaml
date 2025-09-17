@@ -14,14 +14,14 @@ maintainers:
     email: dustin@codefresh.io
 dependencies:
   - name: postgresql
-    version: 17.0.0
-    repository: https://charts.bitnami.com/bitnami
+    version: 12.8.2
+    repository: https://charts.bitnami.com/bitnamilegacy
     condition: postgresql.enabled
     tags:
       - db
   - name: redis
-    version: 23.0.2
-    repository: https://charts.bitnami.com/bitnami
+    version: 17.15.2
+    repository: https://charts.bitnami.com/bitnamilegacy
     condition: redis.enabled
     tags:
       - queue
