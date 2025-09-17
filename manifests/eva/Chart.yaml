@@ -20,7 +20,7 @@ dependencies:
     tags:
       - db
   - name: redis
-    version: 17.15.2
+    version: 22.0.7
     repository: https://charts.bitnami.com/bitnamilegacy
     condition: redis.enabled
     tags:
