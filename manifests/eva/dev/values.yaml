@@ -14,10 +14,10 @@ worker:
 
 redis:
   image:
-    repository: bitnamilegacy/redis
+    repository: docker.io/bitnamilegacy/redis
     tag: 8.2.1
 
 postgresql:
   image:
-    repository: bitnamilegacy/postgresql
+    repository: docker.io/bitnamilegacy/postgresql
     tag: 17.6.0
