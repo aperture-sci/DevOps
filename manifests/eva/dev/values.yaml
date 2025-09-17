@@ -20,5 +20,6 @@ redis:
 
 postgresql:
   image:
-    repository: docker.io/bitnamilegacy/postgresql
+    registry: docker.io
+    repository: bitnamilegacy/postgresql
     tag: 17.6.0
