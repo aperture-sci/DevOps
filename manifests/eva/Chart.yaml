@@ -15,13 +15,13 @@ maintainers:
 dependencies:
   - name: postgresql
     version: 12.8.2
-    repository: https://charts.bitnami.com/bitnamilegacy
+    repository: https://charts.bitnami.com/bitnami
     condition: postgresql.enabled
     tags:
       - db
   - name: redis
     version: 22.0.7
-    repository: https://charts.bitnami.com/bitnamilegacy
+    repository: https://charts.bitnami.com/bitnami
     condition: redis.enabled
     tags:
       - queue
