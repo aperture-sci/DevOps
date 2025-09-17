@@ -11,3 +11,13 @@ worker:
   image:
     repository: aperturesci/worker
     tag: 93fc0a0
+
+redis:
+  image:
+    repository: bitnamilegacy/redis
+    tag: 8.2.1
+
+postgresql:
+  image:
+    repository: bitnamilegacy/postgresql
+    tag: 17.6.0
