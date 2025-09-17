@@ -21,7 +21,7 @@ dependencies:
       - db
   - name: redis
     version: 22.0.7
-    repository: oci://registry-1.docker.io/bitnamicharts/redis
+    repository: https://charts.bitnami.com/bitnami
     condition: redis.enabled
     tags:
       - queue
