@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: prometheus-stack-low
-  namespace: high
+  namespace: demo
   finalizers:
     - resources-finalizer.argocd.argoproj.io/foreground
   annotations:
