@@ -18,7 +18,7 @@ spec:
     name: in-cluster
   source:
     repoURL: https://github.com/aperture-sci/DevOps.git
-    path: manifests/prometheus/prod
+    path: manifests/prometheus/high
     targetRevision: main
   syncPolicy:
     automated:
