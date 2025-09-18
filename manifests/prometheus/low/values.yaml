@@ -1,0 +1,14 @@
+kube-prometheus-stack:
+  # being on vcluster, no need for node info
+  nodeExporter:
+    enabled: false
+  # No windows nodes
+  windowsMonitoring:
+    enabled: false
+
+  # 1 replica is enough
+  # adding permanent volume
+  grafana:
+    replicaCount: 1
+    persistence:
+      enabled: true
