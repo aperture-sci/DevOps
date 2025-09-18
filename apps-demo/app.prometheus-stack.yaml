@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus-stack-low
+  namespace: high
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io/foreground
+  annotations:
+    codefresh.io/product: prometheus
+    argocd.argoproj.io/manifest-generate-paths: .
+  labels:
+    app-type: "infra"
+spec:
+  project: default
+  destination:
+    namespace: monitoring
+    name: in-cluster
+  source:
+    repoURL: https://github.com/aperture-sci/DevOps.git
+    path: manifests/prometheus/low
+    targetRevision: main
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

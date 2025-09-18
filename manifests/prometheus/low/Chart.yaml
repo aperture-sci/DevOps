@@ -1,0 +1,10 @@
+apiVersion: v2
+name: prometheus
+description: A Helm chart for Prometheus
+type: application
+version: 1.0.0
+appVersion: 75.12.0
+dependencies:
+  - name: kube-prometheus-stack
+    version: 75.12.0
+    repository: https://prometheus-community.github.io/helm-charts
