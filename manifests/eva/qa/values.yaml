@@ -11,3 +11,15 @@ worker:
   image:
     repository: aperturesci/worker
     tag: stable
+
+redis:
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/redis
+    tag: 8.2.1
+
+postgresql:
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/postgresql
+    tag: 17.6.0
