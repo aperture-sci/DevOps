@@ -164,13 +164,13 @@ steps:
   #
   # DEV
   #
-  approve_dev:
-    stage: dev
-    type: pending-approval
-    timeout:
-      timeUnit: minutes
-      duration: 3
-      finalState: approved
+  # approve_dev:
+  #   stage: dev
+  #   type: pending-approval
+  #   timeout:
+  #     timeUnit: minutes
+  #     duration: 3
+  #     finalState: approved
 
   update_dev:
     title: Update dev env
@@ -182,14 +182,14 @@ steps:
         - ENV=dev
         - TAG=${{CF_SHORT_REVISION}}
 
-  sync_dev:
-    type: gitops-argocd-sync:1.5.0
-    title: Sync ArgoCD app in DEV and wait
-    stage: dev
-    arguments:
-      IMAGE_TAG: "1.5.0"
-      RUNTIME: demo
-      APPLICATION: color-dev
+  # sync_dev:
+  #   type: gitops-argocd-sync:1.5.0
+  #   title: Sync ArgoCD app in DEV and wait
+  #   stage: dev
+  #   arguments:
+  #     IMAGE_TAG: "1.5.0"
+  #     RUNTIME: demo
+  #     APPLICATION: color-dev
 
   #
   # QA
@@ -212,14 +212,14 @@ steps:
         - ENV=qa
         - TAG=${{CF_SHORT_REVISION}}
 
-  sync_qa:
-    type: gitops-argocd-sync:1.5.0
-    title: Sync ArgoCD app in QA and  wait
-    stage: qa
-    arguments:
-      IMAGE_TAG: "1.5.0"
-      RUNTIME: demo
-      APPLICATION: color-qa
+  # sync_qa:
+  #   type: gitops-argocd-sync:1.5.0
+  #   title: Sync ArgoCD app in QA and  wait
+  #   stage: qa
+  #   arguments:
+  #     IMAGE_TAG: "1.5.0"
+  #     RUNTIME: demo
+  #     APPLICATION: color-qa
 
   #
   # STAGING
@@ -242,14 +242,14 @@ steps:
         - ENV=staging
         - TAG=${{CF_SHORT_REVISION}}
 
-  sync_staging:
-    title: Sync ArgoCD app in staging and  wait
-    type: gitops-argocd-sync:1.5.0
-    stage: staging
-    arguments:
-      IMAGE_TAG: "1.5.0"
-      RUNTIME: demo
-      APPLICATION: color-staging
+  # sync_staging:
+  #   title: Sync ArgoCD app in staging and  wait
+  #   type: gitops-argocd-sync:1.5.0
+  #   stage: staging
+  #   arguments:
+  #     IMAGE_TAG: "1.5.0"
+  #     RUNTIME: demo
+  #     APPLICATION: color-staging
 
   #
   # Europe
@@ -272,14 +272,14 @@ steps:
         - ENV=eu
         - TAG=${{CF_SHORT_REVISION}}
 
-  sync_eu:
-    title: Sync ArgoCD app in Europe and wait
-    type: gitops-argocd-sync:1.5.0
-    stage: europe
-    arguments:
-      IMAGE_TAG: "1.5.0"
-      RUNTIME: high
-      APPLICATION: color-eu
+  # sync_eu:
+  #   title: Sync ArgoCD app in Europe and wait
+  #   type: gitops-argocd-sync:1.5.0
+  #   stage: europe
+  #   arguments:
+  #     IMAGE_TAG: "1.5.0"
+  #     RUNTIME: high
+  #     APPLICATION: color-eu
 
   #
   # Asia
@@ -302,14 +302,14 @@ steps:
         - ENV=asia
         - TAG=${{CF_SHORT_REVISION}}
 
-  sync_asia:
-    title: Sync ArgoCD app in Asia and wait
-    type: gitops-argocd-sync:1.5.0
-    stage: asia
-    arguments:
-      IMAGE_TAG: "1.5.0"
-      RUNTIME: high
-      APPLICATION: color-asia
+  # sync_asia:
+  #   title: Sync ArgoCD app in Asia and wait
+  #   type: gitops-argocd-sync:1.5.0
+  #   stage: asia
+  #   arguments:
+  #     IMAGE_TAG: "1.5.0"
+  #     RUNTIME: high
+  #     APPLICATION: color-asia
 
   #
   # Prod US West and East
@@ -342,22 +342,22 @@ steps:
         - ENV=west
         - TAG=${{CF_SHORT_REVISION}}
 
-  sync_us:
-    type: parallel
-    stage: us
-    steps:
-      sync_east:
-        title: Sync ArgoCD app in US East and wait
-        type: gitops-argocd-sync:1.5.0
-        arguments:
-          IMAGE_TAG: "1.5.0"
-          RUNTIME: high
-          APPLICATION: color-east
-
-      sync_west:
-        title: Sync ArgoCD app in US West and wait
-        type: gitops-argocd-sync:1.5.0
-        arguments:
-          IMAGE_TAG: "1.5.0"
-          RUNTIME: high
-          APPLICATION: color-west
+  # sync_us:
+  #   type: parallel
+  #   stage: us
+  #   steps:
+  #     sync_east:
+  #       title: Sync ArgoCD app in US East and wait
+  #       type: gitops-argocd-sync:1.5.0
+  #       arguments:
+  #         IMAGE_TAG: "1.5.0"
+  #         RUNTIME: high
+  #         APPLICATION: color-east
+  #
+  #     sync_west:
+  #       title: Sync ArgoCD app in US West and wait
+  #       type: gitops-argocd-sync:1.5.0
+  #       arguments:
+  #         IMAGE_TAG: "1.5.0"
+  #         RUNTIME: high
+  #         APPLICATION: color-west
