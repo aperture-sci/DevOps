@@ -187,6 +187,7 @@ steps:
     title: Sync ArgoCD app in DEV and wait
     stage: dev
     arguments:
+      IMAGE_TAG: "1.5.0"
       RUNTIME: demo
       APPLICATION: color-dev
 
@@ -216,6 +217,7 @@ steps:
     title: Sync ArgoCD app in QA and  wait
     stage: qa
     arguments:
+      IMAGE_TAG: "1.5.0"
       RUNTIME: demo
       APPLICATION: color-qa
 
@@ -245,6 +247,7 @@ steps:
     type: gitops-argocd-sync:1.5.0
     stage: staging
     arguments:
+      IMAGE_TAG: "1.5.0"
       RUNTIME: demo
       APPLICATION: color-staging
 
@@ -274,6 +277,7 @@ steps:
     type: gitops-argocd-sync:1.5.0
     stage: europe
     arguments:
+      IMAGE_TAG: "1.5.0"
       RUNTIME: high
       APPLICATION: color-eu
 
@@ -303,6 +307,7 @@ steps:
     type: gitops-argocd-sync:1.5.0
     stage: asia
     arguments:
+      IMAGE_TAG: "1.5.0"
       RUNTIME: high
       APPLICATION: color-asia
 
@@ -345,6 +350,7 @@ steps:
         title: Sync ArgoCD app in US East and wait
         type: gitops-argocd-sync:1.5.0
         arguments:
+          IMAGE_TAG: "1.5.0"
           RUNTIME: high
           APPLICATION: color-east
 
@@ -352,5 +358,6 @@ steps:
         title: Sync ArgoCD app in US West and wait
         type: gitops-argocd-sync:1.5.0
         arguments:
+          IMAGE_TAG: "1.5.0"
           RUNTIME: high
           APPLICATION: color-west
