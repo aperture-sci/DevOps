@@ -6,7 +6,7 @@ result:
 vote:
   image:
     repository: aperturesci/vote
-    tag: 93fc0a0
+    tag: '5597712'
 worker:
   image:
     repository: aperturesci/worker
