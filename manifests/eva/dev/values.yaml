@@ -11,13 +11,11 @@ worker:
   image:
     repository: aperturesci/worker
     tag: 93fc0a0
-
 redis:
   image:
     registry: docker.io
     repository: bitnamilegacy/redis
     tag: 8.2.1
-
 postgresql:
   image:
     registry: docker.io
