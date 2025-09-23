@@ -22,6 +22,7 @@ spec:
       finalizers:
         - resources-finalizer.argocd.argoproj.io
       annotations:
+        notifications.argoproj.io/subscribe.on-sync-succeeded.grafana: trio
         argocd.argoproj.io/manifest-generate-paths: '.'
         codefresh.io/product: trio
         codefresh.io/app-group: trio
