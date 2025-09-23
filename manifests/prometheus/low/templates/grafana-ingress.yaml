@@ -18,6 +18,6 @@ spec:
             pathType: ImplementationSpecific
             backend:
               service:
-                name: prometheus-stack-grafana
+                name: prometheus-stack-low-grafana
                 port:
                   number: 80
