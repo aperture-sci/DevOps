@@ -15,6 +15,7 @@ spec:
     metadata:
       name: 'eva-{{short}}'
       annotations:
+        notifications.argoproj.io/subscribe.on-sync-succeeded.grafana: eva
         argocd.argoproj.io/manifest-generate-paths: '/manifests/eva'
         codefresh.io/product: example-voting-app
         codefresh.io/app-group: eva

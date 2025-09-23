@@ -19,6 +19,7 @@ spec:
       finalizers:
         - resources-finalizer.argocd.argoproj.io/foreground
       annotations:
+        notifications.argoproj.io/subscribe.on-sync-succeeded.grafana: color
         notifications.argoproj.io/subscribe.outofsync.slack: feed-aperture-sci-promotions-failure
         argocd.argoproj.io/manifest-generate-paths: '.'
         codefresh.io/product: color

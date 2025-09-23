@@ -28,6 +28,7 @@ spec:
       finalizers:
         - resources-finalizer.argocd.argoproj.io/foreground
       annotations:
+        notifications.argoproj.io/subscribe.on-sync-succeeded.grafana: loan
         argocd.argoproj.io/manifest-generate-paths: '.'
         codefresh.io/product: '{{.path.basename}}'
         codefresh.io/app-group: loan
