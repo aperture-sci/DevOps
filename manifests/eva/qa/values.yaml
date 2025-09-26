@@ -2,7 +2,7 @@ appVersion: 1.0.25
 result:
   image:
     repository: aperturesci/result
-    tag: stable
+    tag: 738b8db
 vote:
   image:
     repository: aperturesci/vote
@@ -10,7 +10,7 @@ vote:
 worker:
   image:
     repository: aperturesci/worker
-    tag: stable
+    tag: 93fc0a0
 
 redis:
   image:
