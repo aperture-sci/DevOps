@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
   name: globex
-  namespace: cf-teama
+  namespace: demo
 spec:
   generators:
     - list:
@@ -20,7 +20,7 @@ spec:
         argocd.argoproj.io/manifest-generate-paths: ./manifests/globex
     spec:
       destination:
-        namespace: 'team-a'
+        namespace: '{{short}}'
         server: 'demo-{{short}}'
       project: team-a
       source:
