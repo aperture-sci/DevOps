@@ -9,6 +9,7 @@ spec:
         elements:
           - short: dev
           - short: qa
+          - short: staging
   template:
     metadata:
       name: 'globex-{{short}}'
