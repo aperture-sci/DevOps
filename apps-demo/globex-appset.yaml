@@ -22,7 +22,7 @@ spec:
     spec:
       destination:
         namespace: '{{short}}'
-        server: 'demo-{{short}}'
+        name: 'demo-{{short}}'
       project: team-a
       source:
         path: './manifests/globex/overlays/{{short}}'
