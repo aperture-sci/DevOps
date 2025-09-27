@@ -1,0 +1,151 @@
+version: '1.0'
+stages:
+  - clone
+  - build
+  - dev
+  - prod
+  - post
+
+steps:
+
+  init:
+    type: parallel
+    stage: clone
+    steps:
+      clone:
+        title: Cloning repository
+        type: git-clone
+        git: github-lr
+        repo: ${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}
+        revision: ${{CF_REVISION}}
+        stage: clone
+
+      calculateDate:
+        image: ubuntu:latest
+        stage: prod
+        commands:
+          - |
+            START_DATE=`date -u '+%Y-%m-%d %H:%M:%S'`
+            END_DATE=`date -u -d '+1 day' '+%Y-%m-%d %H:%M:%S'`
+            echo START_DATE=\"$START_DATE\" >> ${{CF_VOLUME_PATH}}/env_vars_to_export
+            echo  END_DATE=\"$END_DATE\" >> ${{CF_VOLUME_PATH}}/env_vars_to_export
+
+  getVersion:
+    title: "Get the image version from the repo"
+    image: codefresh/cli
+    working_directory: "${{clone}}"
+    stage: build
+    commands:
+      - |
+        export VERSION=$(cat version.txt | tr -d '\n')
+        cf_export IMAGE_VERSION=$VERSION
+        cf_export IMAGE=aperturesci/globex:$VERSION
+
+  build_application:
+    title: "Building Globex website"
+    image: maven:3.3-jdk-8
+    working_directory: "${{clone}}"
+    tag: "${{CF_BRANCH_TAG_NORMALIZED}}"
+    commands:
+      - mvn -Dmaven.repo.local=/codefresh/volume/m2_repository package
+    stage: build
+
+  build_image:
+    title: "Building tomcat container"
+    type: build
+    registry: dockerhub
+    image_name: "aperture/globex"
+    working_directory: "${{clone}}"
+    platform: 'linux/amd64,linux/arm64'
+    buildx: true
+    tags:
+      - "${{CF_BRANCH_TAG_NORMALIZED}}"
+      - ${{IMAGE_VERSION}}
+    dockerfile: "Dockerfile"
+    disable_push: false
+    stage: build
+    on_success:
+      annotations:
+        set:
+          - annotations:
+            - sha: ${{CF_SHORT_REVISION}}
+            - version: ${{IMAGE_VERSION}}
+            display: version
+
+  ReportImageMetadataAll:
+    type: codefresh-report-image:1.0.10
+    working_directory: /code
+    arguments:
+      CF_API_KEY: '${{CF_API_KEY}}'
+      CF_RUNTIME_NAME: demo
+      CF_GITHUB_TOKEN: '${{GITHUB_TOKEN}}'
+      CF_GIT_PROVIDER: github
+      CF_GIT_REPO: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
+      CF_GIT_BRANCH: '${{PR_BRANCH}}'
+      CF_JIRA_INTEGRATION: jira-intg
+      CF_JIRA_MESSAGE: "FT-50 Change location"
+      CF_JIRA_PROJECT_PREFIX: 'FT'
+      CF_IMAGE: 'docker.io/aperturesci/globex:${{IMAGE_VERSION}}'
+      CF_CONTAINER_REGISTRY_INTEGRATION: docker-intg
+      CF_DOCKERFILE_CONTENT: '${{DOCKERFILE_CONTENT}}'
+
+
+
+  clone_dev:
+    title: Cloning Gitops repository
+    type: git-clone
+    git: github
+    repo: ${{CF_REPO_OWNER}}/DevOps
+    revision: main
+    stage: dev
+
+  create_branch:
+    title: "Create temp branch"
+    image: maniator/gh
+    working_directory: ${{clone}}
+    stage: prep
+    commands:
+      - |
+        export BRANCH="globex-dev-temp-$(date +%s)"
+        cf_export BRANCH=$BRANCH
+        git checkout -b $BRANCH
+  updateVersion_dev:
+    title: update the version of the image
+    stage: dev
+    image: codefresh/cli
+    working_directory: "${{clone_dev}}"
+    commands:
+      - ls
+      - yq -iY '.spec.template.spec.containers[0].image=env.IMAGE' manifests/globex/overlays/dev/deployment.yaml
+
+  create_pr:
+    title: "Create ENV PR"
+    image: lrochette/ghssh:0.0.4
+    working_directory: ${{clone}}
+    stage: deploy
+    commands:
+      - |-
+        echo "Setup ssh"
+        mkdir -p ~/.ssh
+        echo "${SSH_KEY}" | tr ',' '\n' > ~/.ssh/id_ed25519
+        touch ~/.ssh/known_hosts
+        chmod 0600 ~/.ssh/*
+        chmod 0700 ~/.ssh
+        ssh-keygen -R github.com
+        ssh-keyscan -H github.com >> ~/.ssh/known_hosts 2> >(grep -v '^#' >&2)
+      - |-
+        echo "Setup git"
+        git config --global user.email "laurent.rochette@octopus.com"
+        git config --global user.name "Laurent Rochette"
+        git add manifests/globex/overlays/dev/deployment.yaml
+
+        git commit -m "[promotion:globex] Update image tag for Globex"
+        git push -u origin "$BRANCH"
+      - |-
+        echo "Create PR"
+        gh pr create -B main -H "$BRANCH" \
+          -t "Automated PR to push Dev tag $TAG" \
+          -b "This PR updates the content of the file as part of an automated workflow."
+      - |-
+        echo "merge PR"
+        gh pr merge "$BRANCH" --merge --delete-branch
