@@ -103,7 +103,7 @@ steps:
     title: "Create temp branch"
     image: maniator/gh
     working_directory: ${{clone}}
-    stage: prep
+    stage: dev
     commands:
       - |
         export BRANCH="globex-dev-temp-$(date +%s)"
@@ -122,7 +122,7 @@ steps:
     title: "Create ENV PR"
     image: lrochette/ghssh:0.0.4
     working_directory: ${{clone}}
-    stage: deploy
+    stage: dev
     commands:
       - |-
         echo "Setup ssh"
