@@ -5,7 +5,6 @@ metadata:
     app: globex
   name: globex
 spec:
-  replicas: 2
   template:
     spec:
       containers:
