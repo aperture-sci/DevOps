@@ -128,7 +128,7 @@ steps:
 
       # cosign:
       #   title: Cosign Image
-      #   image: bitnami/cosign:2
+      #   image: bitnamilegacy/cosign:2.5.3
       #   stage: metadata
       #   fail_fast: false
       #   commands:
@@ -138,7 +138,7 @@ steps:
 
       cosign:
         title: Keyless Image cosign
-        image: bitnami/cosign:2
+        image: bitnamilegacy/cosign:2.5.3
         fail_fast: false
         commands:
           - |

@@ -184,7 +184,7 @@ steps:
           CF_DOCKERFILE_CONTENT: '${{DOCKERFILE_CONTENT}}'
       cosign:
         title: Cosign Image
-        image: bitnami/cosign:2
+        image: bitnamilegacy/cosign:2.5.3
         commands:
           - cp -r ${{CF_VOLUME_PATH}}/.docker /
           - cosign sign --key ${{CF_VOLUME_PATH}}/cosign.key aperturesci/${{BUILDNAME}}:${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}} -a CICD=Codefresh --yes
