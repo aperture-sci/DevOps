@@ -1,6 +1,6 @@
 buslog:
   image:
-    tag: main-39c065d
+    tag: main
     repository: docker.io/aperturesci/buslog
   replicaCount: 3
   rollout:
