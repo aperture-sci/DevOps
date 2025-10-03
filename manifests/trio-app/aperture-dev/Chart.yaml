@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 1.306.9
+appVersion: 1.306.10
 name: trio-app
 description: A Helm chart for Kubernetes
 type: application
