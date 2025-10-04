@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 1.28.15
+appVersion: 1.28.16
 description: Codefresh gitops runtime umbrella chart
 name: orders-base
 version: 1.0.0
