@@ -5,5 +5,5 @@ resources:
 - ingress.yaml
 namespace: qa
 
-patchesStrategicMerge:
-- deployment.yaml
+patches:
+- path: deployment.yaml
