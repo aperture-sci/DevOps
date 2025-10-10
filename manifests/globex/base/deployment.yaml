@@ -5,7 +5,7 @@ metadata:
     app: globex
   name: globex
 spec:
-  replicas: xxx
+  replicas: 1
   selector:
     matchLabels:
       app: globex
