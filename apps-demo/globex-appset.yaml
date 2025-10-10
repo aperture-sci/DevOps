@@ -23,7 +23,7 @@ spec:
       destination:
         namespace: '{{short}}'
         name: 'demo-{{short}}'
-      project: team-a
+      project: default
       source:
         path: './manifests/globex/overlays/{{short}}'
         repoURL: https://github.com/aperture-sci/DevOps.git
