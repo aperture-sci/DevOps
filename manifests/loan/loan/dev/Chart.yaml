@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 1.40.31
+appVersion: 1.40.32
 description: Codefresh gitops runtime umbrella chart
 name: loans-base
 version: 1.0.0
