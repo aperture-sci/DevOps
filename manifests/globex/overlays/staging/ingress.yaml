@@ -1,17 +1,17 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: globex-prod
+  name: globex-staging
   annotations:
     annotations.kubernetes.io/ingress.class: nginx-public
     ingress.kubernetes.io/app-root: /
-    link.argocd.argoproj.io/external-link: https://globex-prod.cs.sandbox.codefresh.io/
+    link.argocd.argoproj.io/external-link: https://globex-staging.cs.sandbox.codefresh.io/
 
 
 spec:
   ingressClassName: nginx-public
   rules:
-    - host: globex-prod.cs.sandbox.codefresh.io
+    - host: globex-staging.cs.sandbox.codefresh.io
       http:
         paths:
           - path: /
