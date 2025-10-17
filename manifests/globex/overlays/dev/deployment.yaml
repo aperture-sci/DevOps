@@ -9,4 +9,4 @@ spec:
     spec:
       containers:
         - name: globex
-          image: aperturesci/globex:1.7.31
+          image: aperturesci/globex:1.7.32
