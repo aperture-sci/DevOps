@@ -54,7 +54,7 @@ steps:
     title: "Building tomcat container"
     type: build
     registry: dockerhub
-    image_name: "aperture/globex"
+    image_name: "aperturesci/globex"
     working_directory: "${{clone}}"
     platform: 'linux/amd64,linux/arm64'
     buildx: true
