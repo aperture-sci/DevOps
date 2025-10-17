@@ -75,6 +75,7 @@ steps:
   ReportImageMetadataAll:
     type: codefresh-report-image:1.0.10
     working_directory: /code
+    stage: build
     arguments:
       CF_API_KEY: '${{CF_API_KEY}}'
       CF_RUNTIME_NAME: demo
@@ -83,8 +84,8 @@ steps:
       CF_GIT_REPO: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
       CF_GIT_BRANCH: '${{PR_BRANCH}}'
       CF_JIRA_INTEGRATION: jira-intg
-      CF_JIRA_MESSAGE: "FT-50 Change location"
-      CF_JIRA_PROJECT_PREFIX: 'FT'
+      CF_JIRA_MESSAGE: "AP-56334 Change location"
+      CF_JIRA_PROJECT_PREFIX: 'AP'
       CF_IMAGE: 'docker.io/aperturesci/globex:${{IMAGE_VERSION}}'
       CF_CONTAINER_REGISTRY_INTEGRATION: docker-intg
       CF_DOCKERFILE_CONTENT: '${{DOCKERFILE_CONTENT}}'
