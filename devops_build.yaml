@@ -31,8 +31,7 @@ steps:
     registry: dockerhub
     image_name: "aperturesci/${{BUILDNAME}}"
     working_directory: "${{clone}}/${{BUILDPATH}}"
-    tags:
-    - "${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}"
+    tag: "${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}"
     dockerfile: "Dockerfile"
     platform: 'linux/amd64,linux/arm64'
     buildx: true
