@@ -3,7 +3,7 @@ apiVersion: argoproj.io/v1alpha1
 metadata:
   name: datadog-analysis
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    chart: '{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}'
     app: {{ template "fullname" . }}
 spec:
   metrics:
@@ -24,7 +24,7 @@ apiVersion: argoproj.io/v1alpha1
 metadata:
   name: conditional-tests
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    chart: '{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}'
     app: {{ template "fullname" . }}
 spec:
   metrics:
