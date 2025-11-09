@@ -12,7 +12,6 @@ buslog:
               duration: 5s
           - analysis:
               templates:
-                # - templateName: datadog-analysis
                 - templateName: conditional-tests
           - setWeight: 50
           - pause:
@@ -32,7 +31,6 @@ ctrlr:
               duration: 5s
           - analysis:
               templates:
-                # - templateName: datadog-analysis
                 - templateName: conditional-tests
           - setWeight: 50
           - pause:
@@ -52,7 +50,6 @@ flask-ui:
               duration: 5s
           - analysis:
               templates:
-                # - templateName: datadog-analysis
                 - templateName: conditional-tests
           - setWeight: 50
           - pause:
