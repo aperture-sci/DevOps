@@ -222,7 +222,9 @@ steps:
         #- CF_REPO_NAME=DevOps
         - COMMIT_MESSAGE="${{CF_COMMIT_MESSAGE_ESCAPED}}"
         - APPNAME="trio-app"
+        - SERVICE="${{BUILDNAME}}"
         - APPENV="aperture-dev"
+        - TAG="${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}"
     when:
       condition:
         all:

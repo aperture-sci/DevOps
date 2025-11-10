@@ -63,20 +63,33 @@ steps:
       SEMVERSIONER_ACTION: bump
       SEMVERSIONER_PART: ${{PART}}
 
-  getimages:
-    title: "Get Latest Images for trio app"
-    working_directory: ${{clone}}
-    stage: "prep"
-    image: 'codefresh/cli:0.89.3'
-    commands:
-      - cf_export APPVERSION=${{steps.bumpVersion.output.SEMVERSIONER_RESULT}}
-      - echo "Get latest version of images"
-      - yq -y --arg tag "$(codefresh get images --image-name aperturesci/ctrlr --limit 2 --branch main -o yaml --tag main | yq -r .items[1].tag -)" '."ctrlr".image.tag = $tag' manifests/$APPNAME/$APPENV/values.yaml -i
-      - yq -y --arg tag "$(codefresh get images --image-name aperturesci/buslog --limit 2 --branch main -o yaml --tag main | yq -r .items[1].tag -)" '."buslog".image.tag = $tag' manifests/$APPNAME/$APPENV/values.yaml -i
-      - yq -y --arg tag "$(codefresh get images --image-name aperturesci/flask-ui --limit 2 --branch main -o yaml --tag main | yq -r .items[1].tag -)" '."flask-ui".image.tag = $tag' manifests/$APPNAME/$APPENV/values.yaml -i
-      - cat manifests/$APPNAME/$APPENV/values.yaml
-      - yq -y  --arg tag  "${{steps.bumpVersion.output.SEMVERSIONER_RESULT}}" '.appVersion = $tag' manifests/$APPNAME/$APPENV/Chart.yaml -i
-      - cat manifests/$APPNAME/$APPENV/Chart.yaml
+  # getimages:
+  #   title: "Get Latest Images for trio app"
+  #   working_directory: ${{clone}}
+  #   stage: "prep"
+  #   image: 'codefresh/cli:0.89.3'
+  #   commands:
+  #     - cf_export APPVERSION=${{steps.bumpVersion.output.SEMVERSIONER_RESULT}}
+  #     - echo "Get latest version of images"
+  #     - yq -y --arg tag "$(codefresh get images --image-name aperturesci/ctrlr --limit 2 --branch main -o yaml --tag main | yq -r .items[1].tag -)" '."ctrlr".image.tag = $tag' manifests/$APPNAME/$APPENV/values.yaml -i
+  #     - yq -y --arg tag "$(codefresh get images --image-name aperturesci/buslog --limit 2 --branch main -o yaml --tag main | yq -r .items[1].tag -)" '."buslog".image.tag = $tag' manifests/$APPNAME/$APPENV/values.yaml -i
+  #     - yq -y --arg tag "$(codefresh get images --image-name aperturesci/flask-ui --limit 2 --branch main -o yaml --tag main | yq -r .items[1].tag -)" '."flask-ui".image.tag = $tag' manifests/$APPNAME/$APPENV/values.yaml -i
+  #     - cat manifests/$APPNAME/$APPENV/values.yaml
+  #     - yq -y  --arg tag  "${{steps.bumpVersion.output.SEMVERSIONER_RESULT}}" '.appVersion = $tag' manifests/$APPNAME/$APPENV/Chart.yaml -i
+  #     - cat manifests/$APPNAME/$APPENV/Chart.yaml
+
+  update_ENV_manifest:
+      stage: deploy
+      title: "update the image version"
+      image: mikefarah/yq:3.3.4
+      working_directory: ${{clone}}
+      commands:
+        - cf_export APPVERSION=${{steps.bumpVersion.output.SEMVERSIONER_RESULT}}
+        - yq w -i manifests/$APPNAME/$SERVICE/$APPENV/values.yaml '${{SERVICE}}.image.tag' "${{TAG}}"
+        - cat manifests/$APPNAME/$SERVICE/$APPENV/values.yaml
+        - yq w -i manifests/$APPNAME/$SERVICE/$APPENV/Chart.yaml 'appVersion' "${{steps.bumpVersion.output.SEMVERSIONER_RESULT}}"
+        - cat manifests/$APPNAME/$SERVICE/$APPENV/Chart.yaml
+
 
   create_pr:
     title: "Create ENV PR"
