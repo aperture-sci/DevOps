@@ -85,10 +85,10 @@ steps:
       working_directory: ${{clone}}
       commands:
         - cf_export APPVERSION=${{steps.bumpVersion.output.SEMVERSIONER_RESULT}}
-        - yq w -i manifests/$APPNAME/$SERVICE/$APPENV/values.yaml '${{SERVICE}}.image.tag' "${{TAG}}"
-        - cat manifests/$APPNAME/$SERVICE/$APPENV/values.yaml
-        - yq w -i manifests/$APPNAME/$SERVICE/$APPENV/Chart.yaml 'appVersion' "${{steps.bumpVersion.output.SEMVERSIONER_RESULT}}"
-        - cat manifests/$APPNAME/$SERVICE/$APPENV/Chart.yaml
+        - yq w -i manifests/$APPNAME/$APPENV/values.yaml '${{SERVICE}}.image.tag' "${{TAG}}"
+        - cat manifests/$APPNAME/$APPENV/values.yaml
+        - yq w -i manifests/$APPNAME/$APPENV/Chart.yaml 'appVersion' "${{steps.bumpVersion.output.SEMVERSIONER_RESULT}}"
+        - cat manifests/$APPNAME/$APPENV/Chart.yaml
 
 
   create_pr:
