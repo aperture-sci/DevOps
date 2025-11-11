@@ -10,6 +10,9 @@ buslog:
           - setWeight: 20
           - pause:
               duration: 5s
+          - analysis:
+              templates:
+                - templateName: conditional-tests
           - setWeight: 100
 ctrlr:
   image:
@@ -23,6 +26,9 @@ ctrlr:
           - setWeight: 20
           - pause:
               duration: 5s
+          - analysis:
+              templates:
+                - templateName: conditional-tests
           - setWeight: 50
           - pause:
               duration: 5s
@@ -39,6 +45,9 @@ flask-ui:
           - setWeight: 20
           - pause:
               duration: 5s
+          - analysis:
+              templates:
+                - templateName: conditional-tests
           - setWeight: 50
           - pause:
               duration: 5s
