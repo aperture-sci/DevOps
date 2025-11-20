@@ -1,6 +1,6 @@
 buslog:
   image:
-    tag: main-d246aba
+    tag: main-1016bf6
     repository: docker.io/aperturesci/buslog
   replicaCount: 2
   rollout:
@@ -10,10 +10,13 @@ buslog:
           - setWeight: 20
           - pause:
               duration: 5s
+          - analysis:
+              templates:
+                - templateName: conditional-tests
           - setWeight: 100
 ctrlr:
   image:
-    tag: main
+    tag: main-25e7504
     repository: docker.io/aperturesci/ctrlr
   replicaCount: 2
   rollout:
@@ -23,13 +26,16 @@ ctrlr:
           - setWeight: 20
           - pause:
               duration: 5s
+          - analysis:
+              templates:
+                - templateName: conditional-tests
           - setWeight: 50
           - pause:
               duration: 5s
           - setWeight: 100
 flask-ui:
   image:
-    tag: main-e2b5480
+    tag: main-07eee7f
     repository: docker.io/aperturesci/flask-ui
   replicaCount: 2
   rollout:
@@ -39,6 +45,9 @@ flask-ui:
           - setWeight: 20
           - pause:
               duration: 5s
+          - analysis:
+              templates:
+                - templateName: conditional-tests
           - setWeight: 50
           - pause:
               duration: 5s
