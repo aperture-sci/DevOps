@@ -157,7 +157,7 @@ steps:
           JIRA_API_KEY: ${{JIRA_API_KEY}}
           JIRA_BASE_URL: ${{JIRA_URL}}
           JIRA_USERNAME: ${{JIRA_USER}}
-          JIRA_ISSUE_SOURCE_FIELD: "AP-103"
+          JIRA_ISSUE_SOURCE_FIELD: "AP-57453"
           ACTION: "comment_create"
           COMMENT_BODY: "Color update to ${{COLOR}} in Codefresh build [${{CF_BUILD_ID}}|${{CF_BUILD_URL}}] finished in Codefresh."
 
