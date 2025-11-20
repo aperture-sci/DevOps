@@ -35,7 +35,8 @@ spec:
         name: '{{name}}'
         namespace: '{{metadata.labels.shortname}}'
       syncPolicy:
-        # automated:
+        automated:
+          enabled: false
         #   prune: true
         #   selfHeal: true
         syncOptions:
