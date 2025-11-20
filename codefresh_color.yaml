@@ -182,15 +182,15 @@ steps:
         - ENV=dev
         - TAG=${{CF_SHORT_REVISION}}
 
-  # sync_dev:
-  #   type: gitops-argocd-sync:1.5.0
-  #   title: Sync ArgoCD app in DEV and wait
-  #   stage: dev
-  #   arguments:
-  #     IMAGE_TAG: "1.5.0"
-  #     RUNTIME: demo
-  #     APPLICATION: color-dev
-
+  sync_dev:
+    type: gitops-argocd-sync:1.5.0
+    title: Sync ArgoCD app in DEV and wait
+    stage: dev
+    arguments:
+      IMAGE_TAG: "1.5.0"
+      RUNTIME: demo
+      APPLICATION: color-dev
+      APP_NAMESPACE: demo
   #
   # QA
   #
