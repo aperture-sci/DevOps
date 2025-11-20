@@ -35,9 +35,9 @@ spec:
         name: '{{name}}'
         namespace: '{{metadata.labels.shortname}}'
       syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
+        # automated:
+        #   prune: true
+        #   selfHeal: true
         syncOptions:
           - PrunePropagationPolicy=foreground
           - Replace=false
