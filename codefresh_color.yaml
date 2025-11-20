@@ -187,7 +187,8 @@ steps:
     title: Sync ArgoCD app in DEV and wait
     stage: dev
     arguments:
-      IMAGE_TAG: "1.5.0"
+      # IMAGE_TAG: "1.5.0"
+      LOG_LEVEL: debug
       RUNTIME: demo
       APPLICATION: color-dev
       APP_NAMESPACE: demo
