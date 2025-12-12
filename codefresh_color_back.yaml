@@ -5,7 +5,7 @@ stages:
   - metadata
   - dev
   - qa
-  - staging
+  # - staging
   - europe
   - asia
   - us
@@ -349,56 +349,56 @@ steps:
   #
   # STAGING
   #
-  approve_staging:
-    stage: staging
-    type: pending-approval
-    timeout:
-      timeUnit: minutes
-      duration: 5
-      finalState: approved
+  # approve_staging:
+  #   stage: staging
+  #   type: pending-approval
+  #   timeout:
+  #     timeUnit: minutes
+  #     duration: 5
+  #     finalState: approved
+  #
+  # clone_staging:
+  #   title: "Cloning repository for staging"
+  #   type: "git-clone"
+  #   git: "github"
+  #   repo: aperture-sci/DevOps
+  #   revision: "main"
+  #   depth: 1
+  #   exclude_blobs: true
+  #   stage: staging
 
-  clone_staging:
-    title: "Cloning repository for staging"
-    type: "git-clone"
-    git: "github"
-    repo: aperture-sci/DevOps
-    revision: "main"
-    depth: 1
-    exclude_blobs: true
-    stage: staging
+  # update_staging_manifest:
+  #   description: update the image version for staging
+  #   image: 'codefresh/cli:0.89.3'
+  #   working_directory: "/codefresh/volume/DevOps"
+  #   stage: staging
+  #   commands:
+  #     - yq -i -y '.images[0].newTag="${{CF_SHORT_REVISION}}"' manifests/color/staging/kustomization.yaml
 
-  update_staging_manifest:
-    description: update the image version for staging
-    image: 'codefresh/cli:0.89.3'
-    working_directory: "/codefresh/volume/DevOps"
-    stage: staging
-    commands:
-      - yq -i -y '.images[0].newTag="${{CF_SHORT_REVISION}}"' manifests/color/staging/kustomization.yaml
+  # commit_and_push_staging:
+  #   title: Commit changes and push
+  #   type: git-commit:0.1.4
+  #   stage: staging
+  #   arguments:
+  #     repo: aperture-sci/DevOps
+  #     git: github-lr
+  #     working_directory: "/codefresh/volume/DevOps"
+  #     commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
+  #     git_user_name: lrochette
+  #     git_user_email: laurent.rochette@codefresh.io
+  #     allow_empty: true
+  #     force_push: false
+  #     use_ssh: true
+  #     add:
+  #       - manifests/color/staging/kustomization.yaml
 
-  commit_and_push_staging:
-    title: Commit changes and push
-    type: git-commit:0.1.4
-    stage: staging
-    arguments:
-      repo: aperture-sci/DevOps
-      git: github-lr
-      working_directory: "/codefresh/volume/DevOps"
-      commit_message: "Update image to deploy to ${{COLOR}} (${{CF_SHORT_REVISION}})"
-      git_user_name: lrochette
-      git_user_email: laurent.rochette@codefresh.io
-      allow_empty: true
-      force_push: false
-      use_ssh: true
-      add:
-        - manifests/color/staging/kustomization.yaml
-
-  sync_staging:
-    title: Sync ArgoCD app in staging and  wait
-    type: gitops-argocd-sync:1.5.0
-    stage: staging
-    arguments:
-      RUNTIME: demo
-      APPLICATION: color-staging
+  # sync_staging:
+  #   title: Sync ArgoCD app in staging and  wait
+  #   type: gitops-argocd-sync:1.5.0
+  #   stage: staging
+  #   arguments:
+  #     RUNTIME: demo
+  #     APPLICATION: color-staging
 
   #
   # Europe

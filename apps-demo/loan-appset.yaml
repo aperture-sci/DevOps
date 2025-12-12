@@ -20,8 +20,6 @@ spec:
             short: dev
           - cluster: demo-qa
             short: qa
-          - cluster: demo-staging
-            short: staging
   template:
     metadata:
       name: '{{.path.basename}}-{{.short}}'

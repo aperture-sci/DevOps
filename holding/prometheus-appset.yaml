@@ -10,8 +10,6 @@ spec:
             short: dev
           - cluster: kc-v-qa
             short: qa
-          - cluster: kc-v-staging
-            short: staging
           - cluster: kc-v-prod
             short: prod
   template:

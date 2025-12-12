@@ -5,7 +5,6 @@ stages:
   - metadata
   - dev
   - qa
-  - staging
   - europe
   - asia
   - us
@@ -221,36 +220,6 @@ steps:
   #     IMAGE_TAG: "1.5.0"
   #     RUNTIME: demo
   #     APPLICATION: color-qa
-
-  #
-  # STAGING
-  #
-  approve_staging:
-    stage: staging
-    type: pending-approval
-    timeout:
-      timeUnit: minutes
-      duration: 5
-      finalState: approved
-
-  update_staging:
-    title: Update staging env
-    type: codefresh-run:1.5.3
-    stage: staging
-    arguments:
-      PIPELINE_ID: DevOps/color_update_manifest
-      VARIABLE:
-        - ENV=staging
-        - TAG=${{CF_SHORT_REVISION}}
-
-  # sync_staging:
-  #   title: Sync ArgoCD app in staging and  wait
-  #   type: gitops-argocd-sync:1.5.0
-  #   stage: staging
-  #   arguments:
-  #     IMAGE_TAG: "1.5.0"
-  #     RUNTIME: demo
-  #     APPLICATION: color-staging
 
   #
   # Europe

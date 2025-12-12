@@ -26,21 +26,6 @@ spec:
       namespace: demo
       resource: applications
       version: v1alpha1
-    loans-staging:
-      eventTypes:
-        - UPDATE
-      filter:
-        fields:
-          - key: metadata.name
-            operation: ==
-            value: loans-staging
-          - key: status.sync.status
-            operation: ==
-            value: OutOfSync
-      group: argoproj.io
-      namespace: demo
-      resource: applications
-      version: v1alpha1
     loans-production:
       eventTypes:
         - UPDATE
@@ -69,21 +54,6 @@ spec:
           - key: metadata.name
             operation: ==
             value: accounts-qa
-          - key: status.sync.status
-            operation: ==
-            value: OutOfSync
-      group: argoproj.io
-      namespace: demo
-      resource: applications
-      version: v1alpha1
-    accounts-staging:
-      eventTypes:
-        - UPDATE
-      filter:
-        fields:
-          - key: metadata.name
-            operation: ==
-            value: accounts-staging
           - key: status.sync.status
             operation: ==
             value: OutOfSync
@@ -126,21 +96,7 @@ spec:
       namespace: demo
       resource: applications
       version: v1alpha1
-    membership-staging:
-      eventTypes:
-        - UPDATE
-      filter:
-        fields:
-          - key: metadata.name
-            operation: ==
-            value: membership-staging
-          - key: status.sync.status
-            operation: ==
-            value: OutOfSync
-      group: argoproj.io
-      namespace: demo
-      resource: applications
-      version: v1alpha1
+
     membership-production:
       eventTypes:
         - UPDATE
@@ -176,21 +132,7 @@ spec:
       namespace: demo
       resource: applications
       version: v1alpha1
-    orders-staging:
-      eventTypes:
-        - UPDATE
-      filter:
-        fields:
-          - key: metadata.name
-            operation: ==
-            value: orders-staging
-          - key: status.sync.status
-            operation: ==
-            value: OutOfSync
-      group: argoproj.io
-      namespace: demo
-      resource: applications
-      version: v1alpha1
+
     orders-production:
       eventTypes:
         - UPDATE

@@ -5,14 +5,14 @@ metadata:
     argocd.argoproj.io/manifest-generate-paths: '.'
   finalizers:
   - resources-finalizer.argocd.argoproj.io
-  name: guestbook-staging
+  name: guestbook-qa
 spec:
   destination:
     name: in-cluster
-    namespace: guestbook-staging
+    namespace: guestbook-qa
   project: default
   source:
-    path: manifests/guestbook/staging
+    path: manifests/guestbook/qa
     repoURL: https://github.com/aperture-sci/DevOps
     targetRevision: main
   syncPolicy:

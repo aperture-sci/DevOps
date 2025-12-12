@@ -17,12 +17,6 @@ spec:
       filters:
         script: |-
           if event.body.status.sync.revision ~= event.oldBody.status.sync.revision then return true else return false end
-    - name: loans-staging
-      eventName: loans-staging
-      eventSourceName: promotion-listener
-      filters:
-        script: |-
-          if event.body.status.sync.revision ~= event.oldBody.status.sync.revision then return true else return false end
     - name: loans-production
       eventName: loans-production
       eventSourceName: promotion-listener
@@ -36,12 +30,6 @@ spec:
 
     - name: accounts-qa
       eventName: accounts-qa
-      eventSourceName: promotion-listener
-      filters:
-        script: |-
-          if event.body.status.sync.revision ~= event.oldBody.status.sync.revision then return true else return false end
-    - name: accounts-staging
-      eventName: accounts-staging
       eventSourceName: promotion-listener
       filters:
         script: |-
@@ -63,12 +51,6 @@ spec:
       filters:
         script: |-
           if event.body.status.sync.revision ~= event.oldBody.status.sync.revision then return true else return false end
-    - name: membership-staging
-      eventName: membership-staging
-      eventSourceName: promotion-listener
-      filters:
-        script: |-
-          if event.body.status.sync.revision ~= event.oldBody.status.sync.revision then return true else return false end
     - name: membership-production
       eventName: membership-production
       eventSourceName: promotion-listener
@@ -86,25 +68,19 @@ spec:
       filters:
         script: |-
           if event.body.status.sync.revision ~= event.oldBody.status.sync.revision then return true else return false end
-    - name: orders-staging
-      eventName: orders-staging
-      eventSourceName: promotion-listener
-      filters:
-        script: |-
-          if event.body.status.sync.revision ~= event.oldBody.status.sync.revision then return true else return false end
     - name: orders-production
       eventName: orders-production
       eventSourceName: promotion-listener
       filters:
         script: |-
           if event.body.status.sync.revision ~= event.oldBody.status.sync.revision then return true else return false end
-     
+
 
   triggers:
     - template:
         name: post-promotion-wf
         conditions: >-
-          loans-qa || loans-staging || loans-production || accounts-qa || accounts-staging || accounts-production || membership-qa || membership-staging || membership-production || orders-qa || orders-staging || orders-production
+          loans-qa || loans-production || accounts-qa || accounts-production || membership-qa || membership-production || orders-qa || orders-production
         argoWorkflow:
           operation: submit
           source:
@@ -148,29 +124,6 @@ spec:
               dest: spec.arguments.parameters.0.value
             - src:
                 dependencyName: loans-qa
-                dataKey: body.metadata.namespace
-              dest: spec.arguments.parameters.1.value
-
-            # loans-staging
-
-            - src:
-                dependencyName: loans-staging
-                dataKey: body.status.sync.revision
-              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-revision'
-            - src:
-                dependencyName: loans-staging
-                dataKey: body.metadata.name
-              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-name'
-            - src:
-                dependencyName: loans-staging
-                dataKey: body.metadata.namespace
-              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-namespace'
-            - src:
-                dependencyName: loans-staging
-                dataKey: body.metadata.name
-              dest: spec.arguments.parameters.0.value
-            - src:
-                dependencyName: loans-staging
                 dataKey: body.metadata.namespace
               dest: spec.arguments.parameters.1.value
 
@@ -224,29 +177,6 @@ spec:
                 dataKey: body.metadata.namespace
               dest: spec.arguments.parameters.1.value
 
-            # accounts-staging
-
-            - src:
-                dependencyName: accounts-staging
-                dataKey: body.status.sync.revision
-              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-revision'
-            - src:
-                dependencyName: accounts-staging
-                dataKey: body.metadata.name
-              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-name'
-            - src:
-                dependencyName: accounts-staging
-                dataKey: body.metadata.namespace
-              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-namespace'
-            - src:
-                dependencyName: accounts-staging
-                dataKey: body.metadata.name
-              dest: spec.arguments.parameters.0.value
-            - src:
-                dependencyName: accounts-staging
-                dataKey: body.metadata.namespace
-              dest: spec.arguments.parameters.1.value
-
             # accounts-production
 
             - src:
@@ -297,29 +227,6 @@ spec:
                 dataKey: body.metadata.namespace
               dest: spec.arguments.parameters.1.value
 
-            # membership-staging
-
-            - src:
-                dependencyName: membership-staging
-                dataKey: body.status.sync.revision
-              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-revision'
-            - src:
-                dependencyName: membership-staging
-                dataKey: body.metadata.name
-              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-name'
-            - src:
-                dependencyName: membership-staging
-                dataKey: body.metadata.namespace
-              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-namespace'
-            - src:
-                dependencyName: membership-staging
-                dataKey: body.metadata.name
-              dest: spec.arguments.parameters.0.value
-            - src:
-                dependencyName: membership-staging
-                dataKey: body.metadata.namespace
-              dest: spec.arguments.parameters.1.value
-
             # membership-production
 
             - src:
@@ -367,29 +274,6 @@ spec:
               dest: spec.arguments.parameters.0.value
             - src:
                 dependencyName: orders-qa
-                dataKey: body.metadata.namespace
-              dest: spec.arguments.parameters.1.value
-
-            # orders-staging
-
-            - src:
-                dependencyName: orders-staging
-                dataKey: body.status.sync.revision
-              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-revision'
-            - src:
-                dependencyName: orders-staging
-                dataKey: body.metadata.name
-              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-name'
-            - src:
-                dependencyName: orders-staging
-                dataKey: body.metadata.namespace
-              dest: 'metadata.annotations.promotion-target\.codefresh\.io\/argo-app-namespace'
-            - src:
-                dependencyName: orders-staging
-                dataKey: body.metadata.name
-              dest: spec.arguments.parameters.0.value
-            - src:
-                dependencyName: orders-staging
                 dataKey: body.metadata.namespace
               dest: spec.arguments.parameters.1.value
 

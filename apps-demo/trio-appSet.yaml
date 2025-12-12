@@ -12,10 +12,6 @@ spec:
           - cluster: demo-qa
             short: qa
             ns: qa
-          - cluster: demo-staging
-            short: staging
-            ns: staging
-
   template:
     metadata:
       name: trioapp-{{short}}
