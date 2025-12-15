@@ -1,9 +1,0 @@
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-namespace: staging
-resources:
-  - ../base
-  - rollout.yaml
-images:
-  - name: docker.io/aperturesci/rollouts-demo
-    newTag: 1a2e220

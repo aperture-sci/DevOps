@@ -1,9 +1,0 @@
-apiVersion: v2
-appVersion: 1.35.6
-description: Codefresh gitops runtime umbrella chart
-name: loans-base
-version: 1.0.0
-dependencies:
-  - name: loans
-    repository: oci://quay.io/codefresh/promotions-demo/charts
-    version: 1.0.0
