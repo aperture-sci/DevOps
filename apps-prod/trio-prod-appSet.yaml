@@ -12,9 +12,6 @@ spec:
           - cluster: prod-east
             short: prod-east
             ns: prod
-          - cluster: prod-asia
-            short: prod-asia
-            ns: prod
           - cluster: prod-eu
             short: prod-eu
             ns: prod
