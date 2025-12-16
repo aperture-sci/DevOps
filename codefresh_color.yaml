@@ -6,7 +6,6 @@ stages:
   - dev
   - qa
   - europe
-  - asia
   - us
 
 hooks:
@@ -250,36 +249,6 @@ steps:
   #     IMAGE_TAG: "1.5.0"
   #     RUNTIME: high
   #     APPLICATION: color-eu
-
-  #
-  # Asia
-  #
-  approve_asia:
-    stage: asia
-    type: pending-approval
-    timeout:
-      timeUnit: minutes
-      duration: 5
-      finalState: approved
-
-  update_asia:
-    title: Update asia env
-    type: codefresh-run:1.5.3
-    stage: asia
-    arguments:
-      PIPELINE_ID: DevOps/color_update_manifest
-      VARIABLE:
-        - ENV=asia
-        - TAG=${{CF_SHORT_REVISION}}
-
-  # sync_asia:
-  #   title: Sync ArgoCD app in Asia and wait
-  #   type: gitops-argocd-sync:1.5.0
-  #   stage: asia
-  #   arguments:
-  #     IMAGE_TAG: "1.5.0"
-  #     RUNTIME: high
-  #     APPLICATION: color-asia
 
   #
   # Prod US West and East
