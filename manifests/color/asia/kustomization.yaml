@@ -1,8 +1,0 @@
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-resources:
-  - ../base
-  - deployment.yaml
-images:
-  - name: docker.io/aperturesci/rollouts-demo
-    newTag: 92efeb1
