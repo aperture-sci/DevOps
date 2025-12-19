@@ -12,11 +12,6 @@ spec:
           - cluster: prod-east
             short: prod-east
             ns: prod
-          - cluster: prod-eu
-            short: prod-eu
-            ns: prod
-
-
   template:
     metadata:
       name: trioapp-{{short}}
