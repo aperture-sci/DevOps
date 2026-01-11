@@ -8,4 +8,4 @@ resources:
   - ingress-preview.yaml
 images:
   - name: docker.io/aperturesci/rollouts-demo
-    newTag: 7b5f0e4
+    newTag: cc60897
