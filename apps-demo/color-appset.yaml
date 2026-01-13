@@ -23,6 +23,8 @@ spec:
         argocd.argoproj.io/manifest-generate-paths: '.'
         codefresh.io/product: color
         codefresh.io/app-group: color
+        argo.octopus.com/project: "color"
+        argo.octopus.com/environment: "{{metadata.labels.shortname}}"
       # labels:
       #   codefresh.io/product: color
     spec:
