@@ -9,7 +9,7 @@ metadata:
     ingress.kubernetes.io/app-root: /
     nginx.ingress.kubernetes.io/backend-protocol: HTTP
 spec:
-  ingressClassName: nginx-public
+  ingressClassName: haproxy-ingress-public
   rules:
     - host: grafana-low.cs.sandbox.codefresh.io
       http:

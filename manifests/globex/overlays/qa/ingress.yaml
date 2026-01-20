@@ -3,13 +3,13 @@ kind: Ingress
 metadata:
   name: globex-prod
   annotations:
-    annotations.kubernetes.io/ingress.class: nginx-public
+    annotations.kubernetes.io/ingress.class: haproxy-ingress-public
     ingress.kubernetes.io/app-root: /
     link.argocd.argoproj.io/external-link: https://globex-prod.cs.sandbox.codefresh.io/
 
 
 spec:
-  ingressClassName: nginx-public
+  ingressClassName: haproxy-ingress-public
   rules:
     - host: globex-qa.cs.sandbox.codefresh.io
       http:

@@ -8,7 +8,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
     link.argocd.argoproj.io/external-link: https://color-dev.cs.sandbox.codefresh.io/color/
 spec:
-  ingressClassName: nginx-public
+  ingressClassName: haproxy-ingress-public
   rules:
     - host: color-dev.cs.sandbox.codefresh.io
       http:

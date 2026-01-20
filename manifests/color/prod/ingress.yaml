@@ -9,7 +9,7 @@ metadata:
     link.argocd.argoproj.io/external-link: https://color-prod.cs.sandbox.codefresh.io/color/
 
 spec:
-  ingressClassName: nginx-public
+  ingressClassName: haproxy-ingress-public
   rules:
     - host: color-prod.cs.sandbox.codefresh.io
       http:

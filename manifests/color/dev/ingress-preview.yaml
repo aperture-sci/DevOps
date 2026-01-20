@@ -9,7 +9,7 @@ metadata:
     link.argocd.argoproj.io/external-link: https://color-dev.cs.sandbox.codefresh.io/color-preview/
 
 spec:
-  ingressClassName: nginx-public
+  ingressClassName: haproxy-ingress-public
   rules:
     - host: color-dev.cs.sandbox.codefresh.io
       http:
