@@ -13,7 +13,7 @@ hooks:
         arguments:
           SLACK_TOKEN: ${{LR_SLACK_TOKEN}}
           SLACK_CHANNEL: ${{SLACK_CHANNEL}}
-          SLACK_MESSAGE: "CI build for ${{BUILDNAME}} failed. See ${{CF_BUILD_URL}}"
+          SLACK_MESSAGE: "CI build (${{CF_PIPELINE_NAME}}) for ${{BUILDNAME}} failed. See ${{CF_BUILD_URL}}"
 
 steps:
   clone:
