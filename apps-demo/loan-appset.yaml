@@ -30,6 +30,9 @@ spec:
         argocd.argoproj.io/manifest-generate-paths: '.'
         codefresh.io/product: '{{.path.basename}}'
         codefresh.io/app-group: loan
+        argo.octopus.com/project: '{{.path.basename}}'
+        argo.octopus.com/environment: "{{metadata.labels.shortname}}"
+
       labels:
         codefresh.io/product: '{{.path.basename}}'
         application: loan
