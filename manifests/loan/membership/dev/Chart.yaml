@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 1.70.13
+appVersion: 1.70.14
 description: Codefresh gitops runtime umbrella chart
 name: membership-base
 version: 1.0.0
