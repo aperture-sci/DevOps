@@ -38,7 +38,7 @@ ctrlr:
           - setWeight: 100
 flask-ui:
   image:
-    tag: main-0396ef3
+    tag: main-a1b2583
     repository: docker.io/aperturesci/flask-ui
   replicaCount: 2
   rollout:
