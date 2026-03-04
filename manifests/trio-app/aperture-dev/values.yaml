@@ -1,6 +1,6 @@
 buslog:
   image:
-    tag: main-04adb25
+    tag: main-fd5682d
     repository: docker.io/aperturesci/buslog
   replicaCount: 2
   rollout:
