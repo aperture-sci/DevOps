@@ -35,10 +35,10 @@ spec:
         name: '{{name}}'
         namespace: '{{metadata.labels.shortname}}'
       syncPolicy:
-        # automated:
-        #   enabled: false
-        #   prune: true
-        #   selfHeal: true
+        automated:
+          enabled: false
+          prune: true
+          selfHeal: true
         syncOptions:
           - PrunePropagationPolicy=foreground
           - Replace=false
