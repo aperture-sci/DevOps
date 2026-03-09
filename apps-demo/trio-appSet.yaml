@@ -22,6 +22,9 @@ spec:
         argocd.argoproj.io/manifest-generate-paths: '.'
         codefresh.io/product: trio
         codefresh.io/app-group: trio
+        argo.octopus.com/project: "trio"
+        argo.octopus.com/environment: "{{short}}"
+
     spec:
       destination:
         name: '{{cluster}}'
