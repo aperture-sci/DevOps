@@ -1,0 +1,15 @@
+apiVersion: codefresh.io/v1beta1
+kind: PromotionPolicy
+metadata:
+  name: cf-101
+spec:
+  priority: 5
+  selector:
+    product:
+      names:
+        - cf-101
+    targetEnvironment:
+      types:
+        - PROD
+  policy:
+    postAction: smoketests

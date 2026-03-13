@@ -1,0 +1,21 @@
+apiVersion: codefresh.io/v1beta1
+kind: PromotionFlow
+metadata:
+  name: snow-integration
+  annotations:
+    description: FLow for the blog article
+spec:
+  triggerEnvironment: qa
+  promotionTimeoutLimit: 120
+  steps:
+    - environment: prod-us
+      dependsOn:
+        - qa
+      policy:
+        action: commit
+        preAction: slack-notification
+        postAction: smoketests
+      hooks:
+        onStart: service-now-open-normal-hook
+        onSuccess: service-now-close-success
+        onFail: service-now-close-failure

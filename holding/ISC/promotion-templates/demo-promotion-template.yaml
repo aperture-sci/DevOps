@@ -1,0 +1,17 @@
+apiVersion: codefresh.io/v1beta1
+kind: PromotionTemplate
+metadata:
+  name: promotion-template-example
+spec:
+  applicationSourceSelector:
+    matchExpressions:
+      - key: codefresh.io/product
+        operator: Exists
+  priority: 0
+  versionSource:
+    file: version.yaml
+    jsonPath: $.version
+  promotion:
+    values.yaml:
+      jsonPaths:
+        - $..image

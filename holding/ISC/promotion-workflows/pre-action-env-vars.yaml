@@ -1,0 +1,66 @@
+# DO NOT REMOVE the following attributes:
+# annotations.codefresh.io/workflow-origin (identifies type of Workflow Template as Promotion Workflow)
+# annotations.version (identifies version of Promotion Workflow used)
+# annotations.description (identifies intended use of the Promotion Workflow)
+# DO NOT REMOVE the following attributes:
+# annotations.codefresh.io/workflow-origin (identifies type of Workflow Template as Promotion Workflow)
+# annotations.version (identifies version of Promotion Workflow used)
+# annotations.description (identifies intended use of the Promotion Workflow)
+# List of parameters avilable for Post Action Workflows. See full list of parameters in the documentation: https://codefresh.io/docs/gitops/promotions/promotion-hooks/#default-arguments-in-promotion-workflows-with-hooks
+
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: pre-action-env-vars
+  annotations:
+    version: 0.0.1
+    codefresh.io/workflow-origin: promotion
+    description: ""
+spec:
+  arguments:
+    parameters:
+      - name: APP_NAMESPACE
+      - name: APP_NAME
+      - name: REPO_URL
+      - name: BRANCH
+      - name: PATH
+      - name: COMMIT_SHA
+        value: ''
+      - name: COMMIT_MESSAGE
+        value: ''
+      - name: COMMIT_AUTHOR
+        value: ''
+      - name: COMMIT_DATE
+        value: ''
+  serviceAccountName: cf-default-promotion-workflows-sa
+  entrypoint: echo
+  templates:
+    - name: echo
+      script:
+        image: alpine
+        command:
+          - sh
+        source: >
+          echo "syncing
+          {{workflow.parameters.APP_NAMESPACE}}/{{workflow.parameters.APP_NAME}}
+          from {{workflow.parameters.REPO_URL}} branch
+          {{workflow.parameters.BRANCH}} path {{workflow.parameters.PATH}}"
+
+          if [[ -n "{{workflow.parameters.COMMIT_SHA}}" ]]; then
+            echo "commit SHA: {{workflow.parameters.COMMIT_SHA}}"
+          fi
+
+
+          if [[ -n "{{workflow.parameters.COMMIT_AUTHOR}}" ]]; then
+            echo "commit author: {{workflow.parameters.COMMIT_AUTHOR}}"
+          fi
+
+
+          if [[ -n "{{workflow.parameters.COMMIT_MESSAGE}}" ]]; then
+            echo "commit message: {{workflow.parameters.COMMIT_MESSAGE}}"
+          fi
+
+
+          if [[ -n "{{workflow.parameters.COMMIT_DATE}}" ]]; then
+            echo "commit date: {{workflow.parameters.COMMIT_DATE}}"
+          fi

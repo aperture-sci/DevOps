@@ -1,0 +1,70 @@
+# This Workflow Template is used to simulate smoke test run during a promotion
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: smoketests-od
+  annotations:
+    version: 0.0.1
+    codefresh.io/workflow-origin: promotion
+    description: smoke test simulation
+spec:
+  serviceAccountName: promotion-template
+  arguments:
+    parameters:
+    - name: THRESHOLD
+      value: 80
+    - name: NB_TESTS
+      value: 100
+    - name: TEST_RATE
+      value: 50
+  entrypoint: smoke
+  templates:
+    - name: smoke
+      inputs:
+        parameters:
+          - name: NB_TESTS
+            value: "{{ workflow.parameters.NB_TESTS}}"
+          - name: THRESHOLD
+            value: "{{ workflow.parameters.THRESHOLD}}"
+          - name: TEST_RATE
+            value: "{{ workflow.parameters.TEST_RATE}}"
+      script:
+        image: bash:5.2.26
+        command: ["/usr/local/bin/bash"]
+        source: |
+          num_tests={{inputs.parameters.NB_TESTS}}
+          error=0
+          success=0
+          test_rate={{inputs.parameters.TEST_RATE}}
+          suite_threshold={{inputs.parameters.THRESHOLD}}
+
+          echo "Running Smoking Tests"
+          echo "Number of Tests: $num_tests"
+          echo "Suite threshold: $suite_threshold"
+          echo "Individual test rate: $test_rate"
+
+          # Generate random questions and answers
+          for ((i=1; i<=$num_tests; i++)); do
+              rand_num=$((RANDOM % 100 + 1))
+              if  ((rand_num < test_rate ))
+              then
+                echo "Test $i: FAILED ($rand_num)"
+                ((error++))
+              else
+                echo "Test $i: PASSED ($rand_num)"
+                ((success++))
+              fi
+          #    sleep 1
+          done
+          success_rate=$((success * 100 / num_tests))
+
+          echo ""
+          echo "Success Rate: $success_rate"
+          if ((success_rate < suite_threshold))
+          then
+            echo "Test Suite: FAILED"
+            exit 1
+          else
+            echo "Test Suite: PASSED"
+            exit 0
+          fi

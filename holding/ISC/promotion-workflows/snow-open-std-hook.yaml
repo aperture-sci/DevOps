@@ -1,0 +1,96 @@
+# DO NOT REMOVE the following attributes:
+# annotations.codefresh.io/workflow-origin (identifies type of Workflow Template as Promotion Workflow)
+# annotations.version (identifies version of Promotion Workflow used)
+# annotations.description (identifies intended use of the Promotion Workflow)
+
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: service-now-open-standard-hook
+  annotations:
+    codefresh.io/workflow-origin: promotion
+    codefresh.io/promotion-stage: pre-action
+    version: 0.0.1
+    description: 'promotion workflow template'
+spec:
+  serviceAccountName: cf-default-promotion-workflows-sa
+  arguments:
+    parameters:
+    - name: PRODUCT_NAME
+    # - name: RELEASE_ID
+    # - name: PROMOTION_FLOW_NAME
+    # - name: RELEASE_URL
+    # - name: COMMIT_SHA
+    # - name: VERSION
+  entrypoint: sn-open-cr-std-hook
+  templates:
+  - name: sn-open-cr-std-hook
+    outputs:
+      parameters:
+      - name: CR_SYSID
+        valueFrom:
+          expression: "tasks['create-sn-cr'].outputs.parameters['CR_SYSID']"
+
+    dag:
+      tasks:
+        - name: create-sn-cr
+          templateRef:
+            name: argo-hub.servicenow.1.3.1
+            template: createcr
+          arguments:
+            parameters:
+            - name: SN_IMAGE_NAME
+              value: 'docker.io/lrochette/argo-hub-servicenow-integration'
+            - name: SN_IMAGE_TAG
+              value: "1.4.0"
+            - name: TOKEN
+              value: cf-api-key-aperture
+            - name: CF_RUNTIME
+              value: demo
+            - name: SN_INSTANCE
+              value: 'https://dev286098.service-now.com'
+              # value: 'https://dev204449.service-now.com'
+            - name: SN_AUTH
+              value: "sn-auth"
+            - name: LOG_LEVEL
+              value: "debug"
+            - name: STD_CR_TEMPLATE
+              value: "Reboot Windows Server"
+            - name: CR_DATA
+              value: >-
+                {"short_description": "Product {{ workflow.parameters.PRODUCT_NAME }} deployment with pre-approved template",
+                 "justification": "My app is awesome! Please deploy ASAP",
+                 "assignment_group": "679434f053231300e321ddeeff7b12d8"
+                }
+
+        - name: cf-export
+          depends: create-sn-cr
+          template: set-promotion-context
+          arguments:
+            parameters:
+            - name: CR_SYSID
+              value: '{{ tasks.create-sn-cr.outputs.parameters.CR_SYSID}}'
+            - name: CR_NUMBER
+              value: '{{ tasks.create-sn-cr.outputs.parameters.CR_NUMBER}}'
+
+  - name: set-promotion-context
+    inputs:
+      parameters:
+        - name: CR_NUMBER
+        - name: CR_SYSID
+    script:
+      image: alpine
+      command:
+        - sh
+      source: |
+          export CR_NUMBER="{{inputs.parameters.CR_NUMBER}}"
+          export CR_SYSID="{{inputs.parameters.CR_SYSID}}"
+          echo "{\"CR_NUMBER\": \"${CR_NUMBER}\"," > /tmp/promotion-context.txt
+          echo "\"CR_SYSID\": \"${CR_SYSID}\"}" >> /tmp/promotion-context.txt
+
+    outputs:
+      parameters:
+        - name: PROMOTION_CONTEXT
+          globalName: PROMOTION_CONTEXT
+          valueFrom:
+            path: /tmp/promotion-context.txt

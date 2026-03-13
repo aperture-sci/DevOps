@@ -1,0 +1,15 @@
+apiVersion: codefresh.io/v1beta1
+kind: PromotionFlow
+metadata:
+  name: sprint-review
+  annotations:
+    description: ""
+spec:
+  triggerEnvironment: dev
+  steps:
+    - environment: prod-us
+      dependsOn:
+        - dev
+    - environment: qa
+      dependsOn:
+        - prod-us

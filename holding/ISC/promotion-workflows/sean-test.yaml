@@ -1,0 +1,85 @@
+# DO NOT REMOVE the following attributes:
+# annotations.codefresh.io/workflow-origin (identifies type of Workflow Template as Promotion Workflow)
+# annotations.version (identifies version of Promotion Workflow used)
+# annotations.description (identifies intended use of the Promotion Workflow)
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: sean-test
+  annotations:
+    codefresh.io/workflow-origin: promotion
+    version: 0.0.1
+    description: promotion workflow template
+spec:
+  arguments:
+    parameters:
+        - name: APP_NAME
+        - name: RUNTIME
+  serviceAccountName: cf-default-promotion-workflows-sa
+  entrypoint: vault-auth
+  volumes:
+    - configMap:
+        items:
+          - key: vault-agent-config.hcl
+            path: vault-agent-config.hcl
+        name: vault-agent-config
+      name: config
+    - emptyDir: {}
+      name: shared-data
+  templates:
+    - name: vault-auth
+      steps:
+        - - name: get-slack-data
+            template: call-vault
+        - - name: post-slack-message
+            template: post-message
+            arguments:
+              parameters:
+                - name: SLACK_CHANNEL
+                  value: >-
+                    {{=jsonpath(steps['get-slack-data'].outputs.parameters['slack-data'],
+                    '$.SLACK_CHANNEL')}}
+                - name: SLACK_TOKEN 
+                  value: "{{=jsonpath(steps['get-slack-data'].outputs.parameters['slack-data'], '$.SLACK_TOKEN')}}"
+                - name: SLACK_MESSAGE
+                  value: "{{workflow.parameters.APP_NAME}} promotion has started on runtime {{workflow.parameters.RUNTIME}}"
+
+    - name: call-vault
+      container:
+        command:
+          - vault
+        args:
+          - agent
+          - '-config=/etc/vault/vault-agent-config.hcl'
+          - '-log-level=debug'
+        env:
+          - name: VAULT_ADDR
+            value: http://clusterpi-1:8200
+        image: hashicorp/vault
+        name: vault-agent
+        volumeMounts:
+          - mountPath: /etc/vault
+            name: config
+          - mountPath: /etc/secrets
+            name: shared-data
+      outputs:
+        parameters:
+          - name: slack-data
+            valueFrom:
+              path: /etc/secrets/slack.json
+
+    - name: post-message
+      inputs:
+        parameters:
+          - name: SLACK_CHANNEL
+          - name: SLACK_TOKEN
+          - name: SLACK_MESSAGE
+      script:
+        image: curlimages/curl
+        command:
+          - sh
+        source: |
+          curl -vvv -X POST -H "Authorization: Bearer {{inputs.parameters.SLACK_TOKEN}}" \
+          -H "Content-type: application/json" \
+          --url https://slack.com/api/chat.postMessage \
+          --data "{ 'token': '{{inputs.parameters.SLACK_TOKEN}}', 'channel': '{{inputs.parameters.SLACK_CHANNEL}}', 'text' : 'Workflow beginning:star:', 'attachments': [{'color': '#ADD8E6','blocks': [ { 'type': 'section', 'fields': [{ 'type': 'mrkdwn', 'text': '{{inputs.parameters.SLACK_MESSAGE}}'}] } ] }]  }" 

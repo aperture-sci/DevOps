@@ -1,0 +1,23 @@
+apiVersion: codefresh.io/v1beta1
+kind: PromotionFlow
+metadata:
+  name: parallel-env-promotion
+  annotations:
+    description: Parallel flow for cf-101
+spec:
+  triggerEnvironment: dev
+  steps:
+    - environment: qa
+      dependsOn:
+        - dev
+      policy:
+        action: commit
+        preAction: pre-action
+        postAction: post-action
+    - environment: prod-us
+      dependsOn:
+        - qa
+      policy:
+        preAction: smoketests
+        action: commit
+        postAction: post-action

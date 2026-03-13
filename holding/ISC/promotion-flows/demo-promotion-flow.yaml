@@ -1,0 +1,15 @@
+apiVersion: codefresh.io/v1beta1
+kind: PromotionFlow
+metadata:
+  name: demo-promotion-flow
+  annotations:
+    description: Flow to sequential promotion
+spec:
+  triggerEnvironment: dev
+  steps:
+    - environment: qa
+      dependsOn:
+        - dev
+    - environment: prod-us
+      dependsOn:
+        - qa

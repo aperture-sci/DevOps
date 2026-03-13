@@ -1,0 +1,68 @@
+# DO NOT REMOVE the following attributes:
+# annotations.codefresh.io/workflow-origin (identifies type of Workflow Template as Promotion Workflow)
+# annotations.version (identifies version of Promotion Workflow used)
+# annotations.description (identifies intended use of the Promotion Workflow)
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: slack-fail-sdlc-promotion-tests
+  annotations:
+    version: 0.0.1
+    codefresh.io/workflow-origin: promotion
+spec:
+  serviceAccountName: cf-default-promotion-workflows-sa
+  arguments:
+    parameters:
+      - name: RELEASE_URL
+      - name: PRODUCT_NAME
+      - name: COMMIT_SHA
+      - name: PROMOTION_FLOW_NAME
+      - name: RELEASE_ID
+      - name: FAILED_ENVIRONMENTS
+        value: '[]'
+      - name: ERROR_MESSAGE
+  entrypoint: send-message
+  templates:
+    - name: send-message
+      retryStrategy:
+        limit: "1"
+        retryPolicy: "Always"
+        backoff:
+          duration: "5s"
+      inputs:
+        parameters:
+          - name: MODE
+            value: "simple"
+          - name: SLACK_CHANNEL_ID
+            value: C08LCRV5C01
+          - name: SLACK_TEXT
+            value: |
+              🚨 *Promotion Failed!* 🚨  
+              *Product:* {{workflow.parameters.PRODUCT_NAME}}  
+              *Trigger Commit Sha:* {{workflow.parameters.COMMIT_SHA}}  
+              *Promotion Flow:* {{workflow.parameters.PROMOTION_FLOW_NAME}}  
+              *Release:* <{{workflow.parameters.RELEASE_URL}}|View Release>  
+              *Release ID:* {{workflow.parameters.RELEASE_ID}}  
+              *Failed Environments:* {{workflow.parameters.FAILED_ENVIRONMENTS}}
+              *Error Message:* {{workflow.parameters.ERROR_MESSAGE}}
+      container:
+        name: main
+        imagePullPolicy: Always
+        image: curlimages/curl:latest
+        command:
+          - sh
+          - -c
+          - |
+            # Prepare the message payload
+            MESSAGE="{\"channel\":\"{{inputs.parameters.SLACK_CHANNEL_ID}}\",\"text\":\"{{inputs.parameters.SLACK_TEXT}}\"}"
+            echo "Sending message to Slack: $MESSAGE"  # Debugging step to view the message payload
+            curl -X POST https://slack.com/api/chat.postMessage \
+              -H "Authorization: Bearer $SLACK_TOKEN" \
+              -H "Content-Type: application/json; charset=utf-8" \
+              --data "$MESSAGE"
+        env:
+          - name: SLACK_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: slack-token
+                key: slack_token

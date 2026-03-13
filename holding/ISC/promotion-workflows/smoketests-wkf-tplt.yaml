@@ -1,0 +1,82 @@
+# This Workflow Template is used to simulate smoke test run during a promotion
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: smoketests
+  annotations:
+    version: 0.0.1
+    codefresh.io/workflow-origin: promotion
+    description: smoke test simulation
+spec:
+  serviceAccountName: promotion-template
+  arguments:
+    parameters:
+    - name: APP_NAME
+  onExit: slack-alert
+  entrypoint: smoke
+  templates:
+    #
+    # Send message on slack when promotion fails
+    - name: slack-alert
+      dag:
+        tasks:
+        - name: send-message
+          templateRef:
+            name: argo-hub.slack.0.0.2
+            template: post-to-channel
+          when: "{{workflow.status}} != Succeeded"
+          arguments:
+            parameters:
+            - name: SLACK_CHANNEL
+              value: 'topic-codefresh-demo'
+            - name: SLACK_MESSAGE
+              value: 'Smoketest has failed for application {{ workflow.parameters.APP_NAME }}. Check https://g.codefresh.io/2.0/workflows/{{ workflow.name }}'
+            - name: SLACK_TOKEN
+              value: slack-token
+            - name: LOG_LEVEL
+              value: "info"
+
+    - name: smoke
+      inputs:
+        parameters:
+          - name: NB_TESTS
+            value: 100
+          - name: THRESHOLD
+            value: 80
+          - name: TEST_RATE
+            value: 50
+      script:
+        image: bash:5.2.26
+        command: ["/usr/local/bin/bash"]
+        source: |
+          num_tests={{inputs.parameters.NB_TESTS}}
+          error=0
+          success=0
+          test_rate={{inputs.parameters.TEST_RATE}}
+          suite_threshold={{inputs.parameters.THRESHOLD}}
+
+          # Generate random questions and answers
+          for ((i=1; i<=$num_tests; i++)); do
+              rand_num=$((RANDOM % 100 + 1))
+              if  ((rand_num < test_rate ))
+              then
+                echo "Test $i: FAILED ($rand_num)"
+                ((error++))
+              else
+                echo "Test $i: PASSED ($rand_num)"
+                ((success++))
+              fi
+          #    sleep 1
+          done
+          success_rate=$((success * 100 / num_tests))
+
+          echo ""
+          echo "Success Rate: $success_rate"
+          if ((success_rate < suite_threshold))
+          then
+            echo "Test Suite: FAILED"
+            exit 1
+          else
+            echo "Test Suite: PASSED"
+            exit 0
+          fi

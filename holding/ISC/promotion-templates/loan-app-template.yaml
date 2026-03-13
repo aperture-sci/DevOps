@@ -1,0 +1,19 @@
+apiVersion: codefresh.io/v1beta1
+kind: PromotionTemplate
+metadata:
+  name: loan-app-template
+spec:
+  applicationSourceSelector:
+    matchLabels:
+      application: loan
+  priority: 0
+  versionSource:
+    file: Chart.yaml
+    jsonPath: $.appVersion
+  promotion:
+    Chart.yaml:
+      jsonPaths:
+        - $.appVersion
+    values.yaml:
+      jsonPaths:
+        - $.loans.image.tag

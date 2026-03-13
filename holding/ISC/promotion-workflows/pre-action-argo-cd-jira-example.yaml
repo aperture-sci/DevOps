@@ -1,0 +1,105 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: pre-action-argo-cd-jira-example
+  annotations:
+    codefresh.io/workflow-origin: promotion
+    codefresh.io/promotion-stage: pre-action
+    version: 0.0.1
+    description: 'a demo jira-open-ticket wf. reads argo-cd app information, outputs (dummy) JIRA_ID value'
+spec:
+  serviceAccountName: pre-action-sa
+  entrypoint: dag
+  arguments:
+    parameters:
+    - name: APP_NAMESPACE
+    - name: APP_NAME
+    - name: REPO_URL
+    - name: BRANCH
+    - name: PATH
+  templates:
+  - name: dag
+    inputs:
+      parameters:
+      - name: APP_NAMESPACE
+      - name: APP_NAME
+      - name: REPO_URL
+      - name: BRANCH
+      - name: PATH
+    dag:
+      tasks:
+      - name: argocd-get
+        template: argocd-get-tmpl
+        arguments:
+          parameters:
+          - name: ARGOCD_SERVER
+            value: argo-cd-server:80 # or whatever service name you end up using
+          - name: APP_NAME
+            value: "{{ inputs.parameters.APP_NAME }}"
+          - name: TOKEN_SECRET
+            value: argocd-token
+          - name: TOKEN_SECRET_KEY
+            value: token
+
+      - name: jira-create-ticket
+        depends: "argocd-get"
+        template: jira-create-ticket-tmpl
+        arguments:
+          parameters:
+          - name: APP_MANIFEST
+            value: "{{ tasks['argocd-get'].outputs.parameters.APP_MANIFEST }}"
+
+  - name: argocd-get-tmpl
+    inputs:
+      parameters:
+      - name: ARGOCD_SERVER
+      - name: APP_NAME
+      - name: TOKEN_SECRET
+        default: argocd-token
+      - name: TOKEN_SECRET_KEY
+        default: token
+    outputs:
+      parameters:
+      - name: APP_MANIFEST
+        # globalName: APP_MANIFEST # optional - any global output will reach the post-action as well
+        valueFrom:
+          path: /tmp/result.json
+    script:
+      name: app-get
+      image: quay.io/codefreshplugins/argo-hub-workflows-argocd-versions-0.0.1-images-argocd-cli:main
+      env:
+      - name: APP_NAME
+        value: "{{ inputs.parameters.APP_NAME }}"
+      - name: ARGOCD_SERVER
+        value: "{{ inputs.parameters.ARGOCD_SERVER }}"
+      - name: ARGOCD_AUTH_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: "{{ inputs.parameters.TOKEN_SECRET }}"
+            key: "{{ inputs.parameters.TOKEN_SECRET_KEY }}"
+      - name: ARGOCD_OPTS
+        value: --grpc-web --plaintext
+      command:
+      - sh
+      source: |
+        argocd app get ${APP_NAME} --output json > /tmp/result.json
+
+  - name: jira-create-ticket-tmpl
+    inputs:
+      parameters:
+      - name: APP_MANIFEST
+    outputs:
+      parameters:
+      - name: JIRA_ID
+        globalName: JIRA_ID
+        valueFrom:
+          path: /tmp/JIRA_ID
+    script:
+      image: alpine:3.20
+      command:
+      - sh
+      source: |
+        echo "create jira ticket with data from the inputs.prameters.APP_MANIFEST"
+        sleep 5
+        RANDOM_HASH=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 13)
+        echo "JIRA-ticket-id-${RANDOM_HASH}" > /tmp/JIRA_ID

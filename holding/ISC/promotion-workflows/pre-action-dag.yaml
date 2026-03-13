@@ -1,0 +1,100 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: pre-action-dag
+  annotations:
+    codefresh.io/workflow-origin: promotion
+    codefresh.io/promotion-stage: pre-action
+    version: 0.0.1
+    description: 'a demo 4-step pre-action wf. 2nd step is "suspend"'
+spec:
+  serviceAccountName: pre-action-sa
+  entrypoint: dag
+  arguments:
+    parameters:
+    - name: APP_NAMESPACE
+    - name: APP_NAME
+    - name: REPO_URL
+    - name: BRANCH
+    - name: PATH
+  templates:
+  - name: dag
+    inputs:
+      parameters:
+      - name: APP_NAMESPACE
+      - name: APP_NAME
+      - name: REPO_URL
+      - name: BRANCH
+      - name: PATH
+    dag:
+      tasks:
+      - name: pre-suspend
+        template: pre-suspend-tmpl
+
+      - name: suspend
+        depends: "pre-suspend"
+        template: suspend-tmpl
+
+      - name: sleep
+        depends: "suspend"
+        template: sleep-tmpl
+
+      - name: echo
+        depends: "sleep"
+        template: echo-tmpl
+        arguments:
+          parameters:
+          - name: APP_NAMESPACE
+            value: "{{ inputs.parameters.APP_NAMESPACE }}"
+          - name: APP_NAME
+            value: "{{ inputs.parameters.APP_NAME }}"
+          - name: REPO_URL
+            value: "{{ inputs.parameters.REPO_URL }}"
+          - name: BRANCH
+            value: "{{ inputs.parameters.BRANCH }}"
+          - name: PATH
+            value: "{{ inputs.parameters.PATH }}"
+
+  - name: pre-suspend-tmpl
+    script:
+      image: alpine:3.20
+      command:
+      - sh
+      source: |
+        echo "pre suspend"
+
+  - name: suspend-tmpl
+    suspend: {}
+
+  - name: sleep-tmpl
+    script:
+      image: alpine:3.20
+      command:
+      - sh
+      source: |
+        echo "before"
+        sleep 5
+        echo "after"
+
+  - name: echo-tmpl
+    inputs:
+      parameters:
+      - name: APP_NAMESPACE
+      - name: APP_NAME
+      - name: REPO_URL
+      - name: BRANCH
+      - name: PATH
+    outputs:
+      parameters:
+      - name: RESULT
+        valueFrom:
+          path: /tmp/result
+        globalName: RESULT
+    script:
+      image: alpine:3.20
+      command:
+      - sh
+      source: |
+        echo "pre action for \"{{ inputs.parameters.APP_NAMESPACE }}/{{ inputs.parameters.APP_NAME }}\""
+        echo "repoUrl: {{ inputs.parameters.REPO_URL }}, branch: {{ inputs.parameters.BRANCH }}, path: {{ inputs.parameters.PATH }}"
+        echo "{\"PRE_ACTION_RESULT\": "\Success\""}" > /tmp/result

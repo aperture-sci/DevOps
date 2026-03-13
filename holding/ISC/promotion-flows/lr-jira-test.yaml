@@ -1,0 +1,16 @@
+apiVersion: codefresh.io/v1beta1
+kind: PromotionFlow
+metadata:
+  name: lr-jira-test
+  annotations:
+    description: For testing jira
+    version: 0.0.1
+spec:
+  triggerEnvironment: dev
+  steps:
+    - environment: qa
+      dependsOn:
+        - dev
+      policy:
+        action: commit
+        preAction: open-jira-hook

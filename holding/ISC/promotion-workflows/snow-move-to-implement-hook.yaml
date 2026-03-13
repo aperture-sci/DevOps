@@ -1,0 +1,71 @@
+# DO NOT REMOVE the following attributes:
+# annotations.codefresh.io/workflow-origin (identifies type of Workflow Template as Promotion Workflow)
+# annotations.version (identifies version of Promotion Workflow used)
+# annotations.description (identifies intended use of the Promotion Workflow)
+
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: service-now-move-to-implement
+  annotations:
+    codefresh.io/workflow-origin: promotion
+    codefresh.io/promotion-stage: pre-action
+    version: 0.0.1
+    description: 'promotion workflow template'
+spec:
+  serviceAccountName: cf-default-promotion-workflows-sa
+  arguments:
+    parameters:
+    - name: CR_SYSID
+  entrypoint: sn-move-along
+  templates:
+  - name: sn-move-along
+    dag:
+      tasks:
+        - name: sn-move-to-schedule
+          templateRef:
+            name: argo-hub.servicenow.1.3.1
+            template: updatecr
+          arguments:
+            parameters:
+            - name: SN_INSTANCE
+              value: 'https://dev286098.service-now.com'
+            - name: SN_AUTH
+              value: "sn-auth"
+            - name: CR_SYSID
+              value: '{{ workflow.parameters.CR_SYSID }}'
+            - name: CR_DATA
+              value: '{"state": "-2"}'
+
+        - name: sn-move-to-implement
+          depends: sn-move-to-schedule
+          templateRef:
+            name: argo-hub.servicenow.1.3.1
+            template: updatecr
+          arguments:
+            parameters:
+            - name: SN_INSTANCE
+              value: 'https://dev286098.service-now.com'
+            - name: SN_AUTH
+              value: "sn-auth"
+            - name: CR_SYSID
+              value: '{{ workflow.parameters.CR_SYSID }}'
+            - name: CR_DATA
+              value: '{"state": "-1"}'
+
+
+        - name: sn-move-to-review
+          depends: sn-move-to-implement
+          templateRef:
+            name: argo-hub.servicenow.1.3.1
+            template: updatecr
+          arguments:
+            parameters:
+            - name: SN_INSTANCE
+              value: 'https://dev286098.service-now.com'
+            - name: SN_AUTH
+              value: "sn-auth"
+            - name: CR_SYSID
+              value: '{{ workflow.parameters.CR_SYSID }}'
+            - name: CR_DATA
+              value: '{"state": "0"}'

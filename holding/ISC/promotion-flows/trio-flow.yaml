@@ -1,0 +1,29 @@
+apiVersion: codefresh.io/v1beta1
+kind: PromotionFlow
+metadata:
+  name: trio-flow
+  annotations:
+    version: 0.0.2
+    description: Flow to show parallel deployment
+spec:
+  triggerEnvironment: dev
+  steps:
+    - environment: qa
+      dependsOn:
+        - dev
+      policy:
+        preAction: pre-action
+        action: commit
+        postAction: smoketests
+    - environment: prod-us
+      dependsOn:
+        - qa
+      policy:
+        preAction: pre-action
+        postAction: post-action
+        action: commit
+  hooks:
+    onStart: pre-action-hook
+    onSuccess: post-action-hook
+    onFail: slack-fail-sdlc-promotion-tests
+  promotionTimeoutLimit: 120

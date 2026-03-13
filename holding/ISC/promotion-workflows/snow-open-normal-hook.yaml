@@ -1,0 +1,97 @@
+# DO NOT REMOVE the following attributes:
+# annotations.codefresh.io/workflow-origin (identifies type of Workflow Template as Promotion Workflow)
+# annotations.version (identifies version of Promotion Workflow used)
+# annotations.description (identifies intended use of the Promotion Workflow)
+
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: service-now-open-normal-hook
+  annotations:
+    codefresh.io/workflow-origin: promotion
+    codefresh.io/promotion-stage: pre-action
+    version: 0.0.1
+    description: 'promotion workflow template'
+spec:
+  serviceAccountName: cf-default-promotion-workflows-sa
+  arguments:
+    parameters:
+    # all the following are
+    - name: PRODUCT_NAME
+    - name: PROMOTION_FLOW_NAME
+  entrypoint: sn-open-cr-hook
+  templates:
+  - name: sn-open-cr-hook
+    outputs:
+      parameters:
+      - name: CR_SYSID
+        valueFrom:
+          expression: "tasks['create-sn-cr'].outputs.parameters['CR_SYSID']"
+
+    dag:
+      tasks:
+        - name: create-sn-cr
+          templateRef:
+            name: argo-hub.servicenow.1.4.0
+            template: createcr
+          arguments:
+            parameters:
+            - name: TOKEN
+              value: cf-api-key-aperture
+            - name: CF_RUNTIME
+              value: demo
+            - name: SN_INSTANCE
+              value: 'https://dev286098.service-now.com'
+              # value: 'https://dev204449.service-now.com'
+            - name: SN_AUTH
+              value: "sn-auth"
+            - name: LOG_LEVEL
+              value: "debug"
+            - name: STD_CR_TEMPLATE
+              value: ""
+            - name: CR_DATA
+              value: >-
+                {"short_description": "Product {{ workflow.parameters.PRODUCT_NAME }} deployment",
+                 "description": "We are using  the {{ workflow.parameters.PROMOTION_FLOW_NAME }} flow. See {{ workflow.parameters.RELEASE_URL }} for details",
+                 "justification": "My app is awesome! Please deploy ASAP",
+                 "cmdb_ci":"tomcat", "assignment_group":"a715cd759f2002002920bde8132e7018"
+                }
+
+        - name: wait
+          template: approve
+          depends: create-sn-cr
+        - name: cf-export
+          depends: create-sn-cr
+          template: set-promotion-context
+          arguments:
+            parameters:
+            - name: CR_SYSID
+              value: '{{ tasks.create-sn-cr.outputs.parameters.CR_SYSID}}'
+            - name: CR_NUMBER
+              value: '{{ tasks.create-sn-cr.outputs.parameters.CR_NUMBER}}'
+
+  # Additional templates
+  - name: approve
+    suspend: {}
+      # duration: "72h"
+  - name: set-promotion-context
+    inputs:
+      parameters:
+        - name: CR_NUMBER
+        - name: CR_SYSID
+    script:
+      image: alpine
+      command:
+        - sh
+      source: |
+          export CR_NUMBER="{{inputs.parameters.CR_NUMBER}}"
+          export CR_SYSID="{{inputs.parameters.CR_SYSID}}"
+          echo "{\"CR_NUMBER\": \"${CR_NUMBER}\"," > /tmp/promotion-context.txt
+          echo "\"CR_SYSID\": \"${CR_SYSID}\"}" >> /tmp/promotion-context.txt
+
+    outputs:
+      parameters:
+        - name: PROMOTION_CONTEXT
+          globalName: PROMOTION_CONTEXT
+          valueFrom:
+            path: /tmp/promotion-context.txt

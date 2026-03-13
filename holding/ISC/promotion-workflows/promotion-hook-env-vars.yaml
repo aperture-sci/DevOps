@@ -1,0 +1,40 @@
+# DO NOT REMOVE the following attributes:
+# annotations.codefresh.io/workflow-origin (identifies type of Workflow Template as Promotion Workflow)
+# annotations.version (identifies version of Promotion Workflow used)
+# annotations.description (identifies intended use of the Promotion Workflow)
+# List of parameters avilable for Release OnStart and Environment OnStart Hooks. See full list of parameters in the documentation: https://codefresh.io/docs/gitops/promotions/promotion-hooks/#default-arguments-in-promotion-workflows-with-hooks
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: promotion-hook-env-vars
+  annotations:
+    codefresh.io/workflow-origin: promotion
+    version: 0.0.1
+    description: Prints the env vars available in a Promotion hook
+spec:
+  arguments:
+    parameters:
+      - name: ENVIRONMENT_NAME
+      - name: RELEASE_ID
+      - name: RELEASE_URL
+      - name: COMMIT_SHA
+      - name: PROMOTION_FLOW_NAME
+      - name: PRODUCT_NAME
+  serviceAccountName: cf-default-promotion-workflows-sa
+  entrypoint: echo
+  templates:
+    # Send-message template
+    - name: echo
+      script:
+        image: alpine
+        command:
+          - sh
+        source: |
+          echo "Before updating an Environment for an Infra Component. Using Promotion Hooks
+            ENVIRONMENT_NAME: {{workflow.parameters.ENVIRONMENT_NAME}}
+            RELEASE_ID: {{workflow.parameters.RELEASE_ID}}
+            RELEASE_URL: {{workflow.parameters.RELEASE_URL}}
+            COMMIT_SHA: {{workflow.parameters.COMMIT_SHA}}
+            PROMOTION_FLOW_NAME: {{workflow.parameters.PROMOTION_FLOW_NAME}}
+            PRODUCT_NAME: {{workflow.parameters.PRODUCT_NAME}}
+          "

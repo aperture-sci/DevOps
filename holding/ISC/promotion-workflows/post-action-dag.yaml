@@ -1,0 +1,132 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: post-action-dag
+  annotations:
+    codefresh.io/workflow-origin: promotion
+    codefresh.io/promotion-stage: post-action
+    version: 0.0.1
+    description: 'a demo 4-step post-action wf. 2nd step is "suspend"'
+spec:
+  serviceAccountName: post-action-sa
+  entrypoint: dag
+  arguments:
+    parameters:
+    - name: APP_NAMESPACE
+    - name: APP_NAME
+    - name: REPO_URL
+    - name: BRANCH
+    - name: PATH
+    - name: COMMIT_SHA
+      value: ""
+    - name: COMMIT_MESSAGE
+      value: ""
+    - name: COMMIT_AUTHOR
+      value: ""
+    - name: COMMIT_DATE
+      value: ""
+  templates:
+  - name: dag
+    inputs:
+      parameters:
+      - name: APP_NAMESPACE
+      - name: APP_NAME
+      - name: REPO_URL
+      - name: BRANCH
+      - name: PATH
+      - name: COMMIT_SHA
+      - name: COMMIT_MESSAGE
+      - name: COMMIT_AUTHOR
+      - name: COMMIT_DATE
+    dag:
+      tasks:
+      - name: pre-suspend
+        template: pre-suspend-tmpl
+
+      - name: suspend
+        depends: "pre-suspend"
+        template: suspend-tmpl
+
+      - name: sleep
+        depends: "suspend"
+        template: sleep-tmpl
+
+      - name: echo
+        depends: "sleep"
+        template: echo-tmpl
+        arguments:
+          parameters:
+          - name: APP_NAMESPACE
+            value: "{{ inputs.parameters.APP_NAMESPACE }}"
+          - name: APP_NAME
+            value: "{{ inputs.parameters.APP_NAME }}"
+          - name: REPO_URL
+            value: "{{ inputs.parameters.REPO_URL }}"
+          - name: BRANCH
+            value: "{{ inputs.parameters.BRANCH }}"
+          - name: PATH
+            value: "{{ inputs.parameters.PATH }}"
+          - name: COMMIT_SHA
+            value: "{{ inputs.parameters.COMMIT_SHA }}"
+          - name: COMMIT_MESSAGE
+            value: "{{ inputs.parameters.COMMIT_MESSAGE }}"
+          - name: COMMIT_AUTHOR
+            value: "{{ inputs.parameters.COMMIT_AUTHOR }}"
+          - name: COMMIT_DATE
+            value: "{{ inputs.parameters.COMMIT_DATE }}"
+
+  - name: pre-suspend-tmpl
+    script:
+      image: alpine:3.20
+      command:
+      - sh
+      source: |
+        echo "pre suspend"
+
+  - name: suspend-tmpl
+    suspend: {}
+
+  - name: sleep-tmpl
+    script:
+      image: alpine:3.20
+      command:
+      - sh
+      source: |
+        echo "before"
+        sleep 5
+        echo "after"
+
+  - name: echo-tmpl
+    inputs:
+      parameters:
+      - name: APP_NAMESPACE
+      - name: APP_NAME
+      - name: REPO_URL
+      - name: BRANCH
+      - name: PATH
+      - name: COMMIT_SHA
+      - name: COMMIT_MESSAGE
+      - name: COMMIT_AUTHOR
+      - name: COMMIT_DATE
+    outputs:
+      parameters:
+      - name: RESULT
+        valueFrom:
+          path: /tmp/result
+        globalName: RESULT
+    script:
+      image: alpine:3.20
+      command:
+      - sh
+      source: |
+        converted_date=$(date -d "{{ inputs.parameters.COMMIT_DATE }}" +"%a %b %d %H:%M:%S %Y %z")
+        echo "post action for \"{{ inputs.parameters.APP_NAMESPACE }}/{{ inputs.parameters.APP_NAME }}\""
+        echo "repoUrl: {{ inputs.parameters.REPO_URL }}, branch: {{ inputs.parameters.BRANCH }}, path: {{ inputs.parameters.PATH }}"
+        echo ""
+        echo "commit {{ inputs.parameters.COMMIT_SHA }}"
+        echo "Author: {{ inputs.parameters.COMMIT_AUTHOR }}"
+        echo "Date:   ${converted_date}"
+        echo ""
+        echo "    {{ inputs.parameters.COMMIT_MESSAGE }}"
+        echo ""
+        echo "{\"POST_ACTION_RESULT\": "\Success\""}" > /tmp/result

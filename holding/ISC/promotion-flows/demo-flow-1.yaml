@@ -1,0 +1,17 @@
+apiVersion: codefresh.io/v1beta1
+kind: PromotionFlow
+metadata:
+  name: demo-flow-1
+  annotations:
+    description: Test for demo
+    version: 0.0.1
+spec:
+  triggerEnvironment: dev
+  promotionTimeoutLimit: 10
+  steps:
+    - environment: qa
+      dependsOn:
+        - dev
+      policy:
+        action: commit
+        postAction: demo1

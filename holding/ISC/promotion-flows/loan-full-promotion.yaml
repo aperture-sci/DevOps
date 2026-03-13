@@ -1,0 +1,23 @@
+apiVersion: codefresh.io/v1beta1
+kind: PromotionFlow
+metadata:
+  name: loan-full-promotion
+  annotations:
+    version: 0.0.1
+    description: Promotion flow for loan microservices. Dev to Prod US.
+spec:
+  triggerEnvironment: dev
+  steps:
+    - environment: qa
+      dependsOn:
+        - dev
+      policy:
+        preAction: pre-action
+        postAction: smoketests
+        action: commit
+    - environment: prod-us
+      dependsOn:
+        - qa
+      policy:
+        action: commit
+  promotionTimeoutLimit: 180

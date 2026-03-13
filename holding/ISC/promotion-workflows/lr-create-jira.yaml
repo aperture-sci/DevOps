@@ -1,0 +1,46 @@
+# DO NOT REMOVE the following attributes:
+# annotations.codefresh.io/workflow-origin (identifies type of Workflow Template as Promotion Workflow)
+# annotations.version (identifies version of Promotion Workflow used)
+# annotations.description (identifies intended use of the Promotion Workflow)
+# Make sure to add 'set-promotion-context' workflow template through the examples section in the UI—this will let you use it.
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: open-jira-hook
+  annotations:
+    codefresh.io/workflow-origin: promotion
+    version: 0.0.3
+    description: Create a new Jira
+spec:
+  serviceAccountName: cf-default-promotion-workflows-sa
+  entrypoint: main-dag
+  templates:
+    - name: main-dag
+      dag:
+        tasks:
+          - name: create-issue
+            templateRef:
+              name: argo-hub.jira.0.0.1
+              template: create-issue
+            arguments:
+              parameters:
+              - name: JIRA_API_KEY
+                value: 'jira-token'
+              - name: JIRA_API_KEY_SECRET_KEY
+                value: token
+              - name: JIRA_BASE_URL
+                value: 'https://codefresh-io.atlassian.net'
+              - name: JIRA_USERNAME
+                value: 'jira-token'
+              - name: JIRA_USERNAME_SECRET_KEY
+                value: email
+              - name: ISSUE_PROJECT
+                value: 'AP'
+              - name: ISSUE_SUMMARY
+                value: 'Trio deployment permission'
+              - name: ISSUE_DESCRIPTION
+                value: 'request to approve deployment'
+              - name: ISSUE_COMPONENTS
+                value: 'deployment'
+              - name: ISSUE_TYPE
+                value: 'Task'

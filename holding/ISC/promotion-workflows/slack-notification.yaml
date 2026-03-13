@@ -1,0 +1,52 @@
+# DO NOT REMOVE the following attributes:
+# annotations.codefresh.io/workflow-origin (identifies type of Workflow Template as Promotion Workflow)
+# annotations.version (identifies version of Promotion Workflow used)
+# annotations.description (identifies intended use of the Promotion Workflow)
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: slack-notification
+  annotations:
+    version: 0.0.1
+    codefresh.io/workflow-origin: promotion
+    argo-hub/version: 0.0.2
+    argo-hub/description: >-
+     This Workflow Template is an example for pre promotion workflow that send a
+     slack message before the app is promoted
+    argo-hub/categories: promotion example workflow
+    argo-hub/license: MIT
+    argo-hub/owner_name: Laurent Rochette
+    argo-hub/owner_email: laurent.rochette@octopus.com
+    argo-hub/owner_avatar: https://avatars.githubusercontent.com/u/2013371
+    argo-hub/owner_url: https://github.com/lrochette
+    argo-hub/icon_url: >-
+      https://cdn.jsdelivr.net/gh/codefresh-io/argo-hub@main/examples/starter-manual-sync/assets/icon.svg
+    argo-hub/icon_background: '#f4f4f4'
+    description: A template to send a Slack notification when a promotion start
+spec:
+  serviceAccountName: promotion-template
+  arguments:
+    parameters:
+      - name: APP_NAME
+  entrypoint: slack-promotion
+  templates:
+    - name: slack-promotion
+      container:
+        name: main
+        imagePullPolicy: Always
+        image: quay.io/codefreshplugins/argo-hub-slack-post-to-channel:0.0.2-main
+        command:
+          - python
+          - /slack/slack.py
+        env:
+          - name: SLACK_CHANNEL
+            value: 'laurent.rochette@octopus.com'
+          - name: SLACK_MESSAGE
+            value: 'Application `{{ workflow.parameters.APP_NAME }}` has been promoted'
+          - name: LOG_LEVEL
+            value: 'info'
+          - name: SLACK_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: 'slack-token'
+                key: token

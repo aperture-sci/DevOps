@@ -1,0 +1,15 @@
+apiVersion: codefresh.io/v1beta1
+kind: PromotionPolicy
+metadata:
+  name: loan-policy
+spec:
+  priority: 1
+  selector:
+    product:
+      names:
+        - loan
+    targetEnvironment:
+      types:
+        - PROD
+  policy:
+    action: commit

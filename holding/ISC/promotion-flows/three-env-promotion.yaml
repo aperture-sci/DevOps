@@ -1,0 +1,18 @@
+apiVersion: codefresh.io/v1beta1
+kind: PromotionFlow
+metadata:
+  name: three-env-promotion
+  annotations:
+    description: Sequential flow for cf-101
+spec:
+  triggerEnvironment: dev
+  steps:
+    - environment: qa
+      dependsOn:
+        - dev
+      policy:
+        preAction: pre-action
+        postAction: post-action
+    - environment: prod-us
+      dependsOn:
+        - qa

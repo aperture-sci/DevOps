@@ -1,0 +1,45 @@
+# DO NOT REMOVE the following attributes:
+# annotations.codefresh.io/workflow-origin (identifies type of Workflow Template as Promotion Workflow)
+# annotations.version (identifies version of Promotion Workflow used)
+# annotations.description (identifies intended use of the Promotion Workflow)
+# List of parameters available for Post Action Workflows. See full list of parameters in the documentation: https://codefresh.io/docs/gitops/promotions/promotion-hooks/#default-arguments-in-promotion-workflows-with-hooks
+
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: access-workflow-labels
+  annotations:
+    version: 0.0.1
+    codefresh.io/workflow-origin: promotion
+    description: Workflow to access the values in the Workflow labels
+  labels:
+    codefresh.io/app-name: trioapp-qa
+    codefresh.io/app-namespace: demo
+    codefresh.io/env: qa
+    codefresh.io/product: trio
+    codefresh.io/promotion-flow: trio-flow
+    codefresh.io/promotion-stage: pre-action
+    codefresh.io/release: 68a8f267ee1c7694064aa8be
+    codefresh.io/release-name: 08b6ddeb5
+spec:
+  arguments:
+    parameters:
+      - name: APP_NAME
+  serviceAccountName: cf-default-promotion-workflows-sa
+  entrypoint: echo
+  templates:
+    - name: echo
+      script:
+        image: alpine
+        command:
+          - sh
+        source: |
+          echo "APP_NAME: {{workflow.parameters.APP_NAME}}"
+          # echo "'codefresh.io/app-name': {{workflow.labels.codefresh.io/app-name}}"
+          # echo "'codefresh.io/app-namespace': {{workflow.labels.codefresh.io/app-namespace}}"
+          # echo "'codefresh.io/env': {{workflow.labels.codefresh.io/env}}"
+          # echo "'codefresh.io/product': {{workflow.labels.codefresh.io/product}}"
+          # echo "'codefresh.io/promotion-flow': {{workflow.labels.codefresh.io/promotion-flow}}"
+          # echo "'codefresh.io/promotion-stage': {{workflow.labels.codefresh.io/promotion-stage}}"
+          # echo "'codefresh.io/release': {{workflow.labels.codefresh.io/release}}"
+          # echo "'codefresh.io/release-name': {{workflow.labels.codefresh.io/release-name}}"

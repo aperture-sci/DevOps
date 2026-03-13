@@ -1,0 +1,29 @@
+# DO NOT REMOVE the following attributes:
+# annotations.codefresh.io/workflow-origin (identifies type of Workflow Template as Promotion Workflow)
+# annotations.version (identifies version of Promotion Workflow used)
+# annotations.description (identifies intended use of the Promotion Workflow)
+
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: eti-new
+  annotations:
+    version: 0.0.1
+    description: 'promotion workflow template'
+spec:
+  serviceAccountName: promotion-template
+  arguments:
+    parameters:
+    - name: APP_NAME
+  entrypoint: echo-pre-action
+  templates:
+  - name: echo-pre-action
+    script:
+      image: alpine
+      command:
+      - sh
+      source: |
+        echo "syncing {{ workflow.parameters.APP_NAME }} "
+        # exit 1
+        sleep 60
+

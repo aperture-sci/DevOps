@@ -1,0 +1,61 @@
+# DO NOT REMOVE the following attributes:
+# annotations.codefresh.io/workflow-origin (identifies type of Workflow Template as Promotion Workflow)
+# annotations.version (identifies version of Promotion Workflow used)
+# annotations.description (identifies intended use of the Promotion Workflow)
+
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: service-now-open-pre-action
+  annotations:
+    codefresh.io/workflow-origin: promotion
+    codefresh.io/promotion-stage: pre-action
+    version: 0.0.1
+    description: 'promotion workflow template'
+spec:
+  serviceAccountName: cf-default-promotion-workflows-sa
+  arguments:
+    parameters:
+    - name: APP_NAME
+  entrypoint: sn-open-cr-pre
+  templates:
+  - name: sn-open-cr-pre
+    outputs:
+      parameters:
+      - name: CR_SYSID
+        valueFrom:
+          expression: "tasks['create-sn-cr'].outputs.parameters['CR_SYSID']"
+    dag:
+      tasks:
+        - name: create-sn-cr
+          templateRef:
+            name: argo-hub.servicenow.1.3.1
+            template: createcr
+          arguments:
+            parameters:
+            - name: TOKEN
+              value: cf-api-key-aperture
+            - name: CF_RUNTIME
+              value: demo
+            - name: SN_INSTANCE
+              value: 'https://dev286098.service-now.com'
+            - name: SN_AUTH
+              value: "sn-auth"
+            - name: LOG_LEVEL
+              value: "debug"
+            - name: CR_DATA
+              value: >-
+                {"short_description": "{{ workflow.parameters.APP_NAME }} deployment",
+                "description": "Change for build {{workflow.uid}}.\nThis change was created by the Codefresh GitOps promotion flow",
+                "justification": "My app is awesome! Please deploy ASAP",
+                "cmdb_ci":"tomcat", "assignment_group":"a715cd759f2002002920bde8132e7018"
+                }
+
+        - name: wait
+          template: approve
+          depends: create-sn-cr
+
+  # Additional templates
+  - name: approve
+    suspend: {}
+      # duration: "72h"

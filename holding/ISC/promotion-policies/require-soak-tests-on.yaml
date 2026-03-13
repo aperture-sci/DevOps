@@ -1,0 +1,14 @@
+apiVersion: codefresh.io/v1beta1
+kind: PromotionPolicy
+metadata:
+  name: require-soak-tests-on
+spec:
+  priority: 5
+  selector:
+    product:
+      names:
+        - test
+  policy:
+    action: pr
+    preAction: soak-test
+    postAction: smoketests

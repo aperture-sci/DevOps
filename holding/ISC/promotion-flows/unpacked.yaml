@@ -1,0 +1,28 @@
+# apiVersion: codefresh.io/v1beta1
+# kind: PromotionFlow
+# metadata:
+#   name: unpacked
+#   annotations:
+#     description: ""
+# spec:
+#   triggerEnvironment: dev
+#   steps:
+#     - environment: qa
+#       dependsOn:
+#         - dev
+#       policy:
+#         action: commit
+#         postAction: smoketests
+#       hooks:
+#         onFail: slack-notification
+#     - environment: prod-us
+#       dependsOn:
+#         - qa
+#       policy:
+#         action: pr
+#       hooks:
+#         onStart: slack-notification
+#         onSuccess: service-now-move-to-implement
+#   hooks:
+#     onStart: service-now-open-standard-hook
+#     onSuccess: slack-notification

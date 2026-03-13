@@ -1,0 +1,27 @@
+apiVersion: codefresh.io/v1beta1
+kind: PromotionFlow
+metadata:
+  name: termination-timout-test
+  annotations:
+    version: 0.0.1
+    description: sequential flow for termination timout test
+spec:
+  promotionTimeoutLimit: 1
+  triggerEnvironment: dev
+  postTrigger: post-action
+  steps:
+    - environment: qa
+      dependsOn:
+        - dev
+      policy:
+        preAction: pre-action
+        postAction: smoketests
+        action: pr
+
+    - environment: prod-us
+      dependsOn:
+        - qa
+      policy:
+        preAction: pre-action
+        postAction: post-action
+        action: commit

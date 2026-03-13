@@ -1,0 +1,21 @@
+apiVersion: codefresh.io/v1beta1
+kind: PromotionFlow
+metadata:
+  name: pr-flow-jira
+  annotations:
+    description: ""
+spec:
+  triggerEnvironment: dev
+  steps:
+    - environment: qa
+      dependsOn:
+        - dev
+      policy:
+        action: commit
+    - environment: prod-us
+      dependsOn:
+        - qa
+      policy:
+        action: pr
+        preAction: pre-action-argo-cd-jira-example
+        postAction: post-action-jira-example

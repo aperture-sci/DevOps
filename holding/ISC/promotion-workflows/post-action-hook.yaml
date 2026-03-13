@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: post-action-hook
+  annotations:
+    codefresh.io/workflow-origin: promotion
+
+spec:
+  serviceAccountName: promotion-template
+  arguments:
+    parameters:
+    - name: PRODUCT_NAME
+  entrypoint: echo-post-action-hook
+  templates:
+  - name: echo-post-action-hook
+    script:
+      image: alpine
+      command:
+      - sh
+      source: |
+        echo "synced product {{ workflow.parameters.PRODUCT_NAME }}"
+        # sleep 60
+  # - name: echo1
+  #   script:
+  #     image: alpine
+  #     command:
+  #     - sh
+  #     source: |
+  #       echo "synced app {{ workflow.parameters.APP_NAME }}"
