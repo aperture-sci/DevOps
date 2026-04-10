@@ -14,6 +14,10 @@ hooks:
           SLACK_TOKEN: ${{LR_SLACK_TOKEN}}
           SLACK_CHANNEL: ${{SLACK_CHANNEL}}
           SLACK_MESSAGE: "CI build (${{CF_PIPELINE_NAME}}) for ${{BUILDNAME}} failed. See ${{CF_BUILD_URL}}"
+        when:
+          condition:
+            all:
+              alert: "'${{SLACK_ALERT}}' == 'true'"
 
 steps:
   clone:
