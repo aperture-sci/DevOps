@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: managed-clusters
+
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: demo-dev
+            short: dev
+          - cluster: demo-qa
+            short: qa
+  template:
+    metadata:
+      name: 'cluster-{{short}}'
+      annotations:
+        notifications.argoproj.io/subscribe.on-sync-succeeded.grafana: eva
+        argocd.argoproj.io/manifest-generate-paths: '/manifests/cluster'
+        codefresh.io/product: cluster
+    spec:
+      project: default
+      sources:
+        - repoURL: oci://quay.io/codefresh/charts/csdp-add-cluster
+          helm:
+            valueFiles:
+              - "$values/manifests/clusters/values.{{short}}.yaml"
+        - repoURL: https://github.com/aperture-sci/DevOps.git
+          targetRevision: main
+          ref: values
+
+      destination:
+        namespace: '{{short}}'
+        name: '{{cluster}}'
+      syncPolicy:
+        automated:
+          allowEmpty: true
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - Validate=false
+          - CreateNamespace=true

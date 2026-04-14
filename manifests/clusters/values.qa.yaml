@@ -1,0 +1,27 @@
+# -- contextName is the name of the cluster in Argo-CD
+contextName: "qa"
+
+# -- namespace to deploy helm chart
+systemNamespace: demo
+
+# -- server is the k8s cluster API endpoint url
+# can be obtained by
+#   CONTEXT_NAME=<TARGET_CONTEXT_NAME>
+#   CLUSTER_NAME=$(kubectl config view --raw --flatten -o jsonpath='{.contexts[?(@.name == "'"${CONTEXT_NAME}"'")].context.cluster}')
+#   kubectl config view --raw --flatten -o jsonpath='{.clusters[?(@.name == "'"${CLUSTER_NAME}"'")].cluster.server}'
+server: "https://demo-qa-vcluster.rnd-sandbox.cf-infra.com"
+
+
+# -- labels for cluster secret metadata
+# e.g.
+# labels: |
+#   some.label.key/field: label_value
+labels: |
+  type: non-prod
+  shortname: qa
+
+# annotations for cluster secret metadata
+# e.g.
+# annotations: |
+#   some.annotation.key/field: annotation value
+annotations: ''
