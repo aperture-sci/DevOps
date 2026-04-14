@@ -1,3 +1,4 @@
+# -- GitOps-Runtime Ingress hostname
 ingressUrl: "https://641dfab29939b208915c0d4e-demo.tunnels.cf-cd.com"
 
 # -- Codefresh platform settings
@@ -7,7 +8,7 @@ codefresh:
     secretKeyRef:
       name: codefresh-token
       key: token
-      
+
 # -- contextName is the name of the cluster in Argo-CD
 contextName: "qa"
 

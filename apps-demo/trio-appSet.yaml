@@ -6,10 +6,10 @@ spec:
   generators:
     - list:
         elements:
-          - cluster: demo-dev
+          - cluster: dev
             short: dev
             ns: dev
-          - cluster: demo-qa
+          - cluster: qa
             short: qa
             ns: qa
   template:

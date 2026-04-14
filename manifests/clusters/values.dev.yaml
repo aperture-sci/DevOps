@@ -22,7 +22,6 @@ systemNamespace: demo
 #   kubectl config view --raw --flatten -o jsonpath='{.clusters[?(@.name == "'"${CLUSTER_NAME}"'")].cluster.server}'
 server: "https://demo-dev-vcluster.rnd-sandbox.cf-infra.com"
 
-
 # -- labels for cluster secret metadata
 # e.g.
 # labels: |
@@ -36,3 +35,6 @@ labels: |
 # annotations: |
 #   some.annotation.key/field: annotation value
 annotations: ''
+
+env:
+  DEBUG: true

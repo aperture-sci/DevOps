@@ -7,9 +7,9 @@ spec:
   generators:
     - list:
         elements:
-          - cluster: demo-dev
+          - cluster: dev
             short: dev
-          - cluster: demo-qa
+          - cluster: qa
             short: qa
   template:
     metadata:
