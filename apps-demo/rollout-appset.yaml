@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: rollout-demo
+spec:
+  generators:
+    - clusters:
+        selector:
+          matchExpressions:
+            - key: shortname
+              operator: Exists
+          matchLabels:
+            type: "non-prod"
+  template:
+    metadata: 'rollout-{{metadata.labels.shortname}}'
+    spec:
+      project: default
+      source:
+        chart: argo-rollouts
+        repoURL: https://argoproj.github.io/argo-helm
+        targetRevision: 2.40.9
+        helm:
+          releaseName: argo-rollouts
+      destination:
+        namespace: demo
+        name: '{{name}}'
+      syncPolicy:
+        syncOptions:
+          - ServerSideApply=true
+        automated:
+          allowEmpty: true
+          prune: true
+          selfHeal: true
