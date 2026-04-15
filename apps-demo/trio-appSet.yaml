@@ -4,17 +4,16 @@ metadata:
   name: trio
 spec:
   generators:
-    - list:
-        elements:
-          - cluster: dev
-            short: dev
-            ns: dev
-          - cluster: qa
-            short: qa
-            ns: qa
+    - clusters:
+        selector:
+          matchExpressions:
+            - key: shortname
+              operator: Exists
+          # matchLabels:
+          #   type: "non-prod"
   template:
     metadata:
-      name: trioapp-{{short}}
+      name: trioapp-{{metadata.labels.shortname}}
       finalizers:
         - resources-finalizer.argocd.argoproj.io
       annotations:
@@ -23,14 +22,14 @@ spec:
         codefresh.io/product: trio
         codefresh.io/app-group: trio
         argo.octopus.com/project: "trio"
-        argo.octopus.com/environment: "{{short}}"
+        argo.octopus.com/environment: "{{metadata.labels.shortname}}"
 
     spec:
       destination:
         name: '{{cluster}}'
         namespace: '{{ns}}'
       source:
-        path: 'manifests/trio-app/aperture-{{short}}'
+        path: 'manifests/trio-app/aperture-{{metadata.labels.shortname}}'
         repoURL: 'https://github.com/aperture-sci/DevOps'
         targetRevision: main
       project: default

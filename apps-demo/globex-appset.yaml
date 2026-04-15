@@ -5,13 +5,16 @@ metadata:
   namespace: demo
 spec:
   generators:
-    - list:
-        elements:
-          - short: dev
-          - short: qa
+    - clusters:
+        selector:
+          matchExpressions:
+            - key: shortname
+              operator: Exists
+          matchLabels:
+            type: "non-prod"
   template:
     metadata:
-      name: 'globex-{{short}}'
+      name: 'globex-{{metadata.labels.shortname}}'
       labels:
         app: globex
       finalizers:
@@ -20,11 +23,11 @@ spec:
         argocd.argoproj.io/manifest-generate-paths: ./manifests/globex
     spec:
       destination:
-        namespace: '{{short}}'
-        name: 'demo-{{short}}'
+        namespace: '{{metadata.labels.shortname}}'
+        name: 'demo-{{metadata.labels.shortname}}'
       project: default
       source:
-        path: './manifests/globex/overlays/{{short}}'
+        path: './manifests/globex/overlays/{{metadata.labels.shortname}}'
         repoURL: https://github.com/aperture-sci/DevOps.git
         targetRevision: main
       syncPolicy:

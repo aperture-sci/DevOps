@@ -9,8 +9,8 @@ spec:
           matchExpressions:
             - key: shortname
               operator: Exists
-          matchLabels:
-            type: "non-prod"
+          # matchLabels:
+          #   type: "non-prod"
   template:
     metadata: 'rollout-{{metadata.labels.shortname}}'
     spec:
