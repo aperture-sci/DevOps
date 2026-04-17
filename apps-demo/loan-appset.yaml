@@ -19,8 +19,8 @@ spec:
             matchExpressions:
               - key: shortname
                 operator: Exists
-            matchLabels:
-              type: "non-prod"
+            # matchLabels:
+            #   type: "non-prod"
   template:
     metadata:
       name: '{{.path.basename}}-{{metadata.labels.shortname}}'

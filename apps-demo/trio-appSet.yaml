@@ -13,7 +13,7 @@ spec:
           #   type: "non-prod"
   template:
     metadata:
-      name: trioapp-{{metadata.labels.shortname}}
+      name: 'trioapp-{{metadata.labels.shortname}}'
       finalizers:
         - resources-finalizer.argocd.argoproj.io
       annotations:
