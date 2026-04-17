@@ -7,7 +7,7 @@ metadata:
   annotations:
     ingress.kubernetes.io/proxy-body-size: 100M
     ingress.kubernetes.io/app-root: /
-    nginx.ingress.kubernetes.io/backend-protocol: HTTP
+    haproxy.org/server-proto: "h2"
 spec:
   ingressClassName: haproxy-ingress-public
   rules:
