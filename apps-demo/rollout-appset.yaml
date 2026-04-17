@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: rollout-demo
+  name: rollout
 spec:
   generators:
     - clusters:
