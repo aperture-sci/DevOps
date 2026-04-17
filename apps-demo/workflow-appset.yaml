@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: workflows
+spec:
+  generators:
+    - clusters:
+        selector:
+          matchExpressions:
+            - key: shortname
+              operator: Exists
+          # matchLabels:
+          #   type: "non-prod"
+  template:
+    metadata:
+      name: 'workflow-{{metadata.labels.shortname}}'
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io/foreground
+
+    spec:
+      project: default
+      source:
+        chart: argo-workflows
+        repoURL: https://argoproj.github.io/argo-helm
+        targetRevision: 1.0.10
+        helm:
+          releaseName: argo-workflows
+      destination:
+        namespace: argo
+        name: '{{name}}'
+      syncPolicy:
+        syncOptions:
+          - ServerSideApply=true
+        automated:
+          allowEmpty: true
+          prune: true
+          selfHeal: true
