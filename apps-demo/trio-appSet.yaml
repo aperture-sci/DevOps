@@ -27,7 +27,7 @@ spec:
 
     spec:
       destination:
-        name: '{{cluster}}'
+        name: '{{name}}'
         namespace: '{{ns}}'
       source:
         path: 'manifests/trio-app/aperture-{{metadata.labels.shortname}}'
