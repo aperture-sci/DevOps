@@ -43,10 +43,10 @@ spec:
       source:
         repoURL: https://github.com/aperture-sci/DevOps.git
         targetRevision: main
-        path: '{{.path.path}}/{{metadata.labels.shortname}}'
+        path: '{{.path.path}}/{{.metadata.labels.shortname}}'
       destination:
-        name: '{{.cluster}}'
-        namespace: '{{metadata.labels.shortname}}'
+        name: '{{.name}}'
+        namespace: '{{.metadata.labels.shortname}}'
       syncPolicy:
         automated:
           prune: true
