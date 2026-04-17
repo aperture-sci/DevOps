@@ -33,6 +33,7 @@ spec:
         codefresh.io/app-group: loan
         argo.octopus.com/project: '{{.path.basename}}'
         argo.octopus.com/environment: "{{metadata.labels.shortname}}"
+        argo.octopus.com/tenant: "{{metadata.labels.tenant}}"
 
       labels:
         codefresh.io/product: '{{.path.basename}}'

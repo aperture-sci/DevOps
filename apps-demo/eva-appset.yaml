@@ -18,7 +18,10 @@ spec:
         notifications.argoproj.io/subscribe.on-sync-succeeded.grafana: eva
         argocd.argoproj.io/manifest-generate-paths: '/manifests/eva'
         codefresh.io/product: example-voting-app
+        argo.octopus.com/project: "eva"
+        argo.octopus.com/environment: "{{metadata.labels.shortname}}"
         codefresh.io/app-group: eva
+        argo.octopus.com/tenant: "{{metadata.labels.tenant}}"
     spec:
       project: default
       source:

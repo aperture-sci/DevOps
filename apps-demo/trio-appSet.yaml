@@ -23,6 +23,7 @@ spec:
         codefresh.io/app-group: trio
         argo.octopus.com/project: "trio"
         argo.octopus.com/environment: "{{metadata.labels.shortname}}"
+        argo.octopus.com/tenant: "{{metadata.labels.tenant}}"
 
     spec:
       destination:

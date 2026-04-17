@@ -21,6 +21,10 @@ spec:
         - resources-finalizer.argocd.argoproj.io
       annotations:
         argocd.argoproj.io/manifest-generate-paths: ./manifests/globex
+        argo.octopus.com/project: "globex"
+        argo.octopus.com/environment: "{{metadata.labels.shortname}}"
+        argo.octopus.com/tenant: "{{metadata.labels.tenant}}"
+
     spec:
       destination:
         namespace: '{{metadata.labels.shortname}}'
