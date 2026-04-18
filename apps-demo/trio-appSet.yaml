@@ -28,7 +28,7 @@ spec:
     spec:
       destination:
         name: '{{name}}'
-        namespace: '{{ns}}'
+        namespace: '{{metadata.labels.shortname}}'
       source:
         path: 'manifests/trio-app/aperture-{{metadata.labels.shortname}}'
         repoURL: 'https://github.com/aperture-sci/DevOps'
