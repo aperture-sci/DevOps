@@ -10,30 +10,30 @@ spec:
           - ns: dev
           - ns: qa
           - ns: staging
-template:
-  metadata:
-    name: 'color-{ns}'
-    namespace: openshift-gitops
-  annotations:
-    argo.octopus.com/environment: '{ns}'
-    argo.octopus.com/project: rhos
-  spec:
-    destination:
-      name: in-cluster
-      namespace: '{ns}'
-    project: default
-    source:
-      path: 'manifests/color/{ns}-rhos'
-      repoURL: 'https://github.com/aperture-sci/DevOps.git'
-      targetRevision: main
-    syncPolicy:
-      automated:
-        prune: true
-        selfHeal: true
-      syncOptions:
-        - PrunePropagationPolicy=foreground
-        - Replace=false
-        - PruneLast=false
-        - Validate=true
-        - CreateNamespace=true
-        - ApplyOutOfSyncOnly=false
+  template:
+    metadata:
+      name: 'color-{ns}'
+      namespace: openshift-gitops
+      annotations:
+        argo.octopus.com/environment: '{ns}'
+        argo.octopus.com/project: rhos
+    spec:
+      destination:
+        name: in-cluster
+        namespace: '{ns}'
+      project: default
+      source:
+        path: 'manifests/color/{ns}-rhos'
+        repoURL: 'https://github.com/aperture-sci/DevOps.git'
+        targetRevision: main
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - PrunePropagationPolicy=foreground
+          - Replace=false
+          - PruneLast=false
+          - Validate=true
+          - CreateNamespace=true
+          - ApplyOutOfSyncOnly=false
