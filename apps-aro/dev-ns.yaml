@@ -7,3 +7,23 @@ metadata:
 spec:
   finalizers:
   - kubernetes
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: qa
+  labels:
+    argocd.argoproj.io/managed-by: openshift-gitops
+spec:
+  finalizers:
+  - kubernetes
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: staging
+  labels:
+    argocd.argoproj.io/managed-by: openshift-gitops
+spec:
+  finalizers:
+  - kubernetes
