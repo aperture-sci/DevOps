@@ -12,18 +12,18 @@ spec:
           - ns: staging
   template:
     metadata:
-      name: 'color-{ns}'
+      name: 'color-{{ns}}'
       namespace: openshift-gitops
       annotations:
-        argo.octopus.com/environment: '{ns}'
+        argo.octopus.com/environment: '{{ns}}'
         argo.octopus.com/project: rhos
     spec:
       destination:
         name: in-cluster
-        namespace: '{ns}'
+        namespace: '{{ns}}'
       project: default
       source:
-        path: 'manifests/color/{ns}-rhos'
+        path: 'manifests/color/{{ns}}-rhos'
         repoURL: 'https://github.com/aperture-sci/DevOps.git'
         targetRevision: main
       syncPolicy:
