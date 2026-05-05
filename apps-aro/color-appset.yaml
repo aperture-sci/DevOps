@@ -17,7 +17,6 @@ template:
   annotations:
     argo.octopus.com/environment: '{ns}'
     argo.octopus.com/project: rhos
-
   spec:
     destination:
       name: in-cluster
