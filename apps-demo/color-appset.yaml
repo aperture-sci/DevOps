@@ -4,6 +4,7 @@ metadata:
   name: color
 
 spec:
+  goTemplate: true
   generators:
     - clusters:
         selector:
@@ -15,32 +16,30 @@ spec:
 
   template:
     metadata:
-      name: 'color-{{metadata.labels.shortname}}'
+      name: 'color-{{ .metadata.labels.shortname }}'
       finalizers:
         - resources-finalizer.argocd.argoproj.io/foreground
       annotations:
         notifications.argoproj.io/subscribe.on-sync-succeeded.grafana: color
         argocd.argoproj.io/manifest-generate-paths: '.'
         codefresh.io/product: color
-        codefresh.io/app-group: color
+        # codefresh.io/app-group: color
         argo.octopus.com/project: "color"
-        argo.octopus.com/environment: "{{metadata.labels.shortname}}"
-        {{- if eq .metadata.type "prod" }}
-        argo.octopus.com/tenant: "{{metadata.labels.tenant}}"
-        {{- end }}
+        argo.octopus.com/environment: "{{ .metadata.labels.shortname }}"
+        argo.octopus.com/tenant: '{{if eq .metadata.labels.type "prod"}}{{.metadata.labels.tenant}}{{end}}'
 
     spec:
       project: default
       source:
         repoURL: https://github.com/aperture-sci/DevOps.git
         targetRevision: main
-        path: 'manifests/color/{{metadata.labels.shortname}}'
+        path: 'manifests/color/{{ .metadata.labels.shortname }}'
       destination:
         name: '{{name}}'
-        namespace: '{{metadata.labels.shortname}}'
+        namespace: '{{ .metadata.labels.shortname }}'
       syncPolicy:
         automated:
-          enabled: false
+          # enabled: false
           prune: true
           selfHeal: true
         syncOptions:
