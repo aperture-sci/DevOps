@@ -170,7 +170,7 @@ steps:
           onmaster: "'${{CF_BRANCH_TAG_NORMALIZED}}' == 'main'"
     steps:
       ReportImageMetadataAll:
-        type: codefresh-report-image:1.0.10
+        type: codefresh-report-image:1.0.11
         working_directory: /code
         arguments:
           CF_API_KEY: '${{CF_API_KEY}}'

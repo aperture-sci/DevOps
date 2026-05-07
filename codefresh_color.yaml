@@ -105,7 +105,7 @@ steps:
       enrich-image:
         stage: build
         title: Report image to Codefresh CD
-        type: codefresh-report-image:1.0.10
+        type: codefresh-report-image:1.0.11
         working_directory: /code
         fail_fast: false
         arguments:
