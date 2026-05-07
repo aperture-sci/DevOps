@@ -35,7 +35,7 @@ spec:
         targetRevision: main
         path: 'manifests/color/{{ .metadata.labels.shortname }}'
       destination:
-        name: '{{name}}'
+        name: '{{ .name }}'
         namespace: '{{ .metadata.labels.shortname }}'
       syncPolicy:
         automated:
