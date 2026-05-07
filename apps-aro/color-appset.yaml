@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: color
+  name: color-rhos
   namespace: openshift-gitops
 spec:
   generators:
@@ -12,7 +12,7 @@ spec:
           - ns: staging
   template:
     metadata:
-      name: 'color-{{ns}}'
+      name: 'color-rhos-{{ns}}'
       namespace: openshift-gitops
       annotations:
         argo.octopus.com/environment: '{{ns}}'
