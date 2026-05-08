@@ -26,7 +26,7 @@ spec:
         # codefresh.io/app-group: color
         argo.octopus.com/project: "color"
         argo.octopus.com/environment: "{{ .metadata.labels.shortname }}"
-        argo.octopus.com/tenant: '{{if eq .metadata.labels.type "prod"}}{{.metadata.labels.tenant}}{{end}}'
+        argo.octopus.com/tenant: '{{ .metadata.labels.tenant }}'
 
     spec:
       project: default
