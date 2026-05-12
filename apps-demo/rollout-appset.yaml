@@ -16,6 +16,8 @@ spec:
       name: 'rollout-{{metadata.labels.shortname}}'
       finalizers:
         - resources-finalizer.argocd.argoproj.io/foreground
+      annotations:
+        argocd.argoproj.io/compare-options: ServerSideDiff=true
 
     spec:
       project: default
