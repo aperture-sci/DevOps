@@ -34,6 +34,8 @@ spec:
         syncOptions:
           - ServerSideApply=true
           - CreateNamespace=true
+          - Validate=true
+          - ApplyOutOfSyncOnly=false
         automated:
           allowEmpty: true
           prune: true
