@@ -28,7 +28,7 @@ spec:
         helm:
           releaseName: argo-rollouts
       destination:
-        namespace: argo
+        namespace: argo-rollouts
         name: '{{name}}'
       syncPolicy:
         syncOptions:
