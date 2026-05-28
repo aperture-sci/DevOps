@@ -8,4 +8,4 @@ resources:
   - ingress-preview.yaml
 images:
   - name: docker.io/aperturesci/rollouts-demo
-    newTag: "2026.05.28.1004"
+    newTag: "2026.05.28.1005"
