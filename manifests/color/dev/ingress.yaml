@@ -6,11 +6,11 @@ metadata:
     ingress.kubernetes.io/proxy-body-size: 100M
     ingress.kubernetes.io/app-root: /
     haproxy-ingress.github.io/rewrite-target: /$2
-    link.argocd.argoproj.io/external-link: https://color-dev.cs.sandbox.codefresh.io/color/
+    link.argocd.argoproj.io/external-link: https://color-dev.rnd.sandbox.codefresh.io/color/
 spec:
   ingressClassName: haproxy-ingress-public
   rules:
-    - host: color-dev.cs.sandbox.codefresh.io
+    - host: color-dev.rnd.sandbox.codefresh.io
       http:
         paths:
           - path: /color(/|$)(.*)
