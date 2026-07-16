@@ -169,22 +169,22 @@ steps:
         all:
           onmaster: "'${{CF_BRANCH_TAG_NORMALIZED}}' == 'main'"
     steps:
-      # ReportImageMetadataAll:
-      #   type: codefresh-report-image:1.0.11
-      #   working_directory: /code
-      #   arguments:
-      #     CF_API_KEY: '${{CF_API_KEY}}'
-      #     CF_RUNTIME_NAME: demo
-      #     CF_GITHUB_TOKEN: '${{GITHUB_TOKEN}}'
-      #     CF_GIT_PROVIDER: github
-      #     CF_GIT_REPO: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
-      #     CF_GIT_BRANCH: '${{PR_BRANCH}}'
-      #     CF_JIRA_INTEGRATION: jira-intg
-      #     CF_JIRA_MESSAGE: "${{CF_COMMIT_MESSAGE_ESCAPED}}"
-      #     CF_JIRA_PROJECT_PREFIX: '${{JIRA_PREFIX}}'
-      #     CF_IMAGE: 'docker.io/aperturesci/${{BUILDNAME}}:${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}'
-      #     CF_CONTAINER_REGISTRY_INTEGRATION: docker-intg
-      #     CF_DOCKERFILE_CONTENT: '${{DOCKERFILE_CONTENT}}'
+      ReportImageMetadataAll:
+        type: codefresh-report-image:1.0.11
+        working_directory: /code
+        arguments:
+          CF_API_KEY: '${{CF_API_KEY}}'
+          CF_RUNTIME_NAME: demo
+          CF_GITHUB_TOKEN: '${{GITHUB_TOKEN}}'
+          CF_GIT_PROVIDER: github
+          CF_GIT_REPO: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
+          CF_GIT_BRANCH: '${{PR_BRANCH}}'
+          CF_JIRA_INTEGRATION: jira-intg
+          CF_JIRA_MESSAGE: "${{CF_COMMIT_MESSAGE_ESCAPED}}"
+          CF_JIRA_PROJECT_PREFIX: '${{JIRA_PREFIX}}'
+          CF_IMAGE: 'docker.io/aperturesci/${{BUILDNAME}}:${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}'
+          CF_CONTAINER_REGISTRY_INTEGRATION: docker-intg
+          CF_DOCKERFILE_CONTENT: '${{DOCKERFILE_CONTENT}}'
       cosign:
         title: Cosign Image
         image: bitnamilegacy/cosign:2.5.3
