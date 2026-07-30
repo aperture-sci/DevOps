@@ -160,15 +160,15 @@ steps:
   #         onmaster: "'${{CF_BRANCH_TAG_NORMALIZED}}' == 'main'"
   #   stage: "metadata"
 
-  reporting:
-    title: Reporting
-    type: parallel
-    stage: "metadata"
-    when:
-      condition:
-        all:
-          onmaster: "'${{CF_BRANCH_TAG_NORMALIZED}}' == 'main'"
-    steps:
+  # reporting:
+  #   title: Reporting
+  #   type: parallel
+  #   stage: "metadata"
+  #   when:
+  #     condition:
+  #       all:
+  #         onmaster: "'${{CF_BRANCH_TAG_NORMALIZED}}' == 'main'"
+  #   steps:
       # ReportImageMetadataAll:
       #   type: codefresh-report-image:1.0.11
       #   working_directory: /code
@@ -185,17 +185,61 @@ steps:
       #     CF_IMAGE: 'docker.io/aperturesci/${{BUILDNAME}}:${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}'
       #     CF_CONTAINER_REGISTRY_INTEGRATION: docker-intg
       #     CF_DOCKERFILE_CONTENT: '${{DOCKERFILE_CONTENT}}'
-      cosign:
-        title: Cosign Image
-        image: bitnamilegacy/cosign:2.5.3
-        commands:
-          - cp -r ${{CF_VOLUME_PATH}}/.docker /
-          - cosign sign --key ${{CF_VOLUME_PATH}}/cosign.key aperturesci/${{BUILDNAME}}:${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}} -a CICD=Codefresh --yes
-          - rm ${{CF_VOLUME_PATH}}/cosign.key
-        when:
-          condition:
-            all:
-              quick: "'${{QUICK}}' == 'false'"
+
+  report_image_info:
+    title: Report image to Codefresh
+    stage: metadata
+    image: quay.io/codefreshplugins/argo-hub-codefresh-csdp-report-image-info:1.1.30
+    environment:
+      - IMAGE_NAME=docker.io/aperturesci/${{BUILDNAME}}:${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}
+      - CF_API_KEY=${{CF_API_KEY}}
+      - DOCKERHUB_USERNAME=${{dockeruser}}
+      - DOCKERHUB_PASSWORD=${{dockerpat}}
+      - WORKFLOW_NAME=${{CF_PIPELINE_NAME}}
+      # Link to this specific build so the link in Codefresh lands on the
+      # exact execution that reported the image.
+      - WORKFLOW_URL=https://g.codefresh.io/build/${{CF_BUILD_ID}}
+      - LOGS_URL=https://g.codefresh.io/build/${{CF_BUILD_ID}}
+
+  enrich_jira:
+    title: Enrich with Jira issue
+    stage: metadata
+    image: quay.io/codefreshplugins/argo-hub-codefresh-csdp-image-enricher-jira-info:1.1.30
+    environment:
+      - IMAGE_NAME=docker.io/aperturesci/${{BUILDNAME}}:${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}
+      - CF_API_KEY=${{CF_API_KEY}}
+      - JIRA_MESSAGE="${{CF_COMMIT_MESSAGE_ESCAPED}}"
+      - JIRA_PROJECT_PREFIX='${{JIRA_PREFIX}}'
+      - JIRA_HOST_URL='${{JIRA_URL}}'
+      - JIRA_EMAIL=${{JIRA_USER}}
+      - JIRA_API_TOKEN=${{JIRA_TOKEN}}
+      - FAIL_ON_NOT_FOUND=false
+
+  enrich_git:
+    title: Enrich with PR info
+    stage: metadata
+    image: quay.io/codefreshplugins/argo-hub-codefresh-csdp-image-enricher-git-info:1.1.30
+    environment:
+      - IMAGE_NAME=docker.io/aperturesci/${{BUILDNAME}}:${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}
+      - CF_API_KEY=${{CF_API_KEY}}
+      - GIT_PROVIDER=github
+      - BRANCH=${{PR_BRANCH}}
+      - REPO=${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}
+      - GITHUB_TOKEN=${{GITHUB_TOKEN}}
+
+  cosign:
+    title: Cosign Image
+    stage: metadata
+    image: bitnamilegacy/cosign:2.5.3
+    commands:
+      - cp -r ${{CF_VOLUME_PATH}}/.docker /
+      - cosign sign --key ${{CF_VOLUME_PATH}}/cosign.key aperturesci/${{BUILDNAME}}:${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}} -a CICD=Codefresh --yes
+      - rm ${{CF_VOLUME_PATH}}/cosign.key
+    when:
+      condition:
+        all:
+          quick: "'${{QUICK}}' == 'false'"
+
   deployLoanToDev:
     title: Loan deployment
     type: codefresh-run:1.5.3
