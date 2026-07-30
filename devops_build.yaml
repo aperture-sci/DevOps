@@ -210,7 +210,7 @@ steps:
       - CF_API_KEY=${{CF_API_KEY}}
       - JIRA_MESSAGE="${{CF_COMMIT_MESSAGE_ESCAPED}}"
       - JIRA_PROJECT_PREFIX='${{JIRA_PREFIX}}'
-      - JIRA_HOST_URL='${{JIRA_URL}}'
+      - JIRA_HOST_URL='https://codefresh-io.atlassian.net'
       - JIRA_EMAIL=${{JIRA_USER}}
       - JIRA_API_TOKEN=${{JIRA_TOKEN}}
       - FAIL_ON_NOT_FOUND=false
