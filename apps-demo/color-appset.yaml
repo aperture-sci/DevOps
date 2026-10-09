@@ -6,17 +6,14 @@ metadata:
 spec:
   goTemplate: true
   generators:
-    - clusters:
-        selector:
-          matchExpressions:
-            - key: shortname
-              operator: Exists
-          # matchLabels:
-          #   type: "non-prod"
+    - list:
+        element:
+          - cluster: dev-agent
+            shortname: dev
 
   template:
     metadata:
-      name: 'color-{{ .metadata.labels.shortname }}'
+      name: 'color-{{ .shortname }}'
       namespace: argocd
       finalizers:
         - resources-finalizer.argocd.argoproj.io/foreground
@@ -26,18 +23,18 @@ spec:
         # codefresh.io/product: color
         # codefresh.io/app-group: color
         argo.octopus.com/project: "color"
-        argo.octopus.com/environment: "{{ .metadata.labels.shortname }}"
-        argo.octopus.com/tenant: '{{ .metadata.labels.tenant }}'
+        argo.octopus.com/environment: "{{ .shortname }}"
+        #argo.octopus.com/tenant: '{{ .metadata.labels.tenant }}'
 
     spec:
       project: default
       source:
         repoURL: https://github.com/aperture-sci/DevOps.git
         targetRevision: main
-        path: 'manifests/color/{{ .metadata.labels.shortname }}'
+        path: 'manifests/color/{{ .shortname }}'
       destination:
-        name: '{{ .name }}'
-        namespace: '{{ .metadata.labels.shortname }}'
+        name: '{{ .cluster }}'
+        namespace: '{{ .shortname }}'
       syncPolicy:
         automated:
           # enabled: false
