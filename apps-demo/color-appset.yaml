@@ -8,7 +8,7 @@ spec:
   generators:
     - list:
         element:
-          - cluster: dev-agent
+          - cluster: demo-dev
             shortname: dev
 
   template:
