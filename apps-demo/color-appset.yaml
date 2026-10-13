@@ -7,7 +7,7 @@ spec:
   goTemplate: true
   generators:
     - list:
-        element:
+        elements:
           - cluster: demo-dev
             shortname: dev
 
