@@ -3,9 +3,10 @@ kind: Kustomization
 namespace: dev
 resources:
   - ../base
-  - rollout.yaml
-  - ingress.yaml
-  - ingress-preview.yaml
+  - deployment.yaml
+  # - rollout.yaml
+  # - ingress.yaml
+  # - ingress-preview.yaml
 images:
   - name: docker.io/aperturesci/rollouts-demo
     newTag: "2026.06.25.1159"
