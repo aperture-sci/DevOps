@@ -2,6 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
   name: color
+  namespace: argocd
 
 spec:
   goTemplate: true
@@ -10,11 +11,23 @@ spec:
         elements:
           - cluster: demo-dev
             shortname: dev
-
+            agent: agent-dev
+          - cluster: demo-qa
+            shortname: qa
+            agent: agent-qa
+          - cluster: demo-staging
+            shortname: staging
+            agent: agent-staging
+          - cluster: demo-east
+            shortname: east
+            agent: agent-east
+          - cluster: demo-west
+            shortname: west
+            agent: agent-west
   template:
     metadata:
       name: 'color-{{ .shortname }}'
-      namespace: argocd
+
       finalizers:
         - resources-finalizer.argocd.argoproj.io/foreground
       annotations:
@@ -33,7 +46,9 @@ spec:
         targetRevision: main
         path: 'manifests/color/{{ .shortname }}'
       destination:
-        name: '{{ .cluster }}'
+        # use name of the agent
+        # do not use the destination.server field
+        name: '{{ .agent }}'
         namespace: '{{ .shortname }}'
       syncPolicy:
         automated:
